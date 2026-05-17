@@ -2,6 +2,7 @@
 layout: default
 title: FIRE設計図
 ---
+{% include nav.html %}
 
 # FIRE設計図
 
