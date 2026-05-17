@@ -2,7 +2,8 @@
 layout: default
 title: ホーム
 ---
-{% include nav.html %}
+
+> [ホーム](/fire-design/) │ [FIRE設計図](/fire-design/design/) │ [About](/fire-design/about/)
 
 # Welcome to fire-design
 
@@ -14,7 +15,7 @@ title: ホーム
 
 ## コンテンツ
 
-- [FIRE設計図](/fire-design/design/) — バケツ管理・決行ライン・Coast FIRE収入の全体像
+- [FIRE設計図](/fire-design/design/) — バケツ管理・Coast FIRE収入の全体像
 - 月次レポート（近日公開）
 - FIREシミュレーター（近日公開）
 
