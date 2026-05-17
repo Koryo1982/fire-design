@@ -2,6 +2,7 @@
 layout: default
 title: ホーム
 ---
+{% include nav.html %}
 
 # Welcome to fire-design
 
