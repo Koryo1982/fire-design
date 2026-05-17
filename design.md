@@ -2,7 +2,7 @@
 layout: default
 title: FIRE設計図
 ---
-{% include nav.html %}
+> [ホーム](/fire-design/) ｜ [FIRE設計図](/fire-design/design/) ｜ [About](/fire-design/about/)
 
 # FIRE設計図
 
