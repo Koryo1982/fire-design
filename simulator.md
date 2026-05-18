@@ -1,7 +1,6 @@
 ---
 layout: default
 title: FIREシミュレーター
-permalink: /fire-design/simulator/
 ---
 
 > [ホーム](/fire-design/) ｜ [FIRE設計図](/fire-design/design/) ｜ [About](/fire-design/about/)
@@ -78,7 +77,6 @@ function calcFire() {
       '</div>';
   }
 }
-// 初期表示
 calcFire();
 </script>
 
