@@ -426,3 +426,87 @@ section > p:first-child {
   color: var(--color-primary) !important;
   border: 1px solid rgba(37, 99, 235, 0.3) !important;
 }
+
+
+/* ============================================
+   Midnight Theme Nav Override
+   ============================================ */
+
+nav ul {
+  background: #0f172a !important;
+  background-color: #0f172a !important;
+  background-image: none !important;
+  border-bottom: 1px solid #334155 !important;
+  margin: 0 !important;
+  padding: 8px 24px !important;
+  list-style: none !important;
+  display: flex !important;
+  gap: 8px !important;
+}
+
+nav ul li {
+  background: none !important;
+  background-color: transparent !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  float: none !important;
+}
+
+nav ul li.fork a,
+nav ul li a {
+  background: rgba(255,255,255,0.06) !important;
+  color: #94a3b8 !important;
+  border: 1px solid #334155 !important;
+  border-radius: 6px !important;
+  padding: 5px 12px !important;
+  font-size: 0.8rem !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+}
+
+nav ul li.fork a:hover,
+nav ul li a:hover {
+  background: rgba(37,99,235,0.2) !important;
+  color: #f1f5f9 !important;
+  border-color: rgba(37,99,235,0.5) !important;
+}
+
+#header_wrap {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+  background-color: #0f172a !important;
+  background-image: none !important;
+  border-bottom: 1px solid #334155 !important;
+  padding: 0 !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+}
+
+#header_wrap .inner {
+  background: transparent !important;
+  max-width: 960px !important;
+  margin: 0 auto !important;
+  padding: 16px 24px !important;
+}
+
+#project_title {
+  font-family: 'Inter', 'Noto Sans JP', sans-serif !important;
+  font-size: 1.3rem !important;
+  font-weight: 700 !important;
+  color: white !important;
+  text-shadow: none !important;
+  margin: 0 !important;
+}
+
+#project_title a {
+  color: white !important;
+  text-decoration: none !important;
+}
+
+#project_tagline {
+  display: none !important;
+}
+
+#downloads {
+  display: none !important;
+}
