@@ -1,11 +1,17 @@
 ---
-layout: post
+layout: default
 title: "【月次レポート #001】2026年5月｜Coast FIRE進捗69.4%・サイト開設月"
 date: 2026-05-18
 categories: monthly-report
 ---
 
 > [ホーム](/fire-design/) ｜ [FIRE設計図](/fire-design/design/) ｜ [About](/fire-design/about/)
+
+# 📊 月次レポート #001｜2026年5月
+
+*公開日：2026年5月18日 ｜ Coast FIRE達成率：**69.4%***
+
+---
 
 ## 今月のサマリー
 
