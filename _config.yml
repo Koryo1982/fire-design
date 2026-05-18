@@ -1,10 +1,12 @@
-title: fire-design
-description: Koryo1982のポートフォリオサイト
+title: father cafe | FIRE×父親の実録
+description: 43歳会社員がCoast FIREを目指す実録サイト。3バケツ戦略・月次レポート・FIREシミュレーター。X @father_cafe と連動。
 theme: jekyll-theme-midnight
 author: Koryo1982
 permalink: pretty
 
+google_analytics: G-Q26FKPMKXP
+
 header_pages:
   - index.md
-    - design.md
-      - about.md
+  - design.md
+  - about.md
