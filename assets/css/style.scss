@@ -510,3 +510,14 @@ nav ul li a:hover {
 #downloads {
   display: none !important;
 }
+
+
+/* CRITICAL: Override #header nav blue background */
+#header nav,
+#header_wrap nav,
+#header_wrap nav,
+body #header nav {
+  background: #0f172a !important;
+  background-color: #0f172a !important;
+  background-image: none !important;
+}
