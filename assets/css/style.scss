@@ -521,3 +521,32 @@ body #header nav {
   background-color: #0f172a !important;
   background-image: none !important;
 }
+
+
+/* ============================================
+   HEADER CLEANUP - Remove duplicate title area
+   ============================================ */
+
+/* Hide the midnight theme default title block entirely */
+#title {
+  display: none !important;
+}
+
+/* Hide the 'View On GitHub' nav bar */
+#header {
+  display: none !important;
+}
+
+/* Remove top gap left by hidden header */
+.wrapper section {
+  padding-top: 0 !important;
+}
+
+/* Give main content more breathing room at top */
+#main_content_wrap {
+  padding-top: 0 !important;
+}
+
+#main_content {
+  padding-top: 24px !important;
+}
