@@ -3,7 +3,7 @@ layout: default
 title: FIRE設計図
 ---
 
-> [ホーム](/fire-design/) ｜ [FIRE設計図](/fire-design/design/) ｜ [About](/fire-design/about/)
+> [🏠 ホーム](/fire-design/) ｜ [🗺️ FIRE設計図](/fire-design/design/) ｜ [🧮 シミュレーター](/fire-design/simulator/) ｜ [📊 月次レポート](/fire-design/monthly-report/2026/05/18/monthly-report-001/) ｜ [👤 About](/fire-design/about/)
 
 # FIRE設計図
 
@@ -131,6 +131,7 @@ Coast FIREは「資産を増やすための積立は終了し、あとは運用�
 
 ---
 
-最終更新：**2026年5月**
+> [🏠 ホーム](/fire-design/) ｜ [🗺️ FIRE設計図](/fire-design/design/) ｜ [🧮 シミュレーター](/fire-design/simulator/) ｜ [📊 月次レポート](/fire-design/monthly-report/2026/05/18/monthly-report-001/) ｜ [👤 About](/fire-design/about/)
 
 > [ホーム](/fire-design/) ｜ [FIRE設計図](/fire-design/design/) ｜ [About](/fire-design/about/)
+> [🏠 ホーム](/fire-design/) ｜ [🗺️ FIRE設計図](/fire-design/design/) ｜ [🧮 シミュレーター](/fire-design/simulator/) ｜ [📊 月次レポート](/fire-design/monthly-report/2026/05/18/monthly-report-001/) ｜ [👤 About](/fire-design/about/)
