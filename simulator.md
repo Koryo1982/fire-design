@@ -3,7 +3,7 @@ layout: default
 title: FIREシミュレーター
 ---
 
-> [ホーム](/fire-design/) ｜ [FIRE設計図](/fire-design/design/) ｜ [About](/fire-design/about/)
+> [🏠 ホーム](/fire-design/) ｜ [🗺️ FIRE設計図](/fire-design/design/) ｜ [🧮 シミュレーター](/fire-design/simulator/) ｜ [📊 月次レポート](/fire-design/monthly-report/2026/05/18/monthly-report-001/) ｜ [👤 About](/fire-design/about/)
 
 # FIREシミュレーター
 
@@ -88,9 +88,7 @@ calcFire();
 - 税金・手数料は考慮していません
 - Coast FIREの考え方：目標資産に達したら積立停止し、複利成長に任せる
 
-## 私の現在地（2025年5月）
-
-| 項目 | 数値 |
+## 私の現在地（2026年5月）
 |---|---|
 | 現在の総資産 | 約1億円（1億9万円） |
 | FIRE目標 | 1億3,500万円 |
@@ -99,4 +97,4 @@ calcFire();
 
 ---
 
-> [ホーム](/fire-design/) ｜ [FIRE設計図](/fire-design/design/) ｜ [About](/fire-design/about/)
+> [🏠 ホーム](/fire-design/) ｜ [🗺️ FIRE設計図](/fire-design/design/) ｜ [🧮 シミュレーター](/fire-design/simulator/) ｜ [📊 月次レポート](/fire-design/monthly-report/2026/05/18/monthly-report-001/) ｜ [👤 About](/fire-design/about/)
