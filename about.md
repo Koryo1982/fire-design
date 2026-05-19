@@ -3,7 +3,7 @@ layout: default
 title: About
 ---
 
-> [ホーム](/fire-design/) | [FIRE設計図](/fire-design/design/) | [About](/fire-design/about/)
+> [🏠 ホーム](/fire-design/) ｜ [🗺️ FIRE設計図](/fire-design/design/) ｜ [🧮 シミュレーター](/fire-design/simulator/) ｜ [📊 月次レポート](/fire-design/monthly-report/2026/05/18/monthly-report-001/) ｜ [👤 About](/fire-design/about/)
 
 # About
 
@@ -70,4 +70,4 @@ Coast FIREを選んだ理由：完全FIREは数字上は到達できる見込み
 
 最終更新：2026年5月
 
-> [ホーム](/fire-design/) | [FIRE設計図](/fire-design/design/) | [About](/fire-design/about/)
+> [🏠 ホーム](/fire-design/) ｜ [🗺️ FIRE設計図](/fire-design/design/) ｜ [🧮 シミュレーター](/fire-design/simulator/) ｜ [📊 月次レポート](/fire-design/monthly-report/2026/05/18/monthly-report-001/) ｜ [👤 About](/fire-design/about/)
