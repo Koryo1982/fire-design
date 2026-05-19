@@ -5,7 +5,7 @@ date: 2026-05-18
 categories: monthly-report
 ---
 
-> [ホーム](/fire-design/) ｜ [FIRE設計図](/fire-design/design/) ｜ [About](/fire-design/about/)
+> [🏠 ホーム](/fire-design/) ｜ [🗺️ FIRE設計図](/fire-design/design/) ｜ [🧮 シミュレーター](/fire-design/simulator/) ｜ [📊 月次レポート](/fire-design/monthly-report/2026/05/18/monthly-report-001/) ｜ [👤 About](/fire-design/about/)
 
 # 📊 月次レポート #001｜2026年5月
 
@@ -67,4 +67,4 @@ noteで書いてきた内容をベースに、より構造化された形で情�
 
 ---
 
-> [ホーム](/fire-design/) ｜ [FIRE設計図](/fire-design/design/) ｜ [About](/fire-design/about/)
+> [🏠 ホーム](/fire-design/) ｜ [🗺️ FIRE設計図](/fire-design/design/) ｜ [🧮 シミュレーター](/fire-design/simulator/) ｜ [📊 月次レポート](/fire-design/monthly-report/2026/05/18/monthly-report-001/) ｜ [👤 About](/fire-design/about/)
