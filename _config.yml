@@ -10,3 +10,7 @@ header_pages:
   - index.md
   - design.md
   - about.md
+
+
+kramdown:
+  parse_block_html: true
