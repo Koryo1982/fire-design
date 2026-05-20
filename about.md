@@ -4,70 +4,58 @@ title: About
 ---
 
 > [🏠 ホーム](/fire-design/) ｜ [🗺️ FIRE設計図](/fire-design/design/) ｜ [🧮 シミュレーター](/fire-design/simulator/) ｜ [📊 月次レポート](/fire-design/monthly-report/2026/05/18/monthly-report-001/) ｜ [👤 About](/fire-design/about/)
+>
+> <div style="text-align:center;padding:40px 0 32px;">
+<div style="font-size:3rem;margin-bottom:12px;">👤</div>div>
+<h1 style="font-size:2rem;font-weight:800;color:#f1f5f9;margin:0 0 8px;">About</h1>h1>
+<p style="color:#94a3b8;font-size:1rem;margin:0;">43歳・会社員・父。Coast FIREを目指して設計中。</p>p>
+</div>
 
-# About
+---
 
 ## プロフィール
 
-| 項目 | 内容 |
-|---|---|
-| 年齢 | 43歳 |
-| 職業 | 会社員 |
-| 家族 | 子2人（国立大学） |
-| 目標 | Coast FIRE → 完全FIRE |
-| 現在地 | FIRE達成率 69.4%（2026年5月時点）
+<div style="background:#1e293b;border:1px solid #334155;border-radius:16px;padding:24px;margin:24px 0;">
+<div style="display:grid;grid-template-columns:auto 1fr;gap:8px 20px;align-items:center;">
+<span style="color:#64748b;font-size:0.85rem;font-weight:600;">年齢</span>span><span style="color:#f1f5f9;">43歳</span>span>
+<span style="color:#64748b;font-size:0.85rem;font-weight:600;">職業</span>span><span style="color:#f1f5f9;">会社員</span>span>
+<span style="color:#64748b;font-size:0.85rem;font-weight:600;">家族</span>span><span style="color:#f1f5f9;">子2人（国立大学目標）</span>span>
+<span style="color:#64748b;font-size:0.85rem;font-weight:600;">目標</span>span><span style="color:#f1f5f9;">Coast FIRE → 完全FIRE</span>span>
+<span style="color:#64748b;font-size:0.85rem;font-weight:600;">現在地</span>span><span style="color:#6ee7b7;font-weight:700;">FIRE達成率 69.4%（2026年5月）</span>span>
+</div>div>
+</div>div>
 
 ---
 
 ## このサイトについて
 
-father cafe は、FIRE（Financial Independence, Retire Early）を目指す43歳会社員の実録サイトです。
+**「理論ではなく、自分の実録を公開する」**
 
-理論や一般論ではなく、「自分が実際にどう設計し、どう動いているか」を一次情報として発信します。
-
----
-
-## 発信テーマ
-
-- バケツ管理戦略（A・B・Cの3分割）
-- Coast FIREの収入設計（ブログ・相談・アフィリエイト）
-- 月次の資産推移レポート
-- 子の教育費と資産計画の両立
-- 4%ルール・公的年金・リバランスの実践
-
----
-
-## なぜ発信するのか
-
-FIREに関する情報は多いが、「実際に設計している人の話」は少ない。
-
-シミュレーターはあっても、それを自分の家族構成・支出・リスク許容度に合わせて具体的に落とし込んだ事例は、なかなか見当たらない。
-
-だから書く。設計の過程をそのまま出す。完成形を出すのではなく、進行中の設計図を公開し続ける。
+FIREを目指す情報は多いが、実際に設計して動かしている人の話は少ない。だから書く。完成形ではなく、進行中の設計図をそのまま公開し続ける。
 
 読んだ人が「自分ならこうする」と考えるきっかけになればいい。
 
 ---
 
-## 設計思想
+## 設計方針：なぜ Coast FIRE か
 
-Coast FIREを選んだ理由：完全FIREは数字上は到達できる見込みだが、心理的な安全弁が薄いと感じた。Coast FIREは積立フェーズを終え、あとは複利に任せながら、生活費の一部を小さな収入でカバーする設計。
+完全FIREは数字上は届く見込みだが、心理的な安全弁が薄い。Coast FIREなら：
 
-- 資産を全額取り崩す必要がない
-- 暴落時の「収入ゼロ」という恐怖がない
-- 社会との接点を自分のペースで保てる
-- 子育て・教育費への対応が柔軟になる
+- 積立フェーズを終えれば、あとは複利に任せられる
+- - 「収入ゼロ」という恐怖がない
+  - - 社会との接点を自分のペースで保てる
+    - - 子育て・教育費の変動にも柔軟に対応できる
+     
+      - ---
 
----
+      ## リンク
 
-## リンク
+      - 🐦 X（旧Twitter）：[@father_cafe](https://x.com/father_cafe)
+      - - 🗺️ [FIRE設計図](/fire-design/design/) — 設計の全体像
+        - - 📊 [最新月次レポート](/fire-design/monthly-report/2026/05/18/monthly-report-001/) — 2026年5月号
+         
+          - ---
 
-- X: @father_cafe
-- [FIRE設計図](/fire-design/design/) — 現在の設計の全体像
-- [月次レポート](/fire-design/monthly-report/2026/05/18/monthly-report-001/) — 2026年5月号
+          <p style="color:#64748b;font-size:0.85rem;text-align:center;">最終更新：2026年5月</p>p>
 
----
-
-最終更新：2026年5月
-
-> [🏠 ホーム](/fire-design/) ｜ [🗺️ FIRE設計図](/fire-design/design/) ｜ [🧮 シミュレーター](/fire-design/simulator/) ｜ [📊 月次レポート](/fire-design/monthly-report/2026/05/18/monthly-report-001/) ｜ [👤 About](/fire-design/about/)
+          > [🏠 ホーム](/fire-design/) ｜ [🗺️ FIRE設計図](/fire-design/design/) ｜ [🧮 シミュレーター](/fire-design/simulator/) ｜ [📊 月次レポート](/fire-design/monthly-report/2026/05/18/monthly-report-001/) ｜ [👤 About](/fire-design/about/)
