@@ -4,6 +4,7 @@ title: ホーム
 ---
 
 > [🏠 ホーム](/fire-design/) ｜ [🗺️ FIRE設計図](/fire-design/design/) ｜ [🧮 シミュレーター](/fire-design/simulator/) ｜ [📊 月次レポート](/fire-design/monthly-report/2026/05/18/monthly-report-001/) ｜ [👤 About](/fire-design/about/)
+
 <div style="text-align:center;padding:48px 0 40px;">
 <div style="font-size:3.5rem;margin-bottom:12px;">☕</div>div>
 <h1 style="font-size:2.4rem;font-weight:800;letter-spacing:-0.03em;margin:0 0 12px;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">father cafe</h1>h1>
