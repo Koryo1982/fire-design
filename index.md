@@ -6,7 +6,7 @@ title: ホーム
 > [🏠 ホーム](/fire-design/) ｜ [🗺️ FIRE設計図](/fire-design/design/) ｜ [🧮 シミュレーター](/fire-design/simulator/) ｜ [📊 月次レポート](/fire-design/monthly-report/2026/05/18/monthly-report-001/) ｜ [👤 About](/fire-design/about/)
 ---
 <div class="hero-section" style="text-align:center;padding:48px 0 40px;">
-<div style="font-size:3.5rem;margin-bottom:12px;">☕</div>
+<p style="font-size:3.5rem;margin-bottom:12px;">☕</p>
 <h1 style="font-size:2.4rem;font-weight:800;letter-spacing:-0.03em;margin:0 0 12px;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">father cafe</h1>
 <p style="font-size:1.1rem;color:#cbd5e1;max-width:520px;margin:0 auto 8px;line-height:1.7;font-weight:600;">「FIREを目指す43歳会社員の、リアルな設計図と実績を公開します」</p>
 <p style="font-size:0.9rem;color:#64748b;max-width:480px;margin:0 auto 24px;line-height:1.7;">子供2人・会社員・資産1億円超。完全FIREではなく<strong style="color:#94a3b8;">Coast FIRE</strong>を選んだ理由と、毎月の進捗をすべてオープンにするサイトです。</p>
