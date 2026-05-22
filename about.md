@@ -27,7 +27,7 @@ title: About
 <tr><td style="color:#64748b;font-size:0.85rem;font-weight:600;padding:6px 16px 6px 0;">&#x8077;&#x696D;</td><td style="color:#f1f5f9;padding:6px 0;">&#x4F1A;&#x793E;&#x54E1;</td></tr>
 <tr><td style="color:#64748b;font-size:0.85rem;font-weight:600;padding:6px 16px 6px 0;">&#x5BB6;&#x65CF;</td><td style="color:#f1f5f9;padding:6px 0;">&#x5B502;&#x4EBA;&#xFF08;&#x56FD;&#x7ACB;&#x5927;&#x5B66;&#x76EE;&#x6A19;&#xFF09;</td></tr>
 <tr><td style="color:#64748b;font-size:0.85rem;font-weight:600;padding:6px 16px 6px 0;">&#x76EE;&#x6A19;</td><td style="color:#f1f5f9;padding:6px 0;">Coast FIRE &#x2192; &#x5B8C;&#x5168;FIRE</td></tr>
-<tr><td style="color:#64748b;font-size:0.85rem;font-weight:600;padding:6px 16px 6px 0;">&#x73FE;&#x5728;&#x5730;</td><td style="color:#6ee7b7;font-weight:700;padding:6px 0;">FIRE&#x9054;&#x6210;&#x7387; 69.4%&#xFF082026&#x5E745&#x6708;&#xFF09;</td></tr>
+<tr><td style="color:#64748b;font-size:0.85rem;font-weight:600;padding:6px 16px 6px 0;">&#x73FE;&#x5728;&#x5730;</td><td style="color:#6ee7b7;font-weight:700;padding:6px 0;">FIRE&#x9054;&#x6210;&#x7387; 69.4%&#xFF08;2026&#x5E745&#x6708;&#xFF09;</td></tr>
 </table>
 </div>
 
