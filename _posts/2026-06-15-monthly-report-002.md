@@ -5,7 +5,13 @@ date: 2026-06-15
 categories: monthly-report
 ---
 
-> [🏠 ホーム](/fire-design/) ｜ [🗺️ FIRE設計図](/fire-design/design/) ｜ [🧮 シミュレーター](/fire-design/simulator/) ｜ [📊 月次レポート](/fire-design/monthly-report/2026/06/15/monthly-report-002/) ｜ [👤 About](/fire-design/about/)
+<nav style="text-align:center;padding:12px 0 8px;font-size:0.9rem;white-space:nowrap;overflow-x:auto;">
+<a href="/fire-design/">&#x1F3E0; &#x30DB;&#x30FC;&#x30E0;</a> &#xFF5C;
+<a href="/fire-design/design/">&#x1F5FA;&#xFE0F; FIRE&#x8A2D;&#x8A08;&#x56F3;</a> &#xFF5C;
+<a href="/fire-design/simulator/">&#x1F9EE; &#x30B7;&#x30DF;&#x30E5;&#x30EC;&#x30FC;&#x30BF;&#x30FC;</a> &#xFF5C;
+<a href="/fire-design/monthly-report/2026/06/15/monthly-report-002/">&#x1F4CA; &#x6708;&#x6B21;&#x30EC;&#x30DD;&#x30FC;&#x30C8;</a> &#xFF5C;
+<a href="/fire-design/about/">&#x1F464; About</a>
+</nav>
 
 # 📊 月次レポート #002｜2026年6月
 
@@ -51,7 +57,7 @@ Coast FIREの最大のメリットは「追加積立なしで複利が増やす�
 
 ### サイト開設から初の月
 
-先月のサイト開設から最初の1ヶ月が経ちました。読んでくださった方、コメントやコンタクトをいただけると大変励みになります。引き続きX（旧Twitter）とnoteで芺発信していきます。
+先月のサイト開設から最初の1ヶ月が経ちました。読んでくださった方、コメントやコンタクトをいただけると大変励みになります。引き続きX（旧Twitter）とnoteで発信していきます。
 
 ---
 
@@ -63,4 +69,10 @@ Coast FIREの最大のメリットは「追加積立なしで複利が増やす�
 
 ---
 
-> [🏠 ホーム](/fire-design/) ｜ [🗺️ FIRE設計図](/fire-design/design/) ｜ [🧮 シミュレーター](/fire-design/simulator/) ｜ [📊 月次レポート](/fire-design/monthly-report/2026/06/15/monthly-report-002/) ｜ [👤 About](/fire-design/about/)
+<nav style="text-align:center;padding:12px 0 8px;font-size:0.9rem;white-space:nowrap;overflow-x:auto;">
+<a href="/fire-design/">&#x1F3E0; &#x30DB;&#x30FC;&#x30E0;</a> &#xFF5C;
+<a href="/fire-design/design/">&#x1F5FA;&#xFE0F; FIRE&#x8A2D;&#x8A08;&#x56F3;</a> &#xFF5C;
+<a href="/fire-design/simulator/">&#x1F9EE; &#x30B7;&#x30DF;&#x30E5;&#x30EC;&#x30FC;&#x30BF;&#x30FC;</a> &#xFF5C;
+<a href="/fire-design/monthly-report/2026/06/15/monthly-report-002/">&#x1F4CA; &#x6708;&#x6B21;&#x30EC;&#x30DD;&#x30FC;&#x30C8;</a> &#xFF5C;
+<a href="/fire-design/about/">&#x1F464; About</a>
+</nav>
