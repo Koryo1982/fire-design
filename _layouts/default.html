@@ -38,7 +38,10 @@
 <meta property="article:author" content="{{ site.author }}">
 {% endif %}
 
+<!-- Theme CSS (Midnight) -->
 <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
 <script src="{{ '/assets/js/respond.js' | relative_url }}"></script>
 <!--[if lt IE 9]>
@@ -47,10 +50,134 @@
 <!--[if lt IE 8]>
 <link rel="stylesheet" href="{{ '/assets/css/ie.css' | relative_url }}">
 <![endif]-->
+
 <style>
-.wrapper { max-width: 900px !important; }
-section { max-width: 900px !important; }
-section nav { font-size: 0.85rem !important; white-space: nowrap !important; overflow-x: auto !important; display: block !important; }
+/* ===== CSS Variables (Design Tokens) ===== */
+:root {
+  --color-bg:           #0d1117;
+  --color-surface:      #1e293b;
+  --color-surface-2:    #0f2040;
+  --color-border:       #334155;
+  --color-text:         #f1f5f9;
+  --color-text-muted:   #94a3b8;
+  --color-text-dim:     #64748b;
+  --color-accent-blue:  #2563eb;
+  --color-accent-purple:#7c3aed;
+  --color-accent-green: #10b981;
+  --color-accent-amber: #f59e0b;
+  --color-link:         #60a5fa;
+  --grad-primary:  linear-gradient(135deg,#2563eb,#7c3aed);
+  --grad-hero:     linear-gradient(135deg,#60a5fa,#a78bfa);
+  --grad-progress: linear-gradient(90deg,#2563eb,#7c3aed,#10b981);
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --space-2xl: 48px;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-full: 999px;
+  --max-width:   900px;
+}
+
+/* ===== Reset & Base ===== */
+*,*::before,*::after{box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--color-bg);color:var(--color-text);line-height:1.7;margin:0}
+
+/* ===== Layout ===== */
+.wrapper{max-width:var(--max-width)!important;margin:0 auto!important;padding:0 var(--space-lg)!important}
+section{max-width:var(--max-width)!important}
+
+/* ===== Site Header ===== */
+#header{background:rgba(15,32,64,0.8);border-bottom:1px solid var(--color-border)}
+#header nav ul{list-style:none;margin:0;padding:var(--space-sm) var(--space-lg);display:flex;gap:var(--space-md)}
+#header nav ul li a{color:var(--color-text-muted);font-size:0.8rem;text-decoration:none}
+#header nav ul li a:hover{color:var(--color-link)}
+
+/* ===== Site Nav ===== */
+.site-nav{display:flex;justify-content:center;align-items:center;gap:6px;flex-wrap:wrap;padding:var(--space-md) 0 var(--space-sm);font-size:0.9rem;border-bottom:1px solid var(--color-border);margin-bottom:var(--space-lg)}
+.site-nav a{color:var(--color-link);text-decoration:none;white-space:nowrap;padding:2px 6px;border-radius:var(--radius-sm);transition:background 0.15s}
+.site-nav a:hover{background:rgba(96,165,250,0.12)}
+.site-nav .sep{color:var(--color-border)}
+
+/* ===== KPI Cards ===== */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:var(--space-md);margin:var(--space-lg) 0}
+.kpi-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-md) var(--space-lg);text-align:center;position:relative;overflow:hidden}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.kpi-card.blue::before{background:linear-gradient(90deg,#2563eb,#60a5fa)}
+.kpi-card.purple::before{background:linear-gradient(90deg,#7c3aed,#c4b5fd)}
+.kpi-card.green::before{background:linear-gradient(90deg,#10b981,#6ee7b7)}
+.kpi-card.amber::before{background:linear-gradient(90deg,#f59e0b,#fcd34d)}
+.kpi-card .kpi-label{font-size:0.8rem;color:var(--color-text-muted);margin-bottom:4px;font-weight:600}
+.kpi-card .kpi-value{font-size:1.2rem;font-weight:700;color:var(--color-text)}
+.kpi-card .kpi-sub{font-size:0.78rem;color:var(--color-text-dim);margin-top:2px}
+
+/* ===== Progress Bar ===== */
+.progress-wrap{background:#0f172a;border-radius:var(--radius-full);height:14px;overflow:hidden;border:1px solid var(--color-border)}
+.progress-bar{height:100%;background:var(--grad-progress);border-radius:var(--radius-full)}
+
+/* ===== Content Cards ===== */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--space-md);margin:var(--space-lg) 0}
+.card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-lg);text-decoration:none;color:inherit;display:block;position:relative;overflow:hidden;transition:border-color 0.2s,transform 0.15s}
+.card:hover{border-color:#475569;transform:translateY(-2px)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.card.blue::before{background:var(--grad-primary)}
+.card.purple::before{background:linear-gradient(90deg,#7c3aed,#ec4899)}
+.card.green::before{background:linear-gradient(90deg,#10b981,#06b6d4)}
+.card.amber::before{background:linear-gradient(90deg,#f59e0b,#ef4444)}
+.card .card-icon{font-size:2rem;margin-bottom:var(--space-sm)}
+.card .card-title{font-size:1.05rem;font-weight:700;color:var(--color-text);margin-bottom:var(--space-sm)}
+.card .card-desc{font-size:0.875rem;color:var(--color-text-muted);line-height:1.6}
+.card .card-link{margin-top:var(--space-md);font-size:0.8rem;font-weight:600}
+.card.blue .card-link{color:var(--color-accent-blue)}
+.card.purple .card-link{color:#a78bfa}
+.card.green .card-link{color:var(--color-accent-green)}
+.card.amber .card-link{color:var(--color-accent-amber)}
+
+/* ===== Chart Container ===== */
+.chart-wrap{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-lg);margin:var(--space-lg) 0}
+.chart-wrap canvas{max-height:280px}
+
+/* ===== Tables ===== */
+table{width:100%;border-collapse:collapse;margin:var(--space-lg) 0;font-size:0.9rem}
+th{background:#1e3a5f;color:var(--color-text);padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid #2563eb}
+td{padding:10px 14px;border-bottom:1px solid var(--color-border);color:var(--color-text)}
+tr:hover td{background:rgba(255,255,255,0.03)}
+
+/* ===== Typography ===== */
+h1{color:var(--color-text);font-size:1.8rem;font-weight:800;margin-bottom:var(--space-sm)}
+h2{color:var(--color-text);font-size:1.35rem;font-weight:700;border-bottom:1px solid var(--color-border);padding-bottom:var(--space-sm);margin-top:var(--space-xl)}
+h3{color:var(--color-accent-amber);font-size:1.1rem;font-weight:700}
+p{color:var(--color-text-muted);line-height:1.8}
+a{color:var(--color-link)}
+strong{color:var(--color-text)}
+em{color:var(--color-text-dim)}
+hr{border:none;border-top:1px solid var(--color-border);margin:var(--space-xl) 0}
+blockquote{border-left:3px solid var(--color-accent-blue);margin:0;padding:var(--space-sm) var(--space-md);background:rgba(37,99,235,0.06);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+blockquote p{margin:0}
+
+/* ===== Badges ===== */
+.badge{display:inline-block;padding:3px 12px;border-radius:var(--radius-full);font-size:0.8rem;font-weight:600}
+.badge-blue{background:rgba(37,99,235,0.2);color:#93c5fd;border:1px solid rgba(37,99,235,0.4)}
+.badge-green{background:rgba(16,185,129,0.2);color:#6ee7b7;border:1px solid rgba(16,185,129,0.4)}
+.badge-amber{background:rgba(245,158,11,0.2);color:#fcd34d;border:1px solid rgba(245,158,11,0.4)}
+
+/* ===== Buttons ===== */
+.btn{display:inline-block;padding:10px 24px;border-radius:var(--radius-full);font-size:0.9rem;font-weight:700;text-decoration:none;transition:opacity 0.15s}
+.btn:hover{opacity:0.85}
+.btn-primary{background:var(--grad-primary);color:#fff}
+.btn-ghost{background:rgba(255,255,255,0.08);color:var(--color-text-muted);border:1px solid rgba(255,255,255,0.15)}
+
+/* ===== Responsive ===== */
+@media(max-width:600px){
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .card-grid{grid-template-columns:1fr}
+  .site-nav{font-size:0.78rem;gap:4px}
+  h1{font-size:1.4rem}
+  h2{font-size:1.1rem}
+}
 </style>
 </head>
 <body>
@@ -60,19 +187,25 @@ section nav { font-size: 0.85rem !important; white-space: nowrap !important; ove
 <li class="fork"><a href="{{ site.github.repository_url }}">View On GitHub</a></li>
 </ul>
 </nav>
-</div><!-- end header -->
+</div>
 
 <div class="wrapper">
-
 <section>
 <div id="title" style="display:none">
 <h1>{{ site.title | default: site.github.repository_name }}</h1>
 </div>
 
+<nav class="site-nav">
+<a href="/fire-design/">&#x1F3E0; &#x30DB;&#x30FC;&#x30E0;</a><span class="sep"> | </span>
+<a href="/fire-design/design/">&#x1F5FA;&#xFE0F; FIRE&#x8A2D;&#x8A08;&#x56F3;</a><span class="sep"> | </span>
+<a href="/fire-design/simulator/">&#x1F9EE; &#x30B7;&#x30DF;&#x30E5;&#x30EC;&#x30FC;&#x30BF;&#x30FC;</a><span class="sep"> | </span>
+<a href="/fire-design/monthly-report/">&#x1F4CA; &#x6708;&#x6B21;&#x30EC;&#x30DD;&#x30FC;&#x30C8;</a><span class="sep"> | </span>
+<a href="/fire-design/about/">&#x1F464; About</a>
+</nav>
+
 {{ content }}
 
 </section>
-
 </div>
 </body>
 </html>
