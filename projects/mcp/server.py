@@ -600,3 +600,52 @@ async def market_tweet_prompt() -> GetPromptResult:
         "- 読者が行動できるアドバイスや問いかけを末尾に入れる\n"
         "- 140字以内、ハッシュタグ1〜2個\n\n"
         "**Step 3: 投稿・記録**\n"
+        "投稿するか確認してください。\n"
+                "- 投稿する場合: `post_tweet(content=<ツイート本文>)` を呼ぶ\n"
+                "- キューに追加: `add_to_content_queue(content=<ツイート本文>, theme=\"市場連動\")` を呼ぶ\n"
+    )
+        return GetPromptResult(messages=[
+                    PromptMessage(role="user", content=TextContent(type="text", text=text))
+        ])
+
+
+async def note_article_prompt() -> GetPromptResult:
+        text = (
+                    "# note記事骨格生成 手順\n\n"
+                    "coast_fire_plan.md / life_story.md / holdings.json を参照して、\n"
+                    "note記事の骨格（H2見出し×3 + 各200字の本文）を生成するワークフローです。\n\n"
+                    "## ステップ\n\n"
+                    "**Step 1: 参照ファイルの読み込み**\n"
+                    "以下のリソースを読み込んでください:\n"
+                    "`life-os://sns/coast-fire-plan` → CoastFIRE計画・数値目標\n"
+                    "`life-os://self/life-story` → 自分史・背景ストーリー\n"
+                    "`life-os://investment/holdings` → 現在の保有資産データ\n\n"
+                    "**Step 2: 記事テーマの決定**\n"
+                    "読み込んだ内容をもとに、以下の3つのH2見出しを設定してください:\n"
+                    "- 見出し1: 現状・課題（なぜCoastFIREを目指すのか）\n"
+                    "- 見出し2: 戦略・行動（具体的にどう動いているか）\n"
+                    "- 見出し3: 未来・ビジョン（FIREで実現したいこと）\n\n"
+                    "**Step 3: 本文骨格の生成**\n"
+                    "各H2見出しの下に約200字の本文を生成してください:\n"
+                    "- 具体的な数字（資産額・目標額・達成率）を含める\n"
+                    "- 個人の体験・感情を織り交ぜてリアリティを出す\n"
+                    "- 読者（30〜40代・子育て世代）に共感される言葉を選ぶ\n"
+                    "- 各段落は結論から書き始める（PREP法）\n\n"
+                    "**Step 4: 記事の確認と調整**\n"
+                    "生成した骨格を確認し、必要に応じて以下を調整してください:\n"
+                    "- タイトル案（クリック率を高めるために数字・感情語を含める）\n"
+                    "- リード文（150字程度・記事全体のまとめ）\n"
+                    "- CTAの案（最後の行動喚起）\n"
+        )
+        return GetPromptResult(messages=[
+            PromptMessage(role="user", content=TextContent(type="text", text=text))
+        ])
+
+
+# ---------------------------------------------------------------------------
+# エントリポイント
+# ---------------------------------------------------------------------------
+
+if __name__ == "__main__":
+        import asyncio
+        asyncio.run(stdio_server(app))
