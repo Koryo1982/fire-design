@@ -1,222 +1,877 @@
 ---
 layout: default
-title: FIREシミュレーター
+title: FIREシミュレーターPro
+description: モンテカルロ法×ガードレール戦略のFIREシミュレーター。成功確率・資産推移のブレ幅・ライフイベントを考慮した本格シミュレーション。
 ---
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  .simpro {
+    --sp-bg: #12121f;
+    --sp-panel: #1a1a2e;
+    --sp-panel2: #21213a;
+    --sp-border: #3a3a55;
+    --sp-text: #e8e8f0;
+    --sp-muted: #9a9ab0;
+    --sp-accent: #f0c040;
+    --sp-blue: #3b82f6;
+    --sp-green: #4ade80;
+    --sp-red: #f87171;
+    --sp-orange: #fb923c;
+    line-height: 1.6;
+  }
+  .simpro h1.sp-title { font-size: 22px; color: var(--sp-accent); margin: 0 0 4px; border: none; }
+  .simpro .subtitle { color: var(--sp-muted); font-size: 13px; margin-bottom: 24px; }
+  .simpro .sp-card {
+    background: var(--sp-panel);
+    border: 1px solid var(--sp-border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .simpro .sp-card h2 {
+    font-size: 15px;
+    color: var(--sp-accent);
+    margin: 0 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--sp-border);
+  }
+  .simpro .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .simpro .grid { grid-template-columns: 1fr; } }
+  .simpro .field label {
+    display: block;
+    font-size: 13px;
+    color: var(--sp-muted);
+    margin-bottom: 4px;
+  }
+  .simpro .field input[type="number"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 9px 10px;
+    background: var(--sp-panel2);
+    border: 1px solid var(--sp-border);
+    border-radius: 6px;
+    color: var(--sp-text);
+    font-size: 15px;
+  }
+  .simpro .field input:focus { outline: none; border-color: var(--sp-blue); }
+  .simpro .unit { font-size: 12px; color: var(--sp-muted); margin-left: 4px; }
+  .simpro table.events { width: 100%; border-collapse: collapse; margin: 0; }
+  .simpro table.events th {
+    text-align: left;
+    font-size: 12px;
+    color: var(--sp-muted);
+    font-weight: normal;
+    padding: 4px 6px;
+    background: transparent;
+    border-bottom: none;
+  }
+  .simpro table.events td { padding: 4px 6px; border-bottom: none; }
+  .simpro table.events tr:hover td { background: transparent; }
+  .simpro table.events input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 7px 8px;
+    background: var(--sp-panel2);
+    border: 1px solid var(--sp-border);
+    border-radius: 5px;
+    color: var(--sp-text);
+    font-size: 14px;
+  }
+  .simpro .sp-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .simpro .sp-btn-add { background: var(--sp-panel2); color: var(--sp-accent); border: 1px dashed var(--sp-accent); width: 100%; margin-top: 8px; }
+  .simpro .sp-btn-del { background: transparent; color: var(--sp-red); border: 1px solid var(--sp-border); padding: 6px 10px; }
+  .simpro details.advanced { margin-bottom: 20px; }
+  .simpro details.advanced summary {
+    cursor: pointer;
+    background: var(--sp-panel);
+    border: 1px solid var(--sp-border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 14px;
+    color: var(--sp-muted);
+    list-style: none;
+    user-select: none;
+  }
+  .simpro details.advanced summary::before { content: "▸ "; color: var(--sp-accent); }
+  .simpro details.advanced[open] summary::before { content: "▾ "; }
+  .simpro details.advanced[open] summary { border-radius: 10px 10px 0 0; border-bottom: none; }
+  .simpro details.advanced .sp-card { border-radius: 0 0 10px 10px; margin-bottom: 0; }
+  .simpro .toggle-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .simpro .toggle-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--sp-blue); }
+  .simpro #verdict {
+    border-radius: 10px;
+    padding: 22px;
+    text-align: center;
+    margin-bottom: 20px;
+    border: 1px solid var(--sp-border);
+  }
+  .simpro #verdict .v-badge { font-size: 22px; font-weight: bold; display: block; margin-bottom: 6px; }
+  .simpro #verdict .detail { font-size: 14px; color: var(--sp-muted); }
+  .simpro .v-safe   { background: rgba(74,222,128,0.08); border-color: var(--sp-green) !important; }
+  .simpro .v-safe .v-badge { color: var(--sp-green); }
+  .simpro .v-ok     { background: rgba(59,130,246,0.08); border-color: var(--sp-blue) !important; }
+  .simpro .v-ok .v-badge { color: var(--sp-blue); }
+  .simpro .v-warn   { background: rgba(251,146,60,0.08); border-color: var(--sp-orange) !important; }
+  .simpro .v-warn .v-badge { color: var(--sp-orange); }
+  .simpro .v-danger { background: rgba(248,113,113,0.08); border-color: var(--sp-red) !important; }
+  .simpro .v-danger .v-badge { color: var(--sp-red); }
+  .simpro .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  @media (max-width: 560px) { .simpro .stats { grid-template-columns: 1fr; } }
+  .simpro .stat {
+    background: var(--sp-panel);
+    border: 1px solid var(--sp-border);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+  }
+  .simpro .stat .label { font-size: 12px; color: var(--sp-muted); }
+  .simpro .stat .value { font-size: 20px; font-weight: bold; color: var(--sp-text); }
+  .simpro #errorBox {
+    display: none;
+    background: rgba(248,113,113,0.1);
+    border: 1px solid var(--sp-red);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--sp-red);
+    font-size: 13px;
+    margin-bottom: 16px;
+    white-space: pre-wrap;
+  }
+  .simpro .footnote { font-size: 12px; color: var(--sp-muted); margin-top: 16px; }
+  .simpro #calcStatus { font-size: 12px; color: var(--sp-muted); text-align: right; min-height: 18px; }
+</style>
 
-<div style="max-width:700px;margin:0 auto;">
+<div class="simpro">
 
-<p>現在の資産・毎月の積立・想定利回りを入力すると、FIRE達成見通しと100歳までの資産推移グラフを表示します。</p>
+  <h1 class="sp-title">🔥 FIREシミュレーター Pro</h1>
+  <p class="subtitle">モンテカルロ法（幾何ブラウン運動）× ガードレール動的取崩し × ライフイベント連動。数値を変えると自動で再計算されます。</p>
 
-<hr>
+  <div id="errorBox"></div>
 
-<div style="background:#1a1a2e;border:1px solid #444;border-radius:8px;padding:24px;">
-
-  <div style="margin-bottom:14px;">
-    <label style="display:block;margin-bottom:4px;color:#f0c040;font-size:14px;">現在の年齢</label>
-    <input id="currentAge" type="number" value="43" min="1" max="99" style="width:100%;box-sizing:border-box;padding:8px;border-radius:4px;border:1px solid #666;background:#2a2a3e;color:#fff;font-size:15px;">
+  <!-- ============ 基本設定（常に表示） ============ -->
+  <div class="sp-card">
+    <h2>基本設定 — まずはこの4つだけでOK</h2>
+    <div class="grid">
+      <div class="field">
+        <label>現在の年齢<span class="unit">歳</span></label>
+        <input type="number" id="inpAge" value="43" min="20" max="80" step="1">
+      </div>
+      <div class="field">
+        <label>現在の総資産<span class="unit">万円</span></label>
+        <input type="number" id="inpAssets" value="10000" min="0" step="100">
+      </div>
+      <div class="field">
+        <label>目標FIRE年齢<span class="unit">歳</span></label>
+        <input type="number" id="inpFireAge" value="50" min="20" max="90" step="1">
+      </div>
+      <div class="field">
+        <label>基本の年間支出（現在価値）<span class="unit">万円</span></label>
+        <input type="number" id="inpExpense" value="300" min="0" step="10">
+      </div>
+    </div>
   </div>
 
-  <div style="margin-bottom:14px;">
-    <label style="display:block;margin-bottom:4px;color:#f0c040;font-size:14px;">現在の総資産（万円）</label>
-    <input id="currentAssets" type="number" value="10009" style="width:100%;box-sizing:border-box;padding:8px;border-radius:4px;border:1px solid #666;background:#2a2a3e;color:#fff;font-size:15px;">
+  <!-- ============ ライフイベント（常に表示） ============ -->
+  <div class="sp-card">
+    <h2>ライフイベント設定 — 教育費・大きな買い物など</h2>
+    <table class="events">
+      <thead>
+        <tr><th style="width:22%">発生年齢</th><th style="width:46%">イベント名</th><th style="width:22%">金額（万円）</th><th></th></tr>
+      </thead>
+      <tbody id="eventRows"></tbody>
+    </table>
+    <button class="sp-btn sp-btn-add" id="btnAddEvent">＋ イベント追加</button>
+    <button class="sp-btn sp-btn-add" id="btnAddMarriage" style="margin-top:6px;">＋ プリセット: 子どもの結婚・独立支援（300万円）</button>
   </div>
 
-  <div style="margin-bottom:14px;">
-    <label style="display:block;margin-bottom:4px;color:#f0c040;font-size:14px;">毎月の積立額（万円）</label>
-    <input id="monthlyContrib" type="number" value="0" style="width:100%;box-sizing:border-box;padding:8px;border-radius:4px;border:1px solid #666;background:#2a2a3e;color:#fff;font-size:15px;">
+  <!-- ============ 詳細設定（デフォルト非表示） ============ -->
+  <details class="advanced" id="advancedPanel">
+    <summary>詳細設定（市場前提・ガードレール・年金・税金・周期支出）— 慣れてきたら調整</summary>
+    <div class="sp-card">
+      <div class="grid">
+        <div class="field">
+          <label>期待リターン（年率）<span class="unit">%</span></label>
+          <input type="number" id="inpReturn" value="5" min="-5" max="15" step="0.1">
+        </div>
+        <div class="field">
+          <label>リスク（標準偏差・年率）<span class="unit">%</span></label>
+          <input type="number" id="inpStdev" value="12" min="0" max="40" step="0.5">
+        </div>
+        <div class="field">
+          <label>インフレ率（年率）<span class="unit">%</span></label>
+          <input type="number" id="inpInflation" value="1.5" min="0" max="10" step="0.1">
+        </div>
+        <div class="field">
+          <label>FIREまでの年間積立額<span class="unit">万円</span></label>
+          <input type="number" id="inpSavings" value="0" min="0" step="10">
+        </div>
+        <div class="field">
+          <label>シミュレーション回数<span class="unit">回</span></label>
+          <input type="number" id="inpTrials" value="3000" min="500" max="10000" step="500">
+        </div>
+      </div>
+
+      <h2 style="margin-top:22px;">ガードレール戦略（動的取崩し）</h2>
+      <div class="toggle-row">
+        <input type="checkbox" id="inpGuardrail" checked>
+        <label for="inpGuardrail" style="margin:0;color:var(--sp-text);font-size:14px;">ガードレール戦略を有効にする（暴落時 支出−10% / 好調時 支出＋10%）</label>
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label>初期引出率<span class="unit">%</span></label>
+          <input type="number" id="inpInitWR" value="4.5" min="1" max="10" step="0.1">
+        </div>
+        <div class="field">
+          <label>ガードレール許容幅（初期引出率±）<span class="unit">%</span></label>
+          <input type="number" id="inpGrBand" value="20" min="5" max="50" step="5">
+        </div>
+      </div>
+
+      <h2 style="margin-top:22px;">年金・税金</h2>
+      <div class="grid">
+        <div class="field">
+          <label>年金の受給開始年齢<span class="unit">歳</span></label>
+          <input type="number" id="inpPensionAge" value="65" min="60" max="75" step="1">
+        </div>
+        <div class="field">
+          <label>年金の年間受給額（夫婦合算）<span class="unit">万円</span></label>
+          <input type="number" id="inpPensionAmt" value="200" min="0" step="10">
+        </div>
+      </div>
+      <div class="toggle-row" style="margin-top:10px;">
+        <input type="checkbox" id="inpTax" checked>
+        <label for="inpTax" style="margin:0;color:var(--sp-text);font-size:14px;">取崩し時の譲渡益課税（20.315%）を考慮する</label>
+      </div>
+
+      <h2 style="margin-top:22px;">周期支出</h2>
+      <div class="grid">
+        <div class="field">
+          <label>車の買い替え費用<span class="unit">万円（0で無効）</span></label>
+          <input type="number" id="inpCarCost" value="250" min="0" step="10">
+        </div>
+        <div class="field">
+          <label>車の買い替え周期<span class="unit">年</span></label>
+          <input type="number" id="inpCarCycle" value="7" min="1" max="30" step="1">
+        </div>
+        <div class="field">
+          <label>住宅修繕費用<span class="unit">万円（0で無効）</span></label>
+          <input type="number" id="inpRepairCost" value="150" min="0" step="10">
+        </div>
+        <div class="field">
+          <label>住宅修繕の周期<span class="unit">年</span></label>
+          <input type="number" id="inpRepairCycle" value="10" min="1" max="30" step="1">
+        </div>
+      </div>
+
+      <h2 style="margin-top:22px;">高度なライフステージ設定</h2>
+      <div class="toggle-row">
+        <input type="checkbox" id="inpTaxSpike" checked>
+        <label for="inpTaxSpike" style="margin:0;color:var(--sp-text);font-size:14px;">FIRE翌年の税金・社保スパイク（前年給与ベースの住民税・健康保険料）を加算する</label>
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label>税金・社保スパイク額<span class="unit">万円</span></label>
+          <input type="number" id="inpTaxSpikeAmt" value="150" min="0" max="1000" step="10">
+        </div>
+      </div>
+      <div class="toggle-row" style="margin-top:14px;">
+        <input type="checkbox" id="inpMedical" checked>
+        <label for="inpMedical" style="margin:0;color:var(--sp-text);font-size:14px;">高齢期の医療・介護費の自動ステップアップを有効にする</label>
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label>医療・介護バッファ開始年齢<span class="unit">歳</span></label>
+          <input type="number" id="inpMedicalAge" value="75" min="60" max="100" step="1">
+        </div>
+        <div class="field">
+          <label>年間医療・介護バッファ<span class="unit">万円</span></label>
+          <input type="number" id="inpMedicalAmt" value="50" min="0" step="10">
+        </div>
+        <div class="field">
+          <label>介護一時金の発生年齢<span class="unit">歳</span></label>
+          <input type="number" id="inpCareAge" value="80" min="60" max="100" step="1">
+        </div>
+        <div class="field">
+          <label>介護一時金<span class="unit">万円（0で無効）</span></label>
+          <input type="number" id="inpCareAmt" value="500" min="0" step="50">
+        </div>
+      </div>
+      <p class="footnote" style="margin-top:10px;">※ 上記の特別支出およびライフイベント・周期支出は、ガードレール戦略の増減対象には含めず「基本の年間支出」のみを調整した上で固定費として上乗せされます。</p>
+    </div>
+  </details>
+
+  <!-- ============ 結果出力 ============ -->
+  <div id="calcStatus"></div>
+  <div id="verdict" class="v-ok">
+    <span class="v-badge">計算中…</span>
+    <span class="detail"></span>
   </div>
 
-  <div style="margin-bottom:14px;">
-    <label style="display:block;margin-bottom:4px;color:#f0c040;font-size:14px;">年間想定利回り（%）</label>
-    <input id="annualReturn" type="number" value="5" step="0.1" style="width:100%;box-sizing:border-box;padding:8px;border-radius:4px;border:1px solid #666;background:#2a2a3e;color:#fff;font-size:15px;">
+  <div class="stats">
+    <div class="stat"><div class="label">資産が100歳まで持つ確率</div><div class="value" id="statSuccess">—</div></div>
+    <div class="stat"><div class="label">100歳時点の資産（中央値）</div><div class="value" id="statMedian">—</div></div>
+    <div class="stat"><div class="label">FIRE時点の資産（中央値）</div><div class="value" id="statFire">—</div></div>
   </div>
 
-  <div style="margin-bottom:14px;">
-    <label style="display:block;margin-bottom:4px;color:#f0c040;font-size:14px;">FIRE目標資産額（万円）</label>
-    <input id="fireTarget" type="number" value="13500" style="width:100%;box-sizing:border-box;padding:8px;border-radius:4px;border:1px solid #666;background:#2a2a3e;color:#fff;font-size:15px;">
+  <div class="sp-card">
+    <h2>100歳までの資産推移（太線＝中央値 / 帯＝ブレ幅）</h2>
+    <canvas id="mainChart"></canvas>
+    <p class="footnote">濃い帯：25〜75パーセンタイル（半分のケースが収まる範囲）／薄い帯：10〜90パーセンタイル。金額は名目（インフレ調整前）です。</p>
   </div>
 
-  <div style="margin-bottom:18px;">
-    <label style="display:block;margin-bottom:4px;color:#f0c040;font-size:14px;">FIRE後の年間取崩し額（万円）</label>
-    <input id="annualWithdraw" type="number" value="300" style="width:100%;box-sizing:border-box;padding:8px;border-radius:4px;border:1px solid #666;background:#2a2a3e;color:#fff;font-size:15px;">
+  <div class="sp-card">
+    <h2>計算の前提</h2>
+    <ul style="font-size:13px;color:var(--sp-muted);margin:0;padding-left:20px;">
+      <li>資産リターンは幾何ブラウン運動（対数正規）に従う乱数で年次生成します。</li>
+      <li>支出はインフレ率で毎年複利増加。ライフイベント・周期支出は発生年に加算します。</li>
+      <li>年金開始後は必要取崩し額から年金を相殺します（年金もインフレ連動）。</li>
+      <li>税金は取得元本を追跡し、取崩し額のうち利益部分に20.315%を課税した上で手取りが必要額に一致するようグロスアップします。</li>
+      <li>ガードレール：引出率が初期引出率の許容幅を上回ると支出を10%カット、下回ると10%増額します（調整幅は基本支出の50〜150%に制限）。判定・調整の対象は「基本の年間支出」のみで、ライフイベント・周期支出・税社保スパイク・医療介護費などの特別支出は固定費としてそのまま上乗せします。</li>
+      <li>FIRE翌年に前年給与ベースの住民税・健康保険料（税金・社保スパイク）を一時費用として加算できます。</li>
+      <li>高齢期は指定年齢以降の年間医療・介護バッファと、特定年齢での介護一時金を自動加算できます。</li>
+      <li>本シミュレーションは将来の成果を保証するものではありません。</li>
+    </ul>
   </div>
-
-  <button onclick="calcFire()" style="width:100%;padding:13px;background:#3b82f6;color:#fff;border:none;border-radius:6px;font-size:16px;font-weight:bold;cursor:pointer;">計算する</button>
-
-  <div id="result" style="margin-top:18px;"></div>
-
-  <div id="chartContainer" style="margin-top:24px;display:none;">
-    <canvas id="fireChart"></canvas>
-  </div>
-
-</div>
 
 </div>
 
 <script>
-var fireChartInstance = null;
+"use strict";
 
-function calcFire() {
-  var currentAge = parseInt(document.getElementById('currentAge').value) || 43;
-  var current    = parseFloat(document.getElementById('currentAssets').value) || 0;
-  var monthly    = parseFloat(document.getElementById('monthlyContrib').value) || 0;
-  var rate       = parseFloat(document.getElementById('annualReturn').value) / 100 || 0.05;
-  var target     = parseFloat(document.getElementById('fireTarget').value) || 13500;
-  var annualWith = parseFloat(document.getElementById('annualWithdraw').value) || 300;
+/* =========================================================================
+ * バックエンド：シミュレーション計算エンジン（DOMに一切依存しない）
+ * ========================================================================= */
 
-  var monthlyRate = rate / 12;
-  var months = 0;
-  var assets = current;
-
-  while (assets < target && months < 600) {
-    assets = assets * (1 + monthlyRate) + monthly;
-    months++;
+class FireSimulationEngine {
+  /**
+   * @param {object} p パラメータ一式（単位：万円・歳・小数の率）
+   */
+  constructor(p) {
+    this.p = p;
+    this.endAge = 100;
+    this.years = this.endAge - p.currentAge;
+    this.TAX_RATE = 0.20315;
+    this.GUARDRAIL_CUT = 0.10;   // 支出カット幅 10%
+    this.GUARDRAIL_RAISE = 0.10; // 支出増額幅 10%
+    this.ADJ_MIN = 0.5;          // 支出調整係数の下限
+    this.ADJ_MAX = 1.5;          // 支出調整係数の上限
+    this.spotByAge = this._buildSpotExpenseMap();
   }
 
-  var resultDiv   = document.getElementById('result');
-  var progressPct = Math.min((current / target * 100).toFixed(1), 100);
-
-  if (months >= 600) {
-    resultDiv.innerHTML = '<div style="background:#2a1a1a;border:1px solid #c44;border-radius:6px;padding:14px;">'
-        + '<p style="color:#f66;font-size:17px;margin:0 0 6px;">⚠️ 50年以内には達成できない見込みです</p>'
-        + '<p style="color:#999;margin:0;">積立額の増加か利回りの見直しを検討してください。</p>'
-        + '</div>';
-    document.getElementById('chartContainer').style.display = 'none';
-    return;
+  /** 標準正規乱数（Box-Muller法） */
+  static randNorm() {
+    let u = 0, v = 0;
+    while (u === 0) u = Math.random();
+    while (v === 0) v = Math.random();
+    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
   }
 
-  var fireAge  = currentAge + Math.floor(months / 12);
-  var fireYrs  = Math.floor(months / 12);
-  var fireMons = months % 12;
-  var finalAss = Math.round(assets);
-
-  resultDiv.innerHTML =
-      '<div style="background:#0d2010;border:1px solid #3b82f6;border-radius:6px;padding:14px;">'
-      + '<p style="color:#4ade80;font-size:19px;font-weight:bold;margin:0 0 5px;">🎯 FIRE達成まで ' + fireYrs + '年' + fireMons + 'ヶ月（' + fireAge + '歳）</p>'
-      + '<p style="color:#ccc;margin:0 0 3px;">達成時の資産額：約 ' + finalAss.toLocaleString() + ' 万円</p>'
-      + '<p style="color:#ccc;margin:0;">現在の達成率：' + progressPct + '%</p>'
-      + '</div>'
-      + '<div style="background:#1a1a2e;height:6px;border-radius:3px;margin-top:10px;overflow:hidden;">'
-      + '<div style="background:#3b82f6;height:6px;width:' + progressPct + '%;border-radius:3px;"></div>'
-      + '</div>';
-
-  // --- 100歳まで資産推移データ生成 ---
-  var labels    = [];
-  var dataAccum = [];
-  var dataFire  = [];
-  var maxAge    = 100;
-  var totalMons = (maxAge - currentAge) * 12;
-  var assetNow  = current;
-  var reached   = false;
-
-  for (var m = 0; m <= totalMons; m++) {
-    if (m % 12 === 0) {
-      var age = currentAge + m / 12;
-      labels.push(Math.round(age) + '歳');
-      if (!reached) {
-        dataAccum.push(Math.round(assetNow));
-        dataFire.push(null);
-      } else {
-        dataAccum.push(null);
-        dataFire.push(Math.round(assetNow < 0 ? 0 : assetNow));
-      }
-    }
-    if (!reached) {
-      assetNow = assetNow * (1 + monthlyRate) + monthly;
-      if (m + 1 >= months) reached = true;
-    } else {
-      assetNow = assetNow * (1 + monthlyRate) - annualWith / 12;
-    }
+  /** 幾何ブラウン運動による1年分の総リターン倍率 */
+  _annualGrowthFactor() {
+    const mu = this.p.expReturn;
+    const sigma = this.p.stdev;
+    const z = FireSimulationEngine.randNorm();
+    return Math.exp((mu - 0.5 * sigma * sigma) + sigma * z);
   }
 
-  // --- グラフ描画 ---
-  document.getElementById('chartContainer').style.display = 'block';
-  if (fireChartInstance) { fireChartInstance.destroy(); }
-
-  var ctx = document.getElementById('fireChart').getContext('2d');
-  fireChartInstance = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: '積立フェーズ',
-          data: dataAccum,
-          borderColor: '#3b82f6',
-          backgroundColor: 'rgba(59,130,246,0.12)',
-          borderWidth: 2,
-          pointRadius: 0,
-          spanGaps: false,
-          fill: true,
-          tension: 0.3
-        },
-        {
-          label: 'FIRE後（取崩し）',
-          data: dataFire,
-          borderColor: '#4ade80',
-          backgroundColor: 'rgba(74,222,128,0.08)',
-          borderWidth: 2,
-          pointRadius: 0,
-          spanGaps: false,
-          fill: true,
-          tension: 0.3
-        },
-        {
-          label: 'FIRE目標',
-          data: Array(labels.length).fill(target),
-          borderColor: '#f0c040',
-          borderDash: [5, 4],
-          borderWidth: 1,
-          pointRadius: 0,
-          fill: false
+  /**
+   * 年齢→特別支出（ライフイベント＋周期支出＋税社保スパイク＋医療介護費）のマップを事前構築。
+   * モンテカルロのループ内で年齢判定を行わないための前処理（パフォーマンス要件）。
+   * これらの特別支出はガードレール調整の対象外（固定費扱い）。
+   */
+  _buildSpotExpenseMap() {
+    const map = {};
+    try {
+      const add = (age, amt) => {
+        if (!Number.isFinite(age) || !Number.isFinite(amt) || amt <= 0) return;
+        const a = Math.round(age);
+        if (a < this.p.currentAge || a > this.endAge) return;
+        map[a] = (map[a] || 0) + amt;
+      };
+      // 1) ユーザー定義ライフイベント
+      for (const ev of this.p.events) add(ev.age, ev.amount);
+      // 2) 車の買い替え（周期）
+      if (this.p.carCost > 0 && this.p.carCycle >= 1) {
+        for (let a = this.p.currentAge + this.p.carCycle; a <= this.endAge; a += this.p.carCycle) {
+          add(a, this.p.carCost);
         }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { labels: { color: '#ccc', font: { size: 12 } } },
-        tooltip: {
-          callbacks: {
-            label: function(c) {
-              return c.raw === null ? null : c.dataset.label + ': ' + c.raw.toLocaleString() + ' 万円';
-            }
+      }
+      // 3) 住宅修繕（周期）
+      if (this.p.repairCost > 0 && this.p.repairCycle >= 1) {
+        for (let a = this.p.currentAge + this.p.repairCycle; a <= this.endAge; a += this.p.repairCycle) {
+          add(a, this.p.repairCost);
+        }
+      }
+      // 4) FIRE翌年の税金・社保スパイク（前年給与ベースの住民税・健康保険料）
+      if (this.p.taxSpikeEnabled && this.p.taxSpikeAmount > 0) {
+        add(this.p.fireAge + 1, this.p.taxSpikeAmount);
+      }
+      // 5) 高齢期の医療・介護バッファ（開始年齢以降、毎年加算）
+      if (this.p.medicalEnabled && this.p.medicalAmount > 0) {
+        for (let a = Math.max(this.p.medicalStartAge, this.p.currentAge + 1); a <= this.endAge; a++) {
+          add(a, this.p.medicalAmount);
+        }
+      }
+      // 6) 介護一時金（特定年齢で一括発生）
+      if (this.p.medicalEnabled && this.p.careLumpAmount > 0) {
+        add(this.p.careLumpAge, this.p.careLumpAmount);
+      }
+    } catch (e) {
+      console.error("特別支出マップの構築に失敗しました", e);
+      throw new Error("特別支出マップの構築に失敗しました: " + e.message);
+    }
+    return map;
+  }
+
+  /**
+   * ネット（手取り）必要額から、税引前のグロス取崩し額を算出する。
+   * 利益割合 = (資産 - 取得元本) / 資産 とみなし、
+   * net = gross - gross * gainRatio * TAX_RATE を gross について解く。
+   */
+  _grossUpForTax(netNeed, assets, costBasis) {
+    if (!this.p.taxEnabled || netNeed <= 0 || assets <= 0) return netNeed;
+    const gainRatio = Math.max(0, Math.min(1, (assets - costBasis) / assets));
+    const denom = 1 - gainRatio * this.TAX_RATE;
+    if (denom <= 0) return netNeed; // 理論上発生しないが防御
+    return netNeed / denom;
+  }
+
+  /**
+   * 1試行（1本の人生パス）を実行する。
+   * @returns {{path:number[], depletedAge:(number|null), assetsAtFire:number}}
+   */
+  runSingleTrial() {
+    const p = this.p;
+    let assets = p.currentAssets;
+    let costBasis = p.currentAssets; // 簡便化：現時点の資産を元本とみなす
+    let adjFactor = 1.0;             // ガードレールによる支出調整係数
+    let depletedAge = null;
+    let assetsAtFire = NaN;
+    const path = [assets];
+
+    for (let y = 1; y <= this.years; y++) {
+      const age = p.currentAge + y;
+      const inflFactor = Math.pow(1 + p.inflation, y);
+
+      if (depletedAge !== null) {
+        path.push(0);
+        continue;
+      }
+
+      // --- 年初のキャッシュフロー ---
+      const isRetired = age > p.fireAge;
+      const spot = (this.spotByAge[age] || 0) * inflFactor; // スポット支出もインフレ連動
+
+      if (!isRetired) {
+        // 積立フェーズ：給与等から支出・スポット支出は賄われる前提。積立のみ資産へ。
+        assets += p.annualSavings;
+        costBasis += p.annualSavings;
+        // ただしFIRE前でもライフイベントが家計を超える場合は資産から支出
+        if (spot > 0) {
+          const gross = this._grossUpForTax(spot, assets, costBasis);
+          const basisOut = assets > 0 ? gross * (costBasis / assets) : 0;
+          assets -= gross;
+          costBasis = Math.max(0, costBasis - basisOut);
+        }
+      } else {
+        // --- 取崩しフェーズ ---
+        // 【ガードレール分離】基本生活費のみを調整対象とし、特別支出（ライフイベント・
+        // 周期支出・税社保スパイク・医療介護費）は固定費としてそのまま上乗せする。
+        const baseExpense = p.annualExpense * inflFactor * adjFactor;
+        const pension = age >= p.pensionAge ? p.pensionAmount * inflFactor : 0;
+
+        // 年金はまず基本生活費から相殺し、余剰があれば特別支出にも充当する
+        const baseNet = Math.max(0, baseExpense - pension);
+        const pensionSurplus = Math.max(0, pension - baseExpense);
+        const specialNet = Math.max(0, spot - pensionSurplus);
+
+        // 基本支出分のグロス取崩し（ガードレール判定のベース）
+        const grossBase = this._grossUpForTax(baseNet, assets, costBasis);
+
+        // ガードレール判定（引出率 = 基本支出のグロス取崩し / 資産。特別支出は含めない）
+        if (p.guardrailEnabled && assets > 0 && grossBase > 0) {
+          const wr = grossBase / assets;
+          const upper = p.initialWR * (1 + p.grBand);
+          const lower = p.initialWR * (1 - p.grBand);
+          if (wr > upper) {
+            adjFactor = Math.max(this.ADJ_MIN, adjFactor * (1 - this.GUARDRAIL_CUT));
+          } else if (wr < lower) {
+            adjFactor = Math.min(this.ADJ_MAX, adjFactor * (1 + this.GUARDRAIL_RAISE));
           }
         }
-      },
-      scales: {
-        x: {
-          ticks: { color: '#aaa', maxTicksLimit: 20, font: { size: 11 } },
-          grid:  { color: 'rgba(255,255,255,0.05)' }
-        },
-        y: {
-          ticks: {
-            color: '#aaa', font: { size: 11 },
-            callback: function(v) { return v.toLocaleString() + '万'; }
-          },
-          grid: { color: 'rgba(255,255,255,0.05)' }
-        }
+
+        // 特別支出分のグロス取崩し（固定費扱い・ガードレール対象外）
+        const grossSpecial = this._grossUpForTax(specialNet, assets, costBasis);
+        const gross = grossBase + grossSpecial;
+
+        const basisOut = assets > 0 ? gross * (costBasis / assets) : 0;
+        assets -= gross;
+        costBasis = Math.max(0, costBasis - basisOut);
+      }
+
+      // --- 市場リターン（幾何ブラウン運動） ---
+      if (assets > 0) {
+        assets *= this._annualGrowthFactor();
+      }
+
+      // --- 枯渇判定 ---
+      if (assets <= 0) {
+        assets = 0;
+        depletedAge = age;
+      }
+
+      if (age === p.fireAge || (Number.isNaN(assetsAtFire) && age > p.fireAge)) {
+        assetsAtFire = assets;
+      }
+      path.push(assets);
+    }
+
+    if (Number.isNaN(assetsAtFire)) assetsAtFire = assets;
+    return { path, depletedAge, assetsAtFire };
+  }
+
+  /**
+   * モンテカルロ・シミュレーション本体。
+   * @returns {object} 集計結果（成功率・パーセンタイル等）
+   */
+  run() {
+    const trials = this.p.trials;
+    const allPaths = [];
+    const fireAssets = [];
+    let successCount = 0;
+    let errorCount = 0;
+    let lastError = null;
+
+    for (let t = 0; t < trials; t++) {
+      try {
+        const r = this.runSingleTrial();
+        allPaths.push(r.path);
+        fireAssets.push(r.assetsAtFire);
+        if (r.depletedAge === null) successCount++;
+      } catch (e) {
+        errorCount++;
+        lastError = e;
       }
     }
-  });
+
+    if (allPaths.length === 0) {
+      throw new Error("全試行が失敗しました: " + (lastError ? lastError.message : "不明なエラー"));
+    }
+    if (errorCount > 0) {
+      console.warn(`${errorCount}/${trials} 試行でエラーが発生しスキップされました`, lastError);
+    }
+
+    // 年次ごとのパーセンタイル集計
+    const nYears = this.years + 1;
+    const pct = { p10: [], p25: [], p50: [], p75: [], p90: [] };
+    const buf = new Float64Array(allPaths.length);
+
+    for (let y = 0; y < nYears; y++) {
+      try {
+        for (let t = 0; t < allPaths.length; t++) buf[t] = allPaths[t][y];
+        const sorted = Array.from(buf).sort((a, b) => a - b);
+        pct.p10.push(FireSimulationEngine._quantile(sorted, 0.10));
+        pct.p25.push(FireSimulationEngine._quantile(sorted, 0.25));
+        pct.p50.push(FireSimulationEngine._quantile(sorted, 0.50));
+        pct.p75.push(FireSimulationEngine._quantile(sorted, 0.75));
+        pct.p90.push(FireSimulationEngine._quantile(sorted, 0.90));
+      } catch (e) {
+        // 集計エラー時は直前値を引き継ぐ（グラフ欠損防止）
+        for (const k of Object.keys(pct)) pct[k].push(pct[k].length ? pct[k][pct[k].length - 1] : 0);
+        console.warn("percentile aggregation error at year " + y, e);
+      }
+    }
+
+    const sortedFire = fireAssets.slice().sort((a, b) => a - b);
+    return {
+      successRate: successCount / allPaths.length,
+      percentiles: pct,
+      ages: Array.from({ length: nYears }, (_, i) => this.p.currentAge + i),
+      medianFinal: pct.p50[nYears - 1],
+      medianAtFire: FireSimulationEngine._quantile(sortedFire, 0.50),
+      trialsRun: allPaths.length
+    };
+  }
+
+  /** ソート済み配列から分位点を線形補間で取得 */
+  static _quantile(sorted, q) {
+    if (sorted.length === 0) return 0;
+    const pos = (sorted.length - 1) * q;
+    const lo = Math.floor(pos);
+    const hi = Math.ceil(pos);
+    if (lo === hi) return sorted[lo];
+    return sorted[lo] + (sorted[hi] - sorted[lo]) * (pos - lo);
+  }
 }
 
-calcFire();
+/* =========================================================================
+ * フロントエンド：UIコントローラ（DOM操作・入力収集・描画）
+ * ========================================================================= */
+
+class SimulatorUI {
+  constructor() {
+    this.chart = null;
+    this.debounceTimer = null;
+    this.defaultEvents = [
+      { age: 47, name: "長子 大学進学", amount: 500 },
+      { age: 50, name: "次子 大学進学", amount: 500 }
+    ];
+    this._bindInputs();
+    this._initEventTable();
+    this.scheduleRecalc(0);
+  }
+
+  $(id) { return document.getElementById(id); }
+
+  _num(id, fallback) {
+    const v = parseFloat(this.$(id).value);
+    return Number.isFinite(v) ? v : fallback;
+  }
+
+  _bindInputs() {
+    const ids = [
+      "inpAge", "inpAssets", "inpFireAge", "inpExpense",
+      "inpReturn", "inpStdev", "inpInflation", "inpSavings", "inpTrials",
+      "inpGuardrail", "inpInitWR", "inpGrBand",
+      "inpPensionAge", "inpPensionAmt", "inpTax",
+      "inpCarCost", "inpCarCycle", "inpRepairCost", "inpRepairCycle",
+      "inpTaxSpike", "inpTaxSpikeAmt",
+      "inpMedical", "inpMedicalAge", "inpMedicalAmt", "inpCareAge", "inpCareAmt"
+    ];
+    for (const id of ids) {
+      this.$(id).addEventListener("input", () => this.scheduleRecalc());
+    }
+    this.$("btnAddEvent").addEventListener("click", () => {
+      this.addEventRow(this._num("inpAge", 43) + 5, "", 100);
+      this.scheduleRecalc();
+    });
+    this.$("btnAddMarriage").addEventListener("click", () => {
+      try {
+        // 子どもの結婚・独立支援プリセット：現在年齢+15年あたりを初期値に設定
+        const presetAge = Math.min(99, this._num("inpAge", 43) + 15);
+        this.addEventRow(presetAge, "子どもの結婚・独立支援", 300);
+        this.scheduleRecalc();
+      } catch (e) {
+        console.error("プリセットイベントの追加に失敗しました", e);
+      }
+    });
+  }
+
+  _initEventTable() {
+    for (const ev of this.defaultEvents) this.addEventRow(ev.age, ev.name, ev.amount);
+  }
+
+  addEventRow(age, name, amount) {
+    const tr = document.createElement("tr");
+    tr.innerHTML =
+      '<td><input type="number" class="ev-age" min="20" max="100" step="1"></td>' +
+      '<td><input type="text" class="ev-name" placeholder="例: 大学進学、車の購入"></td>' +
+      '<td><input type="number" class="ev-amt" min="0" step="10"></td>' +
+      '<td><button class="sp-btn sp-btn-del" title="削除">✕</button></td>';
+    tr.querySelector(".ev-age").value = age;
+    tr.querySelector(".ev-name").value = name;
+    tr.querySelector(".ev-amt").value = amount;
+    tr.querySelectorAll("input").forEach(el => el.addEventListener("input", () => this.scheduleRecalc()));
+    tr.querySelector(".sp-btn-del").addEventListener("click", () => {
+      tr.remove();
+      this.scheduleRecalc();
+    });
+    this.$("eventRows").appendChild(tr);
+  }
+
+  collectEvents() {
+    const events = [];
+    document.querySelectorAll("#eventRows tr").forEach(tr => {
+      const age = parseFloat(tr.querySelector(".ev-age").value);
+      const amount = parseFloat(tr.querySelector(".ev-amt").value);
+      if (Number.isFinite(age) && Number.isFinite(amount) && amount > 0) {
+        events.push({ age, amount, name: tr.querySelector(".ev-name").value });
+      }
+    });
+    return events;
+  }
+
+  collectParams() {
+    const currentAge = Math.round(this._num("inpAge", 43));
+    let fireAge = Math.round(this._num("inpFireAge", 50));
+    if (fireAge < currentAge) fireAge = currentAge; // FIRE済み扱い
+    return {
+      currentAge,
+      currentAssets: Math.max(0, this._num("inpAssets", 10000)),
+      fireAge,
+      annualExpense: Math.max(0, this._num("inpExpense", 300)),
+      events: this.collectEvents(),
+      expReturn: this._num("inpReturn", 5) / 100,
+      stdev: Math.max(0, this._num("inpStdev", 12)) / 100,
+      inflation: Math.max(0, this._num("inpInflation", 1.5)) / 100,
+      annualSavings: Math.max(0, this._num("inpSavings", 0)),
+      trials: Math.min(10000, Math.max(500, Math.round(this._num("inpTrials", 3000)))),
+      guardrailEnabled: this.$("inpGuardrail").checked,
+      initialWR: Math.max(0.001, this._num("inpInitWR", 4.5) / 100),
+      grBand: Math.max(0.01, this._num("inpGrBand", 20) / 100),
+      pensionAge: Math.round(this._num("inpPensionAge", 65)),
+      pensionAmount: Math.max(0, this._num("inpPensionAmt", 200)),
+      taxEnabled: this.$("inpTax").checked,
+      carCost: Math.max(0, this._num("inpCarCost", 0)),
+      carCycle: Math.max(1, Math.round(this._num("inpCarCycle", 7))),
+      repairCost: Math.max(0, this._num("inpRepairCost", 0)),
+      repairCycle: Math.max(1, Math.round(this._num("inpRepairCycle", 10))),
+      taxSpikeEnabled: this.$("inpTaxSpike").checked,
+      taxSpikeAmount: Math.max(0, this._num("inpTaxSpikeAmt", 150)),
+      medicalEnabled: this.$("inpMedical").checked,
+      medicalStartAge: Math.round(this._num("inpMedicalAge", 75)),
+      medicalAmount: Math.max(0, this._num("inpMedicalAmt", 50)),
+      careLumpAge: Math.round(this._num("inpCareAge", 80)),
+      careLumpAmount: Math.max(0, this._num("inpCareAmt", 500))
+    };
+  }
+
+  scheduleRecalc(delay = 350) {
+    clearTimeout(this.debounceTimer);
+    this.$("calcStatus").textContent = "再計算待ち…";
+    this.debounceTimer = setTimeout(() => this.recalc(), delay);
+  }
+
+  recalc() {
+    const errorBox = this.$("errorBox");
+    errorBox.style.display = "none";
+    this.$("calcStatus").textContent = "計算中…";
+    // UI描画を1フレーム挟んでから重い計算を実行
+    requestAnimationFrame(() => setTimeout(() => {
+      try {
+        const params = this.collectParams();
+        if (params.currentAge >= 100) throw new Error("現在年齢は100歳未満で入力してください。");
+        const t0 = performance.now();
+        const engine = new FireSimulationEngine(params);
+        const result = engine.run();
+        const elapsed = Math.round(performance.now() - t0);
+        this.render(params, result);
+        this.$("calcStatus").textContent =
+          `${result.trialsRun.toLocaleString()}回シミュレーション完了（${elapsed}ms）`;
+      } catch (e) {
+        console.error(e);
+        errorBox.textContent = "エラー: " + e.message;
+        errorBox.style.display = "block";
+        this.$("calcStatus").textContent = "計算エラー";
+      }
+    }, 0));
+  }
+
+  render(params, result) {
+    const rate = result.successRate * 100;
+
+    // --- 判定サマリー ---
+    const verdict = this.$("verdict");
+    verdict.className = "";
+    let badge, detail;
+    if (rate >= 90) {
+      verdict.classList.add("v-safe");
+      badge = "✅ 現在の計画は【安全圏】です";
+      detail = "100歳まで資産が持続する確率が90%以上あります。この計画で進めて問題ない水準です。";
+    } else if (rate >= 75) {
+      verdict.classList.add("v-ok");
+      badge = "🟦 概ね良好な計画です";
+      detail = "多くのケースで資産は持続しますが、支出の柔軟性（ガードレール）を維持しましょう。";
+    } else if (rate >= 50) {
+      verdict.classList.add("v-warn");
+      badge = "⚠️【注意】一部見直しを推奨します";
+      detail = "資産が枯渇するケースが無視できません。FIRE年齢の延長・支出削減・積立増額を検討してください。";
+    } else {
+      verdict.classList.add("v-danger");
+      badge = "🛑【危険】計画の見直しが必要です";
+      detail = "半数以上のケースで資産が枯渇します。前提条件を大きく見直してください。";
+    }
+    verdict.querySelector(".v-badge").textContent = badge;
+    verdict.querySelector(".detail").textContent = detail;
+
+    // --- 統計値 ---
+    this.$("statSuccess").textContent = rate.toFixed(1) + " %";
+    this.$("statMedian").textContent = Math.round(result.medianFinal).toLocaleString() + " 万円";
+    this.$("statFire").textContent = Math.round(result.medianAtFire).toLocaleString() + " 万円";
+
+    // --- グラフ ---
+    this.renderChart(params, result);
+  }
+
+  renderChart(params, result) {
+    const labels = result.ages.map(a => a + "歳");
+    const pct = result.percentiles;
+    const round0 = arr => arr.map(v => Math.round(v));
+
+    const datasets = [
+      // 10-90% 帯（薄い）
+      { label: "10%タイル", data: round0(pct.p10), borderColor: "transparent", pointRadius: 0, fill: false, order: 10 },
+      { label: "10〜90%の範囲", data: round0(pct.p90), borderColor: "transparent",
+        backgroundColor: "rgba(59,130,246,0.10)", pointRadius: 0, fill: "-1", order: 10 },
+      // 25-75% 帯（濃いめ）
+      { label: "25%タイル", data: round0(pct.p25), borderColor: "transparent", pointRadius: 0, fill: false, order: 9 },
+      { label: "25〜75%の範囲", data: round0(pct.p75), borderColor: "transparent",
+        backgroundColor: "rgba(59,130,246,0.22)", pointRadius: 0, fill: "-1", order: 9 },
+      // 中央値（メイン太線）
+      { label: "中央値（最も確率の高い推移）", data: round0(pct.p50),
+        borderColor: "#4ade80", borderWidth: 3, pointRadius: 0, fill: false, tension: 0.25, order: 1 },
+      // FIRE開始時点のマーカー
+      { label: "FIRE開始", data: labels.map((_, i) => result.ages[i] === params.fireAge ? round0(pct.p50)[i] : null),
+        borderColor: "#f0c040", backgroundColor: "#f0c040", pointRadius: 6, pointStyle: "triangle",
+        showLine: false, order: 0 }
+    ];
+
+    const config = {
+      type: "line",
+      data: { labels, datasets },
+      options: {
+        responsive: true,
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+          legend: {
+            labels: {
+              color: "#ccc", font: { size: 12 },
+              filter: item => !["10%タイル", "25%タイル"].includes(item.text)
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: c => c.raw === null ? undefined :
+                c.dataset.label + ": " + Number(c.raw).toLocaleString() + " 万円"
+            }
+          }
+        },
+        scales: {
+          x: { ticks: { color: "#aaa", maxTicksLimit: 15, font: { size: 11 } },
+               grid: { color: "rgba(255,255,255,0.05)" } },
+          y: { beginAtZero: true,
+               ticks: { color: "#aaa", font: { size: 11 },
+                        callback: v => Number(v).toLocaleString() + "万" },
+               grid: { color: "rgba(255,255,255,0.05)" } }
+        }
+      }
+    };
+
+    if (this.chart) {
+      this.chart.data = config.data;
+      this.chart.options = config.options;
+      this.chart.update("none");
+    } else {
+      this.chart = new Chart(this.$("mainChart").getContext("2d"), config);
+    }
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  try {
+    window.simulatorUI = new SimulatorUI();
+  } catch (e) {
+    console.error(e);
+    const box = document.getElementById("errorBox");
+    box.textContent = "初期化エラー: " + e.message;
+    box.style.display = "block";
+  }
+});
 </script>
-
-<hr>
-<h2>計算の前提</h2>
-<ul>
-  <li>複利計算（月次）で試算しています</li>
-  <li>税金・手数料は考慮していません</li>
-  <li>FIRE後は積立停止、年間取崩し額を毎月均等に引き出す想定</li>
-</ul>
-
-<h2>私の現在地（2026年5月）</h2>
-<table>
-  <tr><th>現在の総資産</th><td>約1億円（1億9万円）</td></tr>
-  <tr><th>FIRE目標</th><td>1億3,500万円</td></tr>
-  <tr><th>達成率</th><td>69.4%</td></tr>
-  <tr><th>想定利回り</th><td>5%（インデックス長期平均）</td></tr>
-</table>
