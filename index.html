@@ -1,82 +1,136 @@
 ---
-layout: default
+layout: bento
 title: ホーム
+nav: home
+description: 43歳会社員がCoast FIREを目指す実録ダッシュボード。総資産・達成率・3バケツ戦略・月次レポートを公開中。
 ---
 
-<div class="hero-section" style="text-align:center;padding:48px 0 40px;">
-<p style="font-size:3.5rem;margin-bottom:12px;">&#x2615;</p>
-<h1 style="font-size:2.4rem;font-weight:800;letter-spacing:-0.03em;margin:0 0 12px;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">father cafe</h1>
-<p style="font-size:1.1rem;color:#cbd5e1;max-width:520px;margin:0 auto 8px;line-height:1.7;font-weight:600;">&#x300C;FIREを目指す 43歳会社員の、リアルな設計図と実績を公開します&#x300D;</p>
-<p style="font-size:0.9rem;color:#64748b;max-width:480px;margin:0 auto 24px;line-height:1.7;">子2人・会社員・資産 9,373万円。完全 FIREではなく<strong style="color:#94a3b8;">Coast FIRE</strong>を選んだ理由と、毎月の進捗をすべてオープンにするサイトです。</p>
-<div style="display:inline-flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px;">
-<span class="badge badge-blue">資産 9,373万円</span>
-<span class="badge badge-green">達成率 69.4%</span>
-<span class="badge badge-amber">目標 1&#x5104;3,500万円</span>
-</div>
-<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-<a href="/fire-design/design/" class="btn btn-primary">設計図を見る &#x2192;</a>
-<a href="/fire-design/monthly-report/2026/05/18/monthly-report-001/" class="btn btn-ghost">最新レポートを読む</a>
-</div>
-</div>
-
-<hr>
-
-<h2>&#x1F3AF; FIRE達成状況</h2>
-
-<div style="background:linear-gradient(135deg,#1e293b,#0f2040);border:1px solid #334155;border-radius:16px;padding:28px;margin:24px 0;">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-<span style="color:#94a3b8;font-size:0.9rem;font-weight:500;">現在の資産</span>
-<span style="color:#f1f5f9;font-size:1.1rem;font-weight:700;">9,373万 &#x2192; 1&#x5104;3,500万円</span>
-</div>
-<div class="progress-wrap" style="margin-bottom:16px;">
-<div class="progress-bar" style="width:69.4%"></div>
-</div>
-<div class="kpi-row" style="margin:0;">
-<div class="kpi-card blue"><div class="kpi-label">&#x1F6D2; 生活費バケツ</div><div class="kpi-value">636万</div></div>
-<div class="kpi-card purple"><div class="kpi-label">&#x1F6D2; 安定バケツ</div><div class="kpi-value">1,200万</div></div>
-<div class="kpi-card green"><div class="kpi-label">&#x1F6D2; 成長バケツ</div><div class="kpi-value">8,173万</div></div>
-</div>
-</div>
-
-<hr>
-
-<h2>&#x1F4DA; コンテンツ</h2>
-
-<div class="card-grid">
-<a href="/fire-design/design/" class="card blue">
-<div class="card-icon">&#x1F5FA;&#xFE0F;</div>
-<div class="card-title">FIRE設計図</div>
-<div class="card-desc">3バケツ戦略 &mdash; Coast FIRE達成へのロードマップ</div>
-<div class="card-link">読む</div>
-</a>
-<a href="/fire-design/simulator/" class="card purple">
-<div class="card-icon">&#x1F525;</div>
-<div class="card-title">FIREシミュレーター Pro</div>
-<div class="card-desc">モンテカルロ法&times;ガードレール戦略で成功確率を試算</div>
-<div class="card-link">試す</div>
-</a>
-<a href="/fire-design/monthly-report/2026/05/18/monthly-report-001/" class="card green">
-<div class="card-icon">&#x1F4CA;</div>
-<div class="card-title">月次レポート</div>
-<div class="card-desc">資産・峠超・進捗を毎月公開</div>
-<div class="card-link">最新号を読む</div>
-</a>
-<a href="/fire-design/about/" class="card amber">
-<div class="card-icon">&#x1F464;</div>
-<div class="card-title">About</div>
-<div class="card-desc">43歳・父・会社員のプロフィール</div>
-<div class="card-link">プロフィール</div>
-</a>
+<!-- ============ Hero Tile ============ -->
+<div class="bento-grid">
+  <div class="tile hero">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+      <div>
+        <span class="pill">☕ Coast FIRE 実録</span>
+        <h1 style="font-family:var(--font-num);font-weight:900;font-size:1.7rem;letter-spacing:-0.03em;margin:12px 0 4px;">FIREを目指す43歳会社員の、<br>リアルな設計図と実績。</h1>
+        <p style="color:var(--text-muted);font-size:0.88rem;margin:0;">子2人・会社員。完全FIREではなく <strong style="color:var(--text);">Coast FIRE</strong> を選んだ理由と毎月の進捗をすべて公開。</p>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <a href="/fire-design/design/" class="bento-btn primary">設計図を見る →</a>
+        <a href="/fire-design/simulator/" class="bento-btn ghost">シミュレーターを試す</a>
+      </div>
+    </div>
+    <div class="hero-grid">
+      <div>
+        <div class="tile-label"><span class="dot"></span>総資産</div>
+        <div class="hero-big"><span id="heroAssets">—</span><span class="vu">万円</span></div>
+        <div class="tile-sub">2026年5月時点</div>
+      </div>
+      <div>
+        <div class="tile-label"><span class="dot"></span>目標達成率</div>
+        <div class="hero-big lime"><span id="heroProgress">—</span><span class="vu">%</span></div>
+        <div class="bento-progress"><div id="heroProgressBar" style="width:0%"></div></div>
+        <div class="tile-sub">決行ライン <span class="num" id="heroTarget">—</span>万円まで残り <span class="num" id="heroRemaining">—</span>万円</div>
+      </div>
+      <div>
+        <div class="tile-label"><span class="dot"></span>Coast FIREまで</div>
+        <div class="hero-big"><span id="heroDays">—</span><span class="vu">日</span></div>
+        <div class="tile-sub">目標：<span class="num">50</span>歳（2032年12月）</div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<hr>
+<!-- ============ 3バケツ + 設計図サマリー ============ -->
+<div class="bento-grid">
+  <a href="/fire-design/design/" class="tile span-8">
+    <div class="tile-label"><span class="dot"></span>FIRE設計図 — 3バケツ戦略</div>
+    <p style="margin-top:0;">資産を「安全・安定・成長」の3つのバケツに分け、暴落時でも成長資産を売らずに済む構造を作る。これが設計図の核。</p>
+    <div class="alloc-bar" id="homeAllocBar">
+      <div class="alloc-cash" style="width:6.4%"></div>
+      <div class="alloc-bond" style="width:12%">12%</div>
+      <div class="alloc-equity" style="width:81.6%">82%</div>
+    </div>
+    <div class="alloc-legend">
+      <span><span class="sw" style="background:#93c5fd"></span>A 生活防衛 <span class="num" id="homeBucketA">636</span>万</span>
+      <span><span class="sw" style="background:#c4b5fd"></span>B 安定 <span class="num" id="homeBucketB">1,200</span>万</span>
+      <span><span class="sw" style="background:var(--lime)"></span>C 成長 <span class="num" id="homeBucketC">8,173</span>万</span>
+    </div>
+    <p style="margin-bottom:0;font-size:0.8rem;color:var(--text-dim);">設計図全文を読む →</p>
+  </a>
 
-<h2>&#x1F517; 三層発信構造</h2>
+  <div class="tile span-4">
+    <div class="tile-label"><span class="dot"></span>達成率</div>
+    <div class="ring" id="homeRing">
+      <div class="ring-text"><span class="pct" id="ringPct">—%</span><span class="cap">決行ライン比</span></div>
+    </div>
+    <div class="tile-sub" style="text-align:center;">検討ライン 1億2,500万 ／ 決行ライン 1億3,500万</div>
+  </div>
+</div>
 
-<div style="background:#1e293b;border:1px solid #334155;border-radius:16px;padding:24px;margin:24px 0;">
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;text-align:center;">
-<div><div style="font-size:1.5rem;margin-bottom:8px;">X</div><div style="font-weight:700;color:#f1f5f9;margin-bottom:4px;"><a href="https://x.com/father_cafe" style="color:#60a5fa;">@father_cafe</a></div><div style="font-size:0.8rem;color:#94a3b8;">日次の気づき</div></div>
-<div><div style="font-size:1.5rem;margin-bottom:8px;">note</div><div style="font-weight:700;color:#f1f5f9;margin-bottom:4px;">深掘り記事</div><div style="font-size:0.8rem;color:#94a3b8;">週次の考察</div></div>
-<div><div style="font-size:1.5rem;margin-bottom:8px;">father cafe</div><div style="font-weight:700;color:#f1f5f9;margin-bottom:4px;">ハブ・ツール</div><div style="font-size:0.8rem;color:#94a3b8;">実録</div></div>
+<!-- ============ コンテンツタイル ============ -->
+<div class="bento-grid">
+  <a href="/fire-design/monthly-report/2026/06/15/monthly-report-002/" class="tile span-6">
+    <div class="tile-label"><span class="dot"></span>月次レポート — 最新号</div>
+    <h2>2026年6月号（#002）</h2>
+    <p>理想（設計図）と現実（実績）の乖離を毎月記録。資産推移・貯蓄率・バケツ残高をオープンに。</p>
+    <span class="pill blue">毎月更新</span>
+  </a>
+
+  <a href="/fire-design/simulator/" class="tile span-6">
+    <div class="tile-label"><span class="dot"></span>FIREシミュレーター Pro</div>
+    <h2>🔥 成功確率を試算する</h2>
+    <p>モンテカルロ法（3,000回試行）×ガードレール戦略で、あなたの計画が100歳まで持つ確率を計算。</p>
+    <span class="pill">無料・登録不要</span>
+  </a>
+
+  <a href="https://x.com/father_cafe" class="tile span-6">
+    <div class="tile-label"><span class="dot"></span>X（旧Twitter）</div>
+    <h2>@father_cafe</h2>
+    <p>日次の気づき・市況メモ・FIRE準備の試行錯誤をポスト中。</p>
+  </a>
+
+  <a href="/fire-design/about/" class="tile span-6">
+    <div class="tile-label"><span class="dot"></span>About</div>
+    <h2>👤 プロフィール</h2>
+    <p>43歳・父・会社員。なぜCoast FIREなのか、どんな家族構成なのか。</p>
+  </a>
 </div>
-</div>
+
+<script>
+"use strict";
+document.addEventListener("DOMContentLoaded", function () {
+  try {
+    var p = FireStore.load();
+    var d = FireStore.derive(p);
+    var $ = function (id) { return document.getElementById(id); };
+    var fmt = function (n) { return Math.round(n).toLocaleString(); };
+
+    $("heroAssets").textContent = fmt(p.currentAssets);
+    $("heroProgress").textContent = d.progressLabel;
+    $("heroProgressBar").style.width = d.progressPct + "%";
+    $("heroTarget").textContent = fmt(p.fireTarget);
+    $("heroRemaining").textContent = fmt(d.remaining);
+    $("heroDays").textContent = d.daysToFire !== null ? fmt(d.daysToFire) : "—";
+
+    // 達成率リング（conic-gradient）
+    var ring = $("homeRing");
+    ring.style.background = "conic-gradient(var(--lime) " + d.progressPct + "%, rgba(255,255,255,0.08) 0)";
+    $("ringPct").textContent = d.progressLabel + "%";
+
+    // バケツ残高と配分バー
+    $("homeBucketA").textContent = fmt(p.bucketA);
+    $("homeBucketB").textContent = fmt(p.bucketB);
+    $("homeBucketC").textContent = fmt(p.bucketC);
+    var total = d.totalBuckets;
+    if (total > 0) {
+      var bar = $("homeAllocBar").children;
+      bar[0].style.width = (p.bucketA / total * 100).toFixed(1) + "%";
+      bar[1].style.width = (p.bucketB / total * 100).toFixed(1) + "%";
+      bar[2].style.width = (p.bucketC / total * 100).toFixed(1) + "%";
+      bar[2].textContent = Math.round(p.bucketC / total * 100) + "%";
+    }
+  } catch (e) {
+    console.error("ダッシュボード初期化エラー", e);
+  }
+});
+</script>

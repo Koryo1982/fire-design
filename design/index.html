@@ -1,0 +1,224 @@
+---
+layout: bento
+title: FIRE設計図
+nav: design
+description: 43歳会社員のCoast FIRE設計図。IPS（投資方針書）・3バケツ戦略・ライフタイムライン・リバランスルールを公開。
+---
+
+<div class="page-head">
+  <h1>FIRE<span class="accent">設計図</span></h1>
+  <p>将来の自分が迷った時に立ち返る、意思決定の聖典。感情ではなくルールで動くための文書。</p>
+</div>
+
+<!-- ============ KPI ============ -->
+<div class="bento-grid">
+  <div class="tile span-3">
+    <div class="tile-label"><span class="dot"></span>総資産</div>
+    <div class="tile-value"><span id="dAssets">9,373</span><span class="vu">万円</span></div>
+    <div class="tile-sub">2026年5月時点</div>
+  </div>
+  <div class="tile span-3">
+    <div class="tile-label"><span class="dot"></span>達成率</div>
+    <div class="tile-value lime"><span id="dProgress">69.4</span><span class="vu">%</span></div>
+    <div class="bento-progress"><div id="dProgressBar" style="width:69.4%"></div></div>
+  </div>
+  <div class="tile span-3">
+    <div class="tile-label"><span class="dot"></span>残り</div>
+    <div class="tile-value"><span id="dRemaining">3,491</span><span class="vu">万円</span></div>
+    <div class="tile-sub">決行ラインまで</div>
+  </div>
+  <div class="tile span-3">
+    <div class="tile-label"><span class="dot"></span>戦略タイプ</div>
+    <div class="tile-value" style="font-size:1.5rem;">Coast FIRE</div>
+    <div class="tile-sub">3バケツ × ガードレール</div>
+  </div>
+</div>
+
+<!-- ============ IPS タイル ============ -->
+<div class="bento-grid">
+  <div class="tile span-7">
+    <div class="tile-label"><span class="dot"></span>IPS — 投資方針書</div>
+    <h2>アセットアロケーションとリバランスルール</h2>
+    <div class="alloc-bar" id="dAllocBar">
+      <div class="alloc-cash" style="width:6.4%"></div>
+      <div class="alloc-bond" style="width:12%">12%</div>
+      <div class="alloc-equity" style="width:81.6%">82%</div>
+    </div>
+    <div class="alloc-legend" style="margin-bottom:14px;">
+      <span><span class="sw" style="background:#93c5fd"></span>現金・短期債（安全）</span>
+      <span><span class="sw" style="background:#c4b5fd"></span>債券・バランス（安定）</span>
+      <span><span class="sw" style="background:var(--lime)"></span>株式インデックス（成長）</span>
+    </div>
+    <ul>
+      <li><strong>定期リバランス</strong>：年1回・毎年1月に実施</li>
+      <li><strong>臨時リバランス</strong>：目標配分から乖離率 <strong>5%超</strong> で即実施</li>
+      <li><strong>下落時の鉄則</strong>：Cが大幅下落した年は<strong>売らない</strong>。生活費はAで賄う</li>
+      <li><strong>上昇時の規律</strong>：Cが大幅上昇した年は、利益の一部をBへ移す</li>
+      <li><strong>新規投資</strong>：全世界株インデックスに統一。個別株の新規追加は50歳まで凍結</li>
+    </ul>
+  </div>
+
+  <div class="tile span-5">
+    <div class="tile-label"><span class="dot"></span>決行ライン</div>
+    <table>
+      <tr><th>ライン</th><th>金額</th><th>状態</th></tr>
+      <tr><td>検討ライン</td><td><span class="num">1億2,500万円</span></td><td><span class="pill amber">未達</span></td></tr>
+      <tr><td><strong>決行ライン</strong></td><td><strong class="num">1億3,500万円</strong></td><td><span class="pill amber">69.4%</span></td></tr>
+    </table>
+    <p style="font-size:0.82rem;margin-top:14px;"><strong>1億3,500万円の根拠</strong>：年間生活費360万円 ÷ 4%ルール = 9,000万円（完全FIREライン）に、教育費・老後医療費・予備費を加算し、Coast収入分を差し引いたネット必要額。</p>
+    <p style="margin-bottom:0;"><a href="/fire-design/simulator/" class="bento-btn ghost" style="font-size:0.8rem;padding:8px 18px;">この前提で成功確率を試算 →</a></p>
+  </div>
+</div>
+
+<!-- ============ 3バケツ戦略タイル ============ -->
+<div class="bento-grid">
+  <div class="tile span-12" style="padding-bottom:8px;">
+    <div class="tile-label"><span class="dot"></span>3バケツ戦略 — 暴落時でも成長資産を売らないための構造</div>
+  </div>
+  <div class="tile span-4">
+    <span class="pill blue">バケツ A ｜ 安全</span>
+    <div class="tile-value" style="margin-top:12px;"><span id="dBucketA">636</span><span class="vu">万円</span></div>
+    <div class="tile-sub">現金・普通預金・短期債券</div>
+    <ul>
+      <li><strong>役割</strong>：FIRE後の生活費5年分。市場暴落時に取り崩さずに済む安全弁</li>
+      <li><strong>補充ルール</strong>：FIRE後は毎年Bから補充</li>
+      <li><strong>鉄則</strong>：他バケツへの流用禁止</li>
+    </ul>
+  </div>
+  <div class="tile span-4">
+    <span class="pill purple">バケツ B ｜ 安定</span>
+    <div class="tile-value" style="margin-top:12px;"><span id="dBucketB">1,200</span><span class="vu">万円</span></div>
+    <div class="tile-sub">債券・バランスファンド・高配当株</div>
+    <ul>
+      <li><strong>役割</strong>：Aへの補充源。リスクを抑えた中期運用（5〜15年）</li>
+      <li><strong>なぜ重要か</strong>：Aが尽きてもBがクッションになり、暴落時にCを売らずに済む</li>
+      <li><strong>教育費</strong>：子2人の大学費用500〜600万円もこの範囲で対応</li>
+    </ul>
+  </div>
+  <div class="tile span-4">
+    <span class="pill">バケツ C ｜ 成長</span>
+    <div class="tile-value" style="margin-top:12px;"><span id="dBucketC">8,173</span><span class="vu">万円</span></div>
+    <div class="tile-sub">インデックス投資信託（全世界株・米国株）</div>
+    <ul>
+      <li><strong>役割</strong>：長期成長の主力エンジン（15年以上）。基本ほったらかし</li>
+      <li><strong>鉄則</strong>：下落時の売却禁止。引出はリバランスルールに従う時のみ</li>
+      <li><strong>リバランス</strong>：年1回＋乖離5%超で実施</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============ タイムライン + 収入計画 ============ -->
+<div class="bento-grid">
+  <div class="tile span-6 row-2">
+    <div class="tile-label"><span class="dot"></span>ライフタイムライン — キャッシュフロー計画</div>
+    <ul class="timeline">
+      <li class="done"><span class="tl-dot"></span>
+        <span class="tl-age">43歳</span><span class="tl-title">現在 — Coast FIRE設計・会社員継続</span>
+        <div class="tl-desc">積立継続。設計図とシミュレーターで計画を毎月検証 <span class="tl-cash plus">＋給与収入</span></div>
+      </li>
+      <li><span class="tl-dot"></span>
+        <span class="tl-age">47歳</span><span class="tl-title">長子 大学進学</span>
+        <div class="tl-desc">教育費スパイク。バケツBから拠出 <span class="tl-cash minus">−500万円</span></div>
+      </li>
+      <li><span class="tl-dot"></span>
+        <span class="tl-age">50歳</span><span class="tl-title">Coast FIRE 決行（決行ライン到達が条件）</span>
+        <div class="tl-desc">次子大学進学 <span class="tl-cash minus">−500万円</span> ／ 翌年に住民税・社保スパイク <span class="tl-cash minus">−150万円</span></div>
+      </li>
+      <li><span class="tl-dot"></span>
+        <span class="tl-age">50-65歳</span><span class="tl-title">Coast期 — 小さな収入＋取崩し</span>
+        <div class="tl-desc">生活費360万のうちCoast収入108〜216万でカバー、残りをガードレール取崩し</div>
+      </li>
+      <li><span class="tl-dot"></span>
+        <span class="tl-age">65歳</span><span class="tl-title">公的年金 受給開始</span>
+        <div class="tl-desc">ベースライン：65歳通常受給 <span class="tl-cash plus">＋約192万円/年</span></div>
+      </li>
+      <li><span class="tl-dot"></span>
+        <span class="tl-age">75歳〜</span><span class="tl-title">医療・介護フェーズ</span>
+        <div class="tl-desc">年間バッファ <span class="tl-cash minus">−50万円/年</span> ／ 80歳で介護一時金 <span class="tl-cash minus">−500万円</span> を想定</div>
+      </li>
+      <li><span class="tl-dot"></span>
+        <span class="tl-age">100歳</span><span class="tl-title">資産寿命シミュレーション終点</span>
+        <div class="tl-desc">モンテカルロ3,000回試行で成功確率を毎月モニタリング</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="tile span-6">
+    <div class="tile-label"><span class="dot"></span>Coast収入の設計（FIRE後）</div>
+    <table>
+      <tr><th>収入源</th><th>月額</th><th>年額</th></tr>
+      <tr><td>ブログ・note等</td><td class="num">5〜10万</td><td class="num">60〜120万</td></tr>
+      <tr><td>相談・コンサル</td><td class="num">3〜5万</td><td class="num">36〜60万</td></tr>
+      <tr><td>アフィリエイト</td><td class="num">1〜3万</td><td class="num">12〜36万</td></tr>
+      <tr><td><strong>合計</strong></td><td><strong class="num">9〜18万</strong></td><td><strong class="num">108〜216万</strong></td></tr>
+    </table>
+    <p style="font-size:0.82rem;margin-bottom:0;">狙いは「全額を資産で賄う必要をなくす」こと。月10万円の収入で取崩しペースは大幅に落ちる。</p>
+  </div>
+
+  <div class="tile span-6">
+    <div class="tile-label"><span class="dot"></span>公的年金の試算</div>
+    <table>
+      <tr><th>受給パターン</th><th>月額</th><th>年額</th></tr>
+      <tr><td>60歳 繰上げ</td><td class="num">約12万</td><td class="num">約144万</td></tr>
+      <tr><td><strong>65歳 通常（ベースライン）</strong></td><td><strong class="num">約16万</strong></td><td><strong class="num">約192万</strong></td></tr>
+      <tr><td>70歳 繰下げ</td><td class="num">約23万</td><td class="num">約276万</td></tr>
+    </table>
+    <p style="font-size:0.82rem;margin-bottom:0;">60〜65歳はバケツA＋Coast収入でカバーする設計。</p>
+  </div>
+</div>
+
+<!-- ============ 哲学 ============ -->
+<div class="bento-grid">
+  <div class="tile span-12">
+    <div class="tile-label"><span class="dot"></span>なぜこの設計を選んだか</div>
+    <h2>「完全FIRE」ではなく「Coast FIRE」にした理由</h2>
+    <p>完全FIREは「資産だけで一生を賄う」設計。数字上は可能でも、心理的な安全弁が薄い。Coast FIREは「資産形成のための積立は終了し、運用に任せる。生活費の一部は小さな収入でカバーする」設計だ。</p>
+    <div class="bento-grid" style="margin:16px 0 0;">
+      <div class="tile span-4" style="background:rgba(222,255,154,0.04);">
+        <h3>恐怖がない</h3>
+        <p style="margin-bottom:0;">暴落時に「収入がゼロ」という状況を構造的に排除できる。</p>
+      </div>
+      <div class="tile span-4" style="background:rgba(222,255,154,0.04);">
+        <h3>社会との接点</h3>
+        <p style="margin-bottom:0;">発信・相談という形で働き続けることで、孤立を防ぐ。</p>
+      </div>
+      <div class="tile span-4" style="background:rgba(222,255,154,0.04);">
+        <h3>家族への余白</h3>
+        <p style="margin-bottom:0;">教育費・緊急出費に対応できる現金収入の余地を残す。</p>
+      </div>
+    </div>
+    <p style="margin-top:20px;margin-bottom:0;font-size:0.82rem;color:var(--text-dim);">迷った時はこのページに戻る。ルールが感情に勝つ。 — 月次の検証は<a href="/fire-design/monthly-report/2026/06/15/monthly-report-002/">月次レポート</a>で。</p>
+  </div>
+</div>
+
+<script>
+"use strict";
+document.addEventListener("DOMContentLoaded", function () {
+  try {
+    var p = FireStore.load();
+    var d = FireStore.derive(p);
+    var $ = function (id) { return document.getElementById(id); };
+    var fmt = function (n) { return Math.round(n).toLocaleString(); };
+
+    $("dAssets").textContent = fmt(p.currentAssets);
+    $("dProgress").textContent = d.progressLabel;
+    $("dProgressBar").style.width = d.progressPct + "%";
+    $("dRemaining").textContent = fmt(d.remaining);
+    $("dBucketA").textContent = fmt(p.bucketA);
+    $("dBucketB").textContent = fmt(p.bucketB);
+    $("dBucketC").textContent = fmt(p.bucketC);
+
+    var total = d.totalBuckets;
+    if (total > 0) {
+      var bar = $("dAllocBar").children;
+      bar[0].style.width = (p.bucketA / total * 100).toFixed(1) + "%";
+      bar[1].style.width = (p.bucketB / total * 100).toFixed(1) + "%";
+      bar[2].style.width = (p.bucketC / total * 100).toFixed(1) + "%";
+      bar[1].textContent = Math.round(p.bucketB / total * 100) + "%";
+      bar[2].textContent = Math.round(p.bucketC / total * 100) + "%";
+    }
+  } catch (e) {
+    console.error("設計図ページ初期化エラー", e);
+  }
+});
+</script>
