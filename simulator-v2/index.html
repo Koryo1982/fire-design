@@ -194,6 +194,7 @@
       <tbody id="eventRows"></tbody>
     </table>
     <button class="btn btn-add" id="btnAddEvent">＋ イベント追加</button>
+    <button class="btn btn-add" id="btnAddMarriage" style="margin-top:6px;">＋ プリセット: 子どもの結婚・独立支援（300万円）</button>
   </div>
 
   <!-- ============ 詳細設定（デフォルト非表示） ============ -->
@@ -274,6 +275,41 @@
           <input type="number" id="inpRepairCycle" value="10" min="1" max="30" step="1">
         </div>
       </div>
+
+      <h2 style="margin-top:22px;">高度なライフステージ設定</h2>
+      <div class="toggle-row">
+        <input type="checkbox" id="inpTaxSpike" checked>
+        <label for="inpTaxSpike" style="margin:0;color:var(--text);font-size:14px;">FIRE翌年の税金・社保スパイク（前年給与ベースの住民税・健康保険料）を加算する</label>
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label>税金・社保スパイク額<span class="unit">万円</span></label>
+          <input type="number" id="inpTaxSpikeAmt" value="150" min="0" max="1000" step="10">
+        </div>
+      </div>
+      <div class="toggle-row" style="margin-top:14px;">
+        <input type="checkbox" id="inpMedical" checked>
+        <label for="inpMedical" style="margin:0;color:var(--text);font-size:14px;">高齢期の医療・介護費の自動ステップアップを有効にする</label>
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label>医療・介護バッファ開始年齢<span class="unit">歳</span></label>
+          <input type="number" id="inpMedicalAge" value="75" min="60" max="100" step="1">
+        </div>
+        <div class="field">
+          <label>年間医療・介護バッファ<span class="unit">万円</span></label>
+          <input type="number" id="inpMedicalAmt" value="50" min="0" step="10">
+        </div>
+        <div class="field">
+          <label>介護一時金の発生年齢<span class="unit">歳</span></label>
+          <input type="number" id="inpCareAge" value="80" min="60" max="100" step="1">
+        </div>
+        <div class="field">
+          <label>介護一時金<span class="unit">万円（0で無効）</span></label>
+          <input type="number" id="inpCareAmt" value="500" min="0" step="50">
+        </div>
+      </div>
+      <p class="footnote" style="margin-top:10px;">※ 上記の特別支出およびライフイベント・周期支出は、ガードレール戦略の増減対象には含めず「基本の年間支出」のみを調整した上で固定費として上乗せされます。</p>
     </div>
   </details>
 
@@ -303,7 +339,9 @@
       <li>支出はインフレ率で毎年複利増加。ライフイベント・周期支出は発生年に加算します。</li>
       <li>年金開始後は必要取崩し額から年金を相殺します（年金もインフレ連動）。</li>
       <li>税金は取得元本を追跡し、取崩し額のうち利益部分に20.315%を課税した上で手取りが必要額に一致するようグロスアップします。</li>
-      <li>ガードレール：引出率が初期引出率の許容幅を上回ると支出を10%カット、下回ると10%増額します（調整幅は基本支出の50〜150%に制限）。</li>
+      <li>ガードレール：引出率が初期引出率の許容幅を上回ると支出を10%カット、下回ると10%増額します（調整幅は基本支出の50〜150%に制限）。判定・調整の対象は「基本の年間支出」のみで、ライフイベント・周期支出・税社保スパイク・医療介護費などの特別支出は固定費としてそのまま上乗せします。</li>
+      <li>FIRE翌年に前年給与ベースの住民税・健康保険料（税金・社保スパイク）を一時費用として加算できます。</li>
+      <li>高齢期は指定年齢以降の年間医療・介護バッファと、特定年齢での介護一時金を自動加算できます。</li>
       <li>本シミュレーションは将来の成果を保証するものではありません。</li>
     </ul>
   </div>
@@ -349,28 +387,51 @@ class FireSimulationEngine {
     return Math.exp((mu - 0.5 * sigma * sigma) + sigma * z);
   }
 
-  /** 年齢→スポット支出（ライフイベント＋周期支出）のマップを事前構築 */
+  /**
+   * 年齢→特別支出（ライフイベント＋周期支出＋税社保スパイク＋医療介護費）のマップを事前構築。
+   * モンテカルロのループ内で年齢判定を行わないための前処理（パフォーマンス要件）。
+   * これらの特別支出はガードレール調整の対象外（固定費扱い）。
+   */
   _buildSpotExpenseMap() {
     const map = {};
-    const add = (age, amt) => {
-      if (!Number.isFinite(age) || !Number.isFinite(amt) || amt <= 0) return;
-      const a = Math.round(age);
-      if (a < this.p.currentAge || a > this.endAge) return;
-      map[a] = (map[a] || 0) + amt;
-    };
-    // 1) ユーザー定義ライフイベント
-    for (const ev of this.p.events) add(ev.age, ev.amount);
-    // 2) 車の買い替え（周期）
-    if (this.p.carCost > 0 && this.p.carCycle >= 1) {
-      for (let a = this.p.currentAge + this.p.carCycle; a <= this.endAge; a += this.p.carCycle) {
-        add(a, this.p.carCost);
+    try {
+      const add = (age, amt) => {
+        if (!Number.isFinite(age) || !Number.isFinite(amt) || amt <= 0) return;
+        const a = Math.round(age);
+        if (a < this.p.currentAge || a > this.endAge) return;
+        map[a] = (map[a] || 0) + amt;
+      };
+      // 1) ユーザー定義ライフイベント
+      for (const ev of this.p.events) add(ev.age, ev.amount);
+      // 2) 車の買い替え（周期）
+      if (this.p.carCost > 0 && this.p.carCycle >= 1) {
+        for (let a = this.p.currentAge + this.p.carCycle; a <= this.endAge; a += this.p.carCycle) {
+          add(a, this.p.carCost);
+        }
       }
-    }
-    // 3) 住宅修繕（周期）
-    if (this.p.repairCost > 0 && this.p.repairCycle >= 1) {
-      for (let a = this.p.currentAge + this.p.repairCycle; a <= this.endAge; a += this.p.repairCycle) {
-        add(a, this.p.repairCost);
+      // 3) 住宅修繕（周期）
+      if (this.p.repairCost > 0 && this.p.repairCycle >= 1) {
+        for (let a = this.p.currentAge + this.p.repairCycle; a <= this.endAge; a += this.p.repairCycle) {
+          add(a, this.p.repairCost);
+        }
       }
+      // 4) FIRE翌年の税金・社保スパイク（前年給与ベースの住民税・健康保険料）
+      if (this.p.taxSpikeEnabled && this.p.taxSpikeAmount > 0) {
+        add(this.p.fireAge + 1, this.p.taxSpikeAmount);
+      }
+      // 5) 高齢期の医療・介護バッファ（開始年齢以降、毎年加算）
+      if (this.p.medicalEnabled && this.p.medicalAmount > 0) {
+        for (let a = Math.max(this.p.medicalStartAge, this.p.currentAge + 1); a <= this.endAge; a++) {
+          add(a, this.p.medicalAmount);
+        }
+      }
+      // 6) 介護一時金（特定年齢で一括発生）
+      if (this.p.medicalEnabled && this.p.careLumpAmount > 0) {
+        add(this.p.careLumpAge, this.p.careLumpAmount);
+      }
+    } catch (e) {
+      console.error("特別支出マップの構築に失敗しました", e);
+      throw new Error("特別支出マップの構築に失敗しました: " + e.message);
     }
     return map;
   }
@@ -427,14 +488,22 @@ class FireSimulationEngine {
         }
       } else {
         // --- 取崩しフェーズ ---
+        // 【ガードレール分離】基本生活費のみを調整対象とし、特別支出（ライフイベント・
+        // 周期支出・税社保スパイク・医療介護費）は固定費としてそのまま上乗せする。
         const baseExpense = p.annualExpense * inflFactor * adjFactor;
         const pension = age >= p.pensionAge ? p.pensionAmount * inflFactor : 0;
-        const netNeed = Math.max(0, baseExpense + spot - pension);
-        const gross = this._grossUpForTax(netNeed, assets, costBasis);
 
-        // ガードレール判定（引出率 = グロス取崩し / 資産）
-        if (p.guardrailEnabled && assets > 0 && gross > 0) {
-          const wr = gross / assets;
+        // 年金はまず基本生活費から相殺し、余剰があれば特別支出にも充当する
+        const baseNet = Math.max(0, baseExpense - pension);
+        const pensionSurplus = Math.max(0, pension - baseExpense);
+        const specialNet = Math.max(0, spot - pensionSurplus);
+
+        // 基本支出分のグロス取崩し（ガードレール判定のベース）
+        const grossBase = this._grossUpForTax(baseNet, assets, costBasis);
+
+        // ガードレール判定（引出率 = 基本支出のグロス取崩し / 資産。特別支出は含めない）
+        if (p.guardrailEnabled && assets > 0 && grossBase > 0) {
+          const wr = grossBase / assets;
           const upper = p.initialWR * (1 + p.grBand);
           const lower = p.initialWR * (1 - p.grBand);
           if (wr > upper) {
@@ -443,6 +512,10 @@ class FireSimulationEngine {
             adjFactor = Math.min(this.ADJ_MAX, adjFactor * (1 + this.GUARDRAIL_RAISE));
           }
         }
+
+        // 特別支出分のグロス取崩し（固定費扱い・ガードレール対象外）
+        const grossSpecial = this._grossUpForTax(specialNet, assets, costBasis);
+        const gross = grossBase + grossSpecial;
 
         const basisOut = assets > 0 ? gross * (costBasis / assets) : 0;
         assets -= gross;
@@ -574,7 +647,9 @@ class SimulatorUI {
       "inpReturn", "inpStdev", "inpInflation", "inpSavings", "inpTrials",
       "inpGuardrail", "inpInitWR", "inpGrBand",
       "inpPensionAge", "inpPensionAmt", "inpTax",
-      "inpCarCost", "inpCarCycle", "inpRepairCost", "inpRepairCycle"
+      "inpCarCost", "inpCarCycle", "inpRepairCost", "inpRepairCycle",
+      "inpTaxSpike", "inpTaxSpikeAmt",
+      "inpMedical", "inpMedicalAge", "inpMedicalAmt", "inpCareAge", "inpCareAmt"
     ];
     for (const id of ids) {
       this.$(id).addEventListener("input", () => this.scheduleRecalc());
@@ -582,6 +657,16 @@ class SimulatorUI {
     this.$("btnAddEvent").addEventListener("click", () => {
       this.addEventRow(this._num("inpAge", 43) + 5, "", 100);
       this.scheduleRecalc();
+    });
+    this.$("btnAddMarriage").addEventListener("click", () => {
+      try {
+        // 子どもの結婚・独立支援プリセット：現在年齢+15年あたりを初期値に設定
+        const presetAge = Math.min(99, this._num("inpAge", 43) + 15);
+        this.addEventRow(presetAge, "子どもの結婚・独立支援", 300);
+        this.scheduleRecalc();
+      } catch (e) {
+        console.error("プリセットイベントの追加に失敗しました", e);
+      }
     });
   }
 
@@ -643,7 +728,14 @@ class SimulatorUI {
       carCost: Math.max(0, this._num("inpCarCost", 0)),
       carCycle: Math.max(1, Math.round(this._num("inpCarCycle", 7))),
       repairCost: Math.max(0, this._num("inpRepairCost", 0)),
-      repairCycle: Math.max(1, Math.round(this._num("inpRepairCycle", 10)))
+      repairCycle: Math.max(1, Math.round(this._num("inpRepairCycle", 10))),
+      taxSpikeEnabled: this.$("inpTaxSpike").checked,
+      taxSpikeAmount: Math.max(0, this._num("inpTaxSpikeAmt", 150)),
+      medicalEnabled: this.$("inpMedical").checked,
+      medicalStartAge: Math.round(this._num("inpMedicalAge", 75)),
+      medicalAmount: Math.max(0, this._num("inpMedicalAmt", 50)),
+      careLumpAge: Math.round(this._num("inpCareAge", 80)),
+      careLumpAmount: Math.max(0, this._num("inpCareAmt", 500))
     };
   }
 
