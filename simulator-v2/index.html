@@ -1,87 +1,82 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FIREシミュレーター Pro — モンテカルロ × ガードレール戦略</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+---
+layout: default
+title: FIREシミュレーターPro
+description: モンテカルロ法×ガードレール戦略のFIREシミュレーター。成功確率・資産推移のブレ幅・ライフイベントを考慮した本格シミュレーション。
+---
 <style>
-  :root {
-    --bg: #12121f;
-    --panel: #1a1a2e;
-    --panel2: #21213a;
-    --border: #3a3a55;
-    --text: #e8e8f0;
-    --muted: #9a9ab0;
-    --accent: #f0c040;
-    --blue: #3b82f6;
-    --green: #4ade80;
-    --red: #f87171;
-    --orange: #fb923c;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
+  .simpro {
+    --sp-bg: #12121f;
+    --sp-panel: #1a1a2e;
+    --sp-panel2: #21213a;
+    --sp-border: #3a3a55;
+    --sp-text: #e8e8f0;
+    --sp-muted: #9a9ab0;
+    --sp-accent: #f0c040;
+    --sp-blue: #3b82f6;
+    --sp-green: #4ade80;
+    --sp-red: #f87171;
+    --sp-orange: #fb923c;
     line-height: 1.6;
   }
-  .container { max-width: 860px; margin: 0 auto; padding: 24px 16px 80px; }
-  h1 { font-size: 22px; color: var(--accent); margin: 0 0 4px; }
-  .subtitle { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
-  .card {
-    background: var(--panel);
-    border: 1px solid var(--border);
+  .simpro h1.sp-title { font-size: 22px; color: var(--sp-accent); margin: 0 0 4px; border: none; }
+  .simpro .subtitle { color: var(--sp-muted); font-size: 13px; margin-bottom: 24px; }
+  .simpro .sp-card {
+    background: var(--sp-panel);
+    border: 1px solid var(--sp-border);
     border-radius: 10px;
     padding: 20px;
     margin-bottom: 20px;
   }
-  .card h2 {
+  .simpro .sp-card h2 {
     font-size: 15px;
-    color: var(--accent);
+    color: var(--sp-accent);
     margin: 0 0 14px;
     padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--sp-border);
   }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
-  .field label {
+  .simpro .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .simpro .grid { grid-template-columns: 1fr; } }
+  .simpro .field label {
     display: block;
     font-size: 13px;
-    color: var(--muted);
+    color: var(--sp-muted);
     margin-bottom: 4px;
   }
-  .field input[type="number"] {
+  .simpro .field input[type="number"] {
     width: 100%;
+    box-sizing: border-box;
     padding: 9px 10px;
-    background: var(--panel2);
-    border: 1px solid var(--border);
+    background: var(--sp-panel2);
+    border: 1px solid var(--sp-border);
     border-radius: 6px;
-    color: var(--text);
+    color: var(--sp-text);
     font-size: 15px;
   }
-  .field input:focus { outline: none; border-color: var(--blue); }
-  .unit { font-size: 12px; color: var(--muted); margin-left: 4px; }
-  table.events { width: 100%; border-collapse: collapse; }
-  table.events th {
+  .simpro .field input:focus { outline: none; border-color: var(--sp-blue); }
+  .simpro .unit { font-size: 12px; color: var(--sp-muted); margin-left: 4px; }
+  .simpro table.events { width: 100%; border-collapse: collapse; margin: 0; }
+  .simpro table.events th {
     text-align: left;
     font-size: 12px;
-    color: var(--muted);
+    color: var(--sp-muted);
     font-weight: normal;
     padding: 4px 6px;
+    background: transparent;
+    border-bottom: none;
   }
-  table.events td { padding: 4px 6px; }
-  table.events input {
+  .simpro table.events td { padding: 4px 6px; border-bottom: none; }
+  .simpro table.events tr:hover td { background: transparent; }
+  .simpro table.events input {
     width: 100%;
+    box-sizing: border-box;
     padding: 7px 8px;
-    background: var(--panel2);
-    border: 1px solid var(--border);
+    background: var(--sp-panel2);
+    border: 1px solid var(--sp-border);
     border-radius: 5px;
-    color: var(--text);
+    color: var(--sp-text);
     font-size: 14px;
   }
-  .btn {
+  .simpro .sp-btn {
     display: inline-block;
     padding: 8px 16px;
     border: none;
@@ -90,79 +85,78 @@
     cursor: pointer;
     font-weight: bold;
   }
-  .btn-add { background: var(--panel2); color: var(--accent); border: 1px dashed var(--accent); width: 100%; margin-top: 8px; }
-  .btn-del { background: transparent; color: var(--red); border: 1px solid var(--border); padding: 6px 10px; }
-  details.advanced { margin-bottom: 20px; }
-  details.advanced summary {
+  .simpro .sp-btn-add { background: var(--sp-panel2); color: var(--sp-accent); border: 1px dashed var(--sp-accent); width: 100%; margin-top: 8px; }
+  .simpro .sp-btn-del { background: transparent; color: var(--sp-red); border: 1px solid var(--sp-border); padding: 6px 10px; }
+  .simpro details.advanced { margin-bottom: 20px; }
+  .simpro details.advanced summary {
     cursor: pointer;
-    background: var(--panel);
-    border: 1px solid var(--border);
+    background: var(--sp-panel);
+    border: 1px solid var(--sp-border);
     border-radius: 10px;
     padding: 14px 20px;
     font-size: 14px;
-    color: var(--muted);
+    color: var(--sp-muted);
     list-style: none;
     user-select: none;
   }
-  details.advanced summary::before { content: "▸ "; color: var(--accent); }
-  details.advanced[open] summary::before { content: "▾ "; }
-  details.advanced[open] summary { border-radius: 10px 10px 0 0; border-bottom: none; }
-  details.advanced .card { border-radius: 0 0 10px 10px; margin-bottom: 0; }
-  .toggle-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .toggle-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--blue); }
-  #verdict {
+  .simpro details.advanced summary::before { content: "▸ "; color: var(--sp-accent); }
+  .simpro details.advanced[open] summary::before { content: "▾ "; }
+  .simpro details.advanced[open] summary { border-radius: 10px 10px 0 0; border-bottom: none; }
+  .simpro details.advanced .sp-card { border-radius: 0 0 10px 10px; margin-bottom: 0; }
+  .simpro .toggle-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .simpro .toggle-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--sp-blue); }
+  .simpro #verdict {
     border-radius: 10px;
     padding: 22px;
     text-align: center;
     margin-bottom: 20px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--sp-border);
   }
-  #verdict .badge { font-size: 22px; font-weight: bold; display: block; margin-bottom: 6px; }
-  #verdict .detail { font-size: 14px; color: var(--muted); }
-  .v-safe   { background: rgba(74,222,128,0.08); border-color: var(--green) !important; }
-  .v-safe .badge { color: var(--green); }
-  .v-ok     { background: rgba(59,130,246,0.08); border-color: var(--blue) !important; }
-  .v-ok .badge { color: var(--blue); }
-  .v-warn   { background: rgba(251,146,60,0.08); border-color: var(--orange) !important; }
-  .v-warn .badge { color: var(--orange); }
-  .v-danger { background: rgba(248,113,113,0.08); border-color: var(--red) !important; }
-  .v-danger .badge { color: var(--red); }
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
-  @media (max-width: 560px) { .stats { grid-template-columns: 1fr; } }
-  .stat {
-    background: var(--panel);
-    border: 1px solid var(--border);
+  .simpro #verdict .v-badge { font-size: 22px; font-weight: bold; display: block; margin-bottom: 6px; }
+  .simpro #verdict .detail { font-size: 14px; color: var(--sp-muted); }
+  .simpro .v-safe   { background: rgba(74,222,128,0.08); border-color: var(--sp-green) !important; }
+  .simpro .v-safe .v-badge { color: var(--sp-green); }
+  .simpro .v-ok     { background: rgba(59,130,246,0.08); border-color: var(--sp-blue) !important; }
+  .simpro .v-ok .v-badge { color: var(--sp-blue); }
+  .simpro .v-warn   { background: rgba(251,146,60,0.08); border-color: var(--sp-orange) !important; }
+  .simpro .v-warn .v-badge { color: var(--sp-orange); }
+  .simpro .v-danger { background: rgba(248,113,113,0.08); border-color: var(--sp-red) !important; }
+  .simpro .v-danger .v-badge { color: var(--sp-red); }
+  .simpro .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  @media (max-width: 560px) { .simpro .stats { grid-template-columns: 1fr; } }
+  .simpro .stat {
+    background: var(--sp-panel);
+    border: 1px solid var(--sp-border);
     border-radius: 10px;
     padding: 14px;
     text-align: center;
   }
-  .stat .label { font-size: 12px; color: var(--muted); }
-  .stat .value { font-size: 20px; font-weight: bold; color: var(--text); }
-  #errorBox {
+  .simpro .stat .label { font-size: 12px; color: var(--sp-muted); }
+  .simpro .stat .value { font-size: 20px; font-weight: bold; color: var(--sp-text); }
+  .simpro #errorBox {
     display: none;
     background: rgba(248,113,113,0.1);
-    border: 1px solid var(--red);
+    border: 1px solid var(--sp-red);
     border-radius: 8px;
     padding: 12px 16px;
-    color: var(--red);
+    color: var(--sp-red);
     font-size: 13px;
     margin-bottom: 16px;
     white-space: pre-wrap;
   }
-  .footnote { font-size: 12px; color: var(--muted); margin-top: 16px; }
-  #calcStatus { font-size: 12px; color: var(--muted); text-align: right; min-height: 18px; }
+  .simpro .footnote { font-size: 12px; color: var(--sp-muted); margin-top: 16px; }
+  .simpro #calcStatus { font-size: 12px; color: var(--sp-muted); text-align: right; min-height: 18px; }
 </style>
-</head>
-<body>
-<div class="container">
 
-  <h1>🔥 FIREシミュレーター Pro</h1>
+<div class="simpro">
+
+  <h1 class="sp-title">🔥 FIREシミュレーター Pro</h1>
   <p class="subtitle">モンテカルロ法（幾何ブラウン運動）× ガードレール動的取崩し × ライフイベント連動。数値を変えると自動で再計算されます。</p>
 
   <div id="errorBox"></div>
 
   <!-- ============ 基本設定（常に表示） ============ -->
-  <div class="card">
+  <div class="sp-card">
     <h2>基本設定 — まずはこの4つだけでOK</h2>
     <div class="grid">
       <div class="field">
@@ -185,7 +179,7 @@
   </div>
 
   <!-- ============ ライフイベント（常に表示） ============ -->
-  <div class="card">
+  <div class="sp-card">
     <h2>ライフイベント設定 — 教育費・大きな買い物など</h2>
     <table class="events">
       <thead>
@@ -193,14 +187,14 @@
       </thead>
       <tbody id="eventRows"></tbody>
     </table>
-    <button class="btn btn-add" id="btnAddEvent">＋ イベント追加</button>
-    <button class="btn btn-add" id="btnAddMarriage" style="margin-top:6px;">＋ プリセット: 子どもの結婚・独立支援（300万円）</button>
+    <button class="sp-btn sp-btn-add" id="btnAddEvent">＋ イベント追加</button>
+    <button class="sp-btn sp-btn-add" id="btnAddMarriage" style="margin-top:6px;">＋ プリセット: 子どもの結婚・独立支援（300万円）</button>
   </div>
 
   <!-- ============ 詳細設定（デフォルト非表示） ============ -->
   <details class="advanced" id="advancedPanel">
     <summary>詳細設定（市場前提・ガードレール・年金・税金・周期支出）— 慣れてきたら調整</summary>
-    <div class="card">
+    <div class="sp-card">
       <div class="grid">
         <div class="field">
           <label>期待リターン（年率）<span class="unit">%</span></label>
@@ -227,7 +221,7 @@
       <h2 style="margin-top:22px;">ガードレール戦略（動的取崩し）</h2>
       <div class="toggle-row">
         <input type="checkbox" id="inpGuardrail" checked>
-        <label for="inpGuardrail" style="margin:0;color:var(--text);font-size:14px;">ガードレール戦略を有効にする（暴落時 支出−10% / 好調時 支出＋10%）</label>
+        <label for="inpGuardrail" style="margin:0;color:var(--sp-text);font-size:14px;">ガードレール戦略を有効にする（暴落時 支出−10% / 好調時 支出＋10%）</label>
       </div>
       <div class="grid">
         <div class="field">
@@ -253,7 +247,7 @@
       </div>
       <div class="toggle-row" style="margin-top:10px;">
         <input type="checkbox" id="inpTax" checked>
-        <label for="inpTax" style="margin:0;color:var(--text);font-size:14px;">取崩し時の譲渡益課税（20.315%）を考慮する</label>
+        <label for="inpTax" style="margin:0;color:var(--sp-text);font-size:14px;">取崩し時の譲渡益課税（20.315%）を考慮する</label>
       </div>
 
       <h2 style="margin-top:22px;">周期支出</h2>
@@ -279,7 +273,7 @@
       <h2 style="margin-top:22px;">高度なライフステージ設定</h2>
       <div class="toggle-row">
         <input type="checkbox" id="inpTaxSpike" checked>
-        <label for="inpTaxSpike" style="margin:0;color:var(--text);font-size:14px;">FIRE翌年の税金・社保スパイク（前年給与ベースの住民税・健康保険料）を加算する</label>
+        <label for="inpTaxSpike" style="margin:0;color:var(--sp-text);font-size:14px;">FIRE翌年の税金・社保スパイク（前年給与ベースの住民税・健康保険料）を加算する</label>
       </div>
       <div class="grid">
         <div class="field">
@@ -289,7 +283,7 @@
       </div>
       <div class="toggle-row" style="margin-top:14px;">
         <input type="checkbox" id="inpMedical" checked>
-        <label for="inpMedical" style="margin:0;color:var(--text);font-size:14px;">高齢期の医療・介護費の自動ステップアップを有効にする</label>
+        <label for="inpMedical" style="margin:0;color:var(--sp-text);font-size:14px;">高齢期の医療・介護費の自動ステップアップを有効にする</label>
       </div>
       <div class="grid">
         <div class="field">
@@ -316,7 +310,7 @@
   <!-- ============ 結果出力 ============ -->
   <div id="calcStatus"></div>
   <div id="verdict" class="v-ok">
-    <span class="badge">計算中…</span>
+    <span class="v-badge">計算中…</span>
     <span class="detail"></span>
   </div>
 
@@ -326,15 +320,15 @@
     <div class="stat"><div class="label">FIRE時点の資産（中央値）</div><div class="value" id="statFire">—</div></div>
   </div>
 
-  <div class="card">
+  <div class="sp-card">
     <h2>100歳までの資産推移（太線＝中央値 / 帯＝ブレ幅）</h2>
     <canvas id="mainChart"></canvas>
     <p class="footnote">濃い帯：25〜75パーセンタイル（半分のケースが収まる範囲）／薄い帯：10〜90パーセンタイル。金額は名目（インフレ調整前）です。</p>
   </div>
 
-  <div class="card">
+  <div class="sp-card">
     <h2>計算の前提</h2>
-    <ul style="font-size:13px;color:var(--muted);margin:0;padding-left:20px;">
+    <ul style="font-size:13px;color:var(--sp-muted);margin:0;padding-left:20px;">
       <li>資産リターンは幾何ブラウン運動（対数正規）に従う乱数で年次生成します。</li>
       <li>支出はインフレ率で毎年複利増加。ライフイベント・周期支出は発生年に加算します。</li>
       <li>年金開始後は必要取崩し額から年金を相殺します（年金もインフレ連動）。</li>
@@ -680,12 +674,12 @@ class SimulatorUI {
       '<td><input type="number" class="ev-age" min="20" max="100" step="1"></td>' +
       '<td><input type="text" class="ev-name" placeholder="例: 大学進学、車の購入"></td>' +
       '<td><input type="number" class="ev-amt" min="0" step="10"></td>' +
-      '<td><button class="btn btn-del" title="削除">✕</button></td>';
+      '<td><button class="sp-btn sp-btn-del" title="削除">✕</button></td>';
     tr.querySelector(".ev-age").value = age;
     tr.querySelector(".ev-name").value = name;
     tr.querySelector(".ev-amt").value = amount;
     tr.querySelectorAll("input").forEach(el => el.addEventListener("input", () => this.scheduleRecalc()));
-    tr.querySelector(".btn-del").addEventListener("click", () => {
+    tr.querySelector(".sp-btn-del").addEventListener("click", () => {
       tr.remove();
       this.scheduleRecalc();
     });
@@ -794,7 +788,7 @@ class SimulatorUI {
       badge = "🛑【危険】計画の見直しが必要です";
       detail = "半数以上のケースで資産が枯渇します。前提条件を大きく見直してください。";
     }
-    verdict.querySelector(".badge").textContent = badge;
+    verdict.querySelector(".v-badge").textContent = badge;
     verdict.querySelector(".detail").textContent = detail;
 
     // --- 統計値 ---
@@ -823,7 +817,7 @@ class SimulatorUI {
       // 中央値（メイン太線）
       { label: "中央値（最も確率の高い推移）", data: round0(pct.p50),
         borderColor: "#4ade80", borderWidth: 3, pointRadius: 0, fill: false, tension: 0.25, order: 1 },
-      // FIRE年齢の目印として目標到達ラインは省かず、FIRE時点を縦に意識できるようにnullライン
+      // FIRE開始時点のマーカー
       { label: "FIRE開始", data: labels.map((_, i) => result.ages[i] === params.fireAge ? round0(pct.p50)[i] : null),
         borderColor: "#f0c040", backgroundColor: "#f0c040", pointRadius: 6, pointStyle: "triangle",
         showLine: false, order: 0 }
@@ -881,5 +875,3 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 </script>
-</body>
-</html>
