@@ -1,136 +1,177 @@
----
-layout: bento
-title: ホーム
-nav: home
-description: 43歳会社員がCoast FIREを目指す実録ダッシュボード。総資産・達成率・3バケツ戦略・月次レポートを公開中。
----
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>father cafe | FIRE×父親の実録</title>
+<meta name="description" content="43歳会社員がCoast FIREを目指す実録ダッシュボード。総資産・達成率・3バケツ戦略・月次レポートをすべて公開。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="father cafe | FIRE×父親の実録">
+<meta property="og:description" content="43歳会社員がCoast FIREを目指す実録ダッシュボード。総資産・達成率・3バケツ戦略を公開中。">
+<meta property="og:url" content="https://koryo1982.github.io/fire-design/">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@father_cafe">
+<link rel="stylesheet" href="/fire-design/assets/css/global.css">
+<script src="/fire-design/assets/js/config.js"></script>
+</head>
+<body>
 
-<!-- ============ Hero Tile ============ -->
-<div class="bento-grid">
-  <div class="tile hero">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
-      <div>
-        <span class="pill">☕ Coast FIRE 実録</span>
-        <h1 style="font-family:var(--font-num);font-weight:900;font-size:1.7rem;letter-spacing:-0.03em;margin:12px 0 4px;">FIREを目指す43歳会社員の、<br>リアルな設計図と実績。</h1>
-        <p style="color:var(--text-muted);font-size:0.88rem;margin:0;">子2人・会社員。完全FIREではなく <strong style="color:var(--text);">Coast FIRE</strong> を選んだ理由と毎月の進捗をすべて公開。</p>
+<header class="bento-header" id="site-header"></header>
+
+<main class="bento-wrap">
+
+  <!-- ============ Hero Bento ============ -->
+  <div class="bento-grid">
+    <div class="tile hero fade-in">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+        <div>
+          <span class="pill">☕ Coast FIRE 実録</span>
+          <h1 style="font-family:var(--font-num);font-weight:900;font-size:1.7rem;letter-spacing:-0.03em;margin:12px 0 4px;">FIREを目指す43歳会社員の、<br>リアルな設計図と実績。</h1>
+          <p style="color:var(--text-muted);font-size:0.88rem;margin:0;">大学生の子2人・会社員。完全FIREではなく <strong style="color:var(--text);">Coast FIRE</strong> を選んだ理由と毎月の進捗をすべて公開。</p>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="https://x.com/father_cafe" class="bento-btn primary" id="ctaFollowTop">𝕏 フォローして進捗を追う</a>
+          <a href="/fire-design/simulator/" class="bento-btn ghost">シミュレーターを試す</a>
+        </div>
       </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <a href="/fire-design/design/" class="bento-btn primary">設計図を見る →</a>
-        <a href="/fire-design/simulator/" class="bento-btn ghost">シミュレーターを試す</a>
-      </div>
-    </div>
-    <div class="hero-grid">
-      <div>
-        <div class="tile-label"><span class="dot"></span>総資産</div>
-        <div class="hero-big"><span id="heroAssets">—</span><span class="vu">万円</span></div>
-        <div class="tile-sub">2026年5月時点</div>
-      </div>
-      <div>
-        <div class="tile-label"><span class="dot"></span>目標達成率</div>
-        <div class="hero-big lime"><span id="heroProgress">—</span><span class="vu">%</span></div>
-        <div class="bento-progress"><div id="heroProgressBar" style="width:0%"></div></div>
-        <div class="tile-sub">決行ライン <span class="num" id="heroTarget">—</span>万円まで残り <span class="num" id="heroRemaining">—</span>万円</div>
-      </div>
-      <div>
-        <div class="tile-label"><span class="dot"></span>Coast FIREまで</div>
-        <div class="hero-big"><span id="heroDays">—</span><span class="vu">日</span></div>
-        <div class="tile-sub">目標：<span class="num">50</span>歳（2032年12月）</div>
+      <div class="hero-grid">
+        <div>
+          <div class="tile-label"><span class="dot"></span>総資産</div>
+          <div class="hero-big"><span id="heroAssets">—</span><span class="vu">万円</span></div>
+          <div class="tile-sub" id="heroUpdated">—時点</div>
+        </div>
+        <div>
+          <div class="tile-label"><span class="dot"></span>目標達成率</div>
+          <div class="hero-big lime"><span id="heroProgress">—</span><span class="vu">%</span></div>
+          <div class="bento-progress"><div id="heroProgressBar" style="width:0%"></div></div>
+          <div class="tile-sub">決行ライン <span class="num" id="heroTarget">—</span>万円まで残り <span class="num" id="heroRemaining">—</span>万円</div>
+        </div>
+        <div>
+          <div class="tile-label"><span class="dot"></span>Coast FIREまで</div>
+          <div class="hero-big"><span id="heroDays">—</span><span class="vu">日</span></div>
+          <div class="tile-sub">目標：<span class="num">50</span>歳（2032年12月）</div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- ============ 3バケツ + 設計図サマリー ============ -->
-<div class="bento-grid">
-  <a href="/fire-design/design/" class="tile span-8">
-    <div class="tile-label"><span class="dot"></span>FIRE設計図 — 3バケツ戦略</div>
-    <p style="margin-top:0;">資産を「安全・安定・成長」の3つのバケツに分け、暴落時でも成長資産を売らずに済む構造を作る。これが設計図の核。</p>
-    <div class="alloc-bar" id="homeAllocBar">
-      <div class="alloc-cash" style="width:6.4%"></div>
-      <div class="alloc-bond" style="width:12%">12%</div>
-      <div class="alloc-equity" style="width:81.6%">82%</div>
-    </div>
-    <div class="alloc-legend">
-      <span><span class="sw" style="background:#93c5fd"></span>A 生活防衛 <span class="num" id="homeBucketA">636</span>万</span>
-      <span><span class="sw" style="background:#c4b5fd"></span>B 安定 <span class="num" id="homeBucketB">1,200</span>万</span>
-      <span><span class="sw" style="background:var(--lime)"></span>C 成長 <span class="num" id="homeBucketC">8,173</span>万</span>
-    </div>
-    <p style="margin-bottom:0;font-size:0.8rem;color:var(--text-dim);">設計図全文を読む →</p>
-  </a>
+  <!-- ============ 3バケツ + 達成率リング ============ -->
+  <div class="bento-grid">
+    <a href="/fire-design/design/" class="tile span-8 fade-in">
+      <div class="tile-label"><span class="dot"></span>FIRE設計図 — 3バケツ戦略</div>
+      <p style="margin-top:0;">資産を「安全・安定・成長」の3つのバケツに分け、暴落時でも成長資産を売らずに済む構造を作る。これが設計図の核。</p>
+      <div class="alloc-bar" id="homeAllocBar">
+        <div class="alloc-cash"></div>
+        <div class="alloc-bond"></div>
+        <div class="alloc-equity"></div>
+      </div>
+      <div class="alloc-legend" id="homeAllocLegend"></div>
+      <p style="margin-bottom:0;font-size:0.8rem;color:var(--text-dim);">設計図全文を読む →</p>
+    </a>
 
-  <div class="tile span-4">
-    <div class="tile-label"><span class="dot"></span>達成率</div>
-    <div class="ring" id="homeRing">
-      <div class="ring-text"><span class="pct" id="ringPct">—%</span><span class="cap">決行ライン比</span></div>
+    <div class="tile span-4 fade-in">
+      <div class="tile-label"><span class="dot"></span>達成率</div>
+      <div class="ring" id="homeRing">
+        <div class="ring-text"><span class="pct" id="ringPct">—%</span><span class="cap">決行ライン比</span></div>
+      </div>
+      <div class="tile-sub" style="text-align:center;" id="ringSub">—</div>
     </div>
-    <div class="tile-sub" style="text-align:center;">検討ライン 1億2,500万 ／ 決行ライン 1億3,500万</div>
   </div>
-</div>
 
-<!-- ============ コンテンツタイル ============ -->
-<div class="bento-grid">
-  <a href="/fire-design/monthly-report/2026/06/15/monthly-report-002/" class="tile span-6">
-    <div class="tile-label"><span class="dot"></span>月次レポート — 最新号</div>
-    <h2>2026年6月号（#002）</h2>
-    <p>理想（設計図）と現実（実績）の乖離を毎月記録。資産推移・貯蓄率・バケツ残高をオープンに。</p>
-    <span class="pill blue">毎月更新</span>
-  </a>
+  <!-- ============ UXファネル導線タイル ============ -->
+  <div class="bento-grid">
+    <a href="/fire-design/about.html" class="tile span-6 fade-in">
+      <div class="tile-label"><span class="dot"></span>About — なぜCoast FIREか</div>
+      <h2>👤 教育費×FIREのリアル</h2>
+      <p>大学生2人（法学系・理工系）の教育費を抱えながら、それでもFIREを諦めない43歳のストーリー。</p>
+      <span class="pill blue">まず読む</span>
+    </a>
 
-  <a href="/fire-design/simulator/" class="tile span-6">
-    <div class="tile-label"><span class="dot"></span>FIREシミュレーター Pro</div>
-    <h2>🔥 成功確率を試算する</h2>
-    <p>モンテカルロ法（3,000回試行）×ガードレール戦略で、あなたの計画が100歳まで持つ確率を計算。</p>
-    <span class="pill">無料・登録不要</span>
-  </a>
+    <a href="/fire-design/simulator/" class="tile span-6 fade-in">
+      <div class="tile-label"><span class="dot"></span>FIREシミュレーター Pro</div>
+      <h2>🔥 あなたの成功確率を試算</h2>
+      <p>モンテカルロ法（3,000回試行）×ガードレール戦略。あなたの数字で、100歳まで資産が持つ確率を計算。</p>
+      <span class="pill">無料・登録不要・60秒</span>
+    </a>
 
-  <a href="https://x.com/father_cafe" class="tile span-6">
-    <div class="tile-label"><span class="dot"></span>X（旧Twitter）</div>
-    <h2>@father_cafe</h2>
-    <p>日次の気づき・市況メモ・FIRE準備の試行錯誤をポスト中。</p>
-  </a>
+    <a href="/fire-design/monthly-report/2026/06/15/monthly-report-002/" class="tile span-6 fade-in">
+      <div class="tile-label"><span class="dot"></span>月次レポート — 最新号</div>
+      <h2>📊 2026年6月号（#002）</h2>
+      <p>理想（設計図）と現実（実績）の乖離を毎月記録。うまくいかない月も、そのまま公開。</p>
+      <span class="pill purple">毎月更新</span>
+    </a>
 
-  <a href="/fire-design/about/" class="tile span-6">
-    <div class="tile-label"><span class="dot"></span>About</div>
-    <h2>👤 プロフィール</h2>
-    <p>43歳・父・会社員。なぜCoast FIREなのか、どんな家族構成なのか。</p>
-  </a>
-</div>
+    <a href="/fire-design/design/" class="tile span-6 fade-in">
+      <div class="tile-label"><span class="dot"></span>FIRE設計図</div>
+      <h2>🗺️ 迷った時に立ち返る聖典</h2>
+      <p>IPS・3バケツ戦略・暴落時のガードレールルール。感情ではなくルールで動くための文書。</p>
+      <span class="pill amber">意思決定ルール</span>
+    </a>
+  </div>
+
+  <!-- ============ CTA ============ -->
+  <div class="bento-grid">
+    <div class="cta-banner fade-in">
+      <h2>この実験を、リアルタイムで見届けませんか？</h2>
+      <p>Coast FIREまでの全進捗・失敗・軌道修正をXで毎日発信しています。月次の詳細分析はnoteで。</p>
+      <div class="cta-row">
+        <a href="https://x.com/father_cafe" class="bento-btn primary">𝕏 @father_cafe をフォロー</a>
+        <a href="https://note.com/father_cafe" class="bento-btn ghost">note で深掘りを読む</a>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="bento-footer" id="site-footer"></footer>
 
 <script>
 "use strict";
 document.addEventListener("DOMContentLoaded", function () {
   try {
-    var p = FireStore.load();
-    var d = FireStore.derive(p);
-    var $ = function (id) { return document.getElementById(id); };
-    var fmt = function (n) { return Math.round(n).toLocaleString(); };
+    SiteUI.init("home");
 
-    $("heroAssets").textContent = fmt(p.currentAssets);
+    var f = SiteConfig.finance;
+    var d = SiteConfig.derived;
+    var fmt = SiteUI.fmt;
+    var $ = function (id) { return document.getElementById(id); };
+
+    /* Hero */
+    $("heroAssets").textContent = fmt(f.totalAssets);
+    $("heroUpdated").textContent = SiteConfig.updatedAt + "時点";
     $("heroProgress").textContent = d.progressLabel;
     $("heroProgressBar").style.width = d.progressPct + "%";
-    $("heroTarget").textContent = fmt(p.fireTarget);
+    $("heroTarget").textContent = fmt(f.fireTarget);
     $("heroRemaining").textContent = fmt(d.remaining);
     $("heroDays").textContent = d.daysToFire !== null ? fmt(d.daysToFire) : "—";
 
-    // 達成率リング（conic-gradient）
-    var ring = $("homeRing");
-    ring.style.background = "conic-gradient(var(--lime) " + d.progressPct + "%, rgba(255,255,255,0.08) 0)";
+    /* 達成率リング */
+    $("homeRing").style.background =
+      "conic-gradient(var(--lime) " + d.progressPct + "%, rgba(255,255,255,0.08) 0)";
     $("ringPct").textContent = d.progressLabel + "%";
+    $("ringSub").innerHTML = "検討ライン " + fmt(f.fireConsiderLine) + "万 ／ 決行ライン " + fmt(f.fireTarget) + "万";
 
-    // バケツ残高と配分バー
-    $("homeBucketA").textContent = fmt(p.bucketA);
-    $("homeBucketB").textContent = fmt(p.bucketB);
-    $("homeBucketC").textContent = fmt(p.bucketC);
+    /* 3バケツ配分バー＋凡例（config.jsのSSOTから動的生成） */
     var total = d.totalBuckets;
     if (total > 0) {
       var bar = $("homeAllocBar").children;
-      bar[0].style.width = (p.bucketA / total * 100).toFixed(1) + "%";
-      bar[1].style.width = (p.bucketB / total * 100).toFixed(1) + "%";
-      bar[2].style.width = (p.bucketC / total * 100).toFixed(1) + "%";
-      bar[2].textContent = Math.round(p.bucketC / total * 100) + "%";
+      var keys = ["A", "B", "C"];
+      var legendHtml = "";
+      for (var i = 0; i < keys.length; i++) {
+        var b = f.buckets[keys[i]];
+        var pct = b.amount / total * 100;
+        bar[i].style.width = pct.toFixed(1) + "%";
+        if (pct >= 10) bar[i].textContent = Math.round(pct) + "%";
+        legendHtml += '<span><span class="sw" style="background:' + b.color + '"></span>' +
+          keys[i] + " " + b.label + ' <span class="num">' + fmt(b.amount) + "</span>万</span>";
+      }
+      $("homeAllocLegend").innerHTML = legendHtml;
     }
   } catch (e) {
-    console.error("ダッシュボード初期化エラー", e);
+    console.error("Home初期化エラー", e);
   }
 });
 </script>
+</body>
+</html>

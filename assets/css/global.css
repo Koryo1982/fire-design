@@ -1,0 +1,306 @@
+/* =====================================================================
+ * father cafe — Global Design System (SaaS Edition)
+ * Bento UI (CSS Grid) + Glassmorphism / Dark Theme Default
+ * bg #0a0a0c / text #f5f5f5 / accent #deff9a (Lime)
+ * 全ページ共通。ナビ・フッターは assets/js/config.js が描画する。
+ * ===================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
+
+/* ---------- Design Tokens ---------- */
+:root {
+  --bg:            #0a0a0c;
+  --bg-glow-1:     rgba(222, 255, 154, 0.05);
+  --bg-glow-2:     rgba(96, 165, 250, 0.06);
+  --surface:       rgba(255, 255, 255, 0.04);
+  --surface-hover: rgba(255, 255, 255, 0.07);
+  --border:        rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --text:          #f5f5f5;
+  --text-muted:    #9b9ba4;
+  --text-dim:      #6b6b75;
+  --lime:          #deff9a;
+  --lime-dim:      rgba(222, 255, 154, 0.15);
+  --blue:          #60a5fa;
+  --purple:        #a78bfa;
+  --red:           #f87171;
+  --amber:         #fbbf24;
+  --font-num:      'Urbanist', -apple-system, sans-serif;
+  --font-jp:       'Noto Sans JP', -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  --radius:        20px;
+  --radius-sm:     12px;
+  --max-width:     1080px;
+  --blur:          blur(12px);
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 800px 500px at 80% -10%, var(--bg-glow-1), transparent),
+    radial-gradient(ellipse 700px 500px at 10% 30%, var(--bg-glow-2), transparent);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: var(--font-jp);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--lime); text-decoration: none; }
+a:hover { opacity: 0.85; }
+
+.bento-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 20px 96px; }
+
+/* ---------- Header / Nav ---------- */
+.bento-header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10, 10, 12, 0.6);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+.bento-header-inner {
+  max-width: var(--max-width); margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; gap: 16px; flex-wrap: wrap;
+}
+.bento-logo {
+  font-family: var(--font-num); font-weight: 800; font-size: 1.15rem;
+  letter-spacing: -0.02em; color: var(--text); white-space: nowrap;
+}
+.bento-logo .logo-dot { color: var(--lime); }
+.bento-nav { display: flex; gap: 4px; flex-wrap: wrap; }
+.bento-nav a {
+  color: var(--text-muted); font-size: 0.85rem; font-weight: 500;
+  padding: 6px 12px; border-radius: 999px; transition: all 0.15s; white-space: nowrap;
+}
+.bento-nav a:hover { color: var(--text); background: var(--surface-hover); opacity: 1; }
+.bento-nav a.active { color: #0a0a0c; background: var(--lime); font-weight: 700; }
+
+/* ---------- Bento Grid ---------- */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+  margin: 24px 0;
+}
+.tile {
+  grid-column: span 4;
+  background: var(--surface);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s, background 0.2s;
+}
+.tile:hover { border-color: var(--border-strong); }
+a.tile { color: inherit; display: block; }
+a.tile:hover { transform: translateY(-3px); background: var(--surface-hover); opacity: 1; }
+
+.span-3  { grid-column: span 3; }
+.span-4  { grid-column: span 4; }
+.span-5  { grid-column: span 5; }
+.span-6  { grid-column: span 6; }
+.span-7  { grid-column: span 7; }
+.span-8  { grid-column: span 8; }
+.span-9  { grid-column: span 9; }
+.span-12 { grid-column: span 12; }
+.row-2   { grid-row: span 2; }
+
+@media (max-width: 880px) {
+  .span-3, .span-4, .span-5 { grid-column: span 6; }
+  .span-6, .span-7, .span-8, .span-9 { grid-column: span 12; }
+}
+@media (max-width: 560px) {
+  .bento-grid { gap: 12px; }
+  .span-3, .span-4, .span-5, .span-6 { grid-column: span 12; }
+  .tile { padding: 20px; }
+}
+
+/* ---------- Tile Internals ---------- */
+.tile-label {
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.tile-label .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); display: inline-block; }
+.tile-value {
+  font-family: var(--font-num); font-weight: 800; font-size: 2.2rem;
+  letter-spacing: -0.03em; line-height: 1.1; color: var(--text);
+}
+.tile-value .vu { font-size: 1rem; font-weight: 600; color: var(--text-muted); margin-left: 2px; }
+.tile-value.lime { color: var(--lime); }
+.tile-sub { font-size: 0.82rem; color: var(--text-muted); margin-top: 6px; }
+.tile h2, .tile h3 { margin: 0 0 12px; font-size: 1.05rem; font-weight: 700; color: var(--text); }
+.tile p { color: var(--text-muted); font-size: 0.88rem; margin: 8px 0; }
+.tile ul { color: var(--text-muted); font-size: 0.86rem; padding-left: 18px; margin: 8px 0; }
+.tile li { margin: 4px 0; }
+.tile strong { color: var(--text); }
+.num { font-family: var(--font-num); font-weight: 700; letter-spacing: -0.01em; }
+
+/* ---------- Hero Tile ---------- */
+.tile.hero {
+  grid-column: span 12;
+  background: linear-gradient(135deg, rgba(222,255,154,0.07), rgba(96,165,250,0.05));
+  border-color: rgba(222,255,154,0.18);
+  padding: 36px 32px;
+}
+.hero-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+@media (max-width: 720px) { .hero-grid { grid-template-columns: 1fr; gap: 20px; } }
+.hero-big {
+  font-family: var(--font-num); font-weight: 900; font-size: 3.2rem;
+  letter-spacing: -0.04em; line-height: 1; color: var(--text);
+}
+.hero-big .vu { font-size: 1.3rem; font-weight: 700; color: var(--text-muted); }
+.hero-big.lime { color: var(--lime); }
+
+/* ---------- Progress ---------- */
+.bento-progress {
+  background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+  border-radius: 999px; height: 12px; overflow: hidden; margin-top: 14px;
+}
+.bento-progress > div {
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, #a3e635, var(--lime));
+  box-shadow: 0 0 14px rgba(222,255,154,0.4);
+}
+
+/* ---------- Progress Ring ---------- */
+.ring { position: relative; width: 130px; height: 130px; border-radius: 50%; margin: 8px auto; }
+.ring::after {
+  content: ''; position: absolute; inset: 11px; border-radius: 50%;
+  background: #131318;
+}
+.ring .ring-text {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; z-index: 1;
+}
+.ring .ring-text .pct { font-family: var(--font-num); font-weight: 800; font-size: 1.7rem; color: var(--lime); letter-spacing: -0.02em; }
+.ring .ring-text .cap { font-size: 0.66rem; color: var(--text-dim); }
+
+/* ---------- Badges & Buttons ---------- */
+.pill {
+  display: inline-block; padding: 4px 14px; border-radius: 999px;
+  font-size: 0.78rem; font-weight: 700;
+  background: var(--lime-dim); color: var(--lime); border: 1px solid rgba(222,255,154,0.3);
+}
+.pill.blue   { background: rgba(96,165,250,0.12); color: var(--blue);   border-color: rgba(96,165,250,0.3); }
+.pill.purple { background: rgba(167,139,250,0.12); color: var(--purple); border-color: rgba(167,139,250,0.3); }
+.pill.red    { background: rgba(248,113,113,0.12); color: var(--red);    border-color: rgba(248,113,113,0.3); }
+.pill.amber  { background: rgba(251,191,36,0.12);  color: var(--amber);  border-color: rgba(251,191,36,0.3); }
+.bento-btn {
+  display: inline-block; padding: 11px 26px; border-radius: 999px;
+  font-size: 0.9rem; font-weight: 700; transition: all 0.15s; border: none; cursor: pointer;
+}
+.bento-btn.primary { background: var(--lime); color: #0a0a0c; }
+.bento-btn.primary:hover { box-shadow: 0 0 24px rgba(222,255,154,0.35); opacity: 1; }
+.bento-btn.ghost { background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); }
+.bento-btn.ghost:hover { color: var(--text); border-color: var(--border-strong); opacity: 1; }
+
+/* ---------- Allocation Bar (IPS) ---------- */
+.alloc-bar { display: flex; height: 28px; border-radius: 999px; overflow: hidden; margin: 14px 0 10px; border: 1px solid var(--border); }
+.alloc-bar > div { display: flex; align-items: center; justify-content: center; font-family: var(--font-num); font-size: 0.72rem; font-weight: 800; color: #0a0a0c; }
+.alloc-cash   { background: #93c5fd; }
+.alloc-bond   { background: #c4b5fd; }
+.alloc-equity { background: var(--lime); }
+.alloc-legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.78rem; color: var(--text-muted); }
+.alloc-legend .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+
+/* ---------- Timeline ---------- */
+.timeline { list-style: none; margin: 8px 0 0; padding: 0 0 0 4px; position: relative; }
+.timeline::before {
+  content: ''; position: absolute; left: 9px; top: 6px; bottom: 6px;
+  width: 2px; background: linear-gradient(180deg, var(--lime), rgba(222,255,154,0.05));
+}
+.timeline li { position: relative; padding: 0 0 18px 32px; }
+.timeline li:last-child { padding-bottom: 0; }
+.timeline .tl-dot {
+  position: absolute; left: 2px; top: 5px; width: 16px; height: 16px; border-radius: 50%;
+  background: #131318; border: 2px solid var(--lime);
+}
+.timeline li.done .tl-dot { background: var(--lime); }
+.timeline .tl-age { font-family: var(--font-num); font-weight: 800; font-size: 0.95rem; color: var(--lime); margin-right: 8px; }
+.timeline .tl-title { font-weight: 700; color: var(--text); font-size: 0.92rem; }
+.timeline .tl-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+.timeline .tl-cash { font-family: var(--font-num); font-size: 0.8rem; font-weight: 700; }
+.timeline .tl-cash.minus { color: var(--red); }
+.timeline .tl-cash.plus { color: var(--lime); }
+
+/* ---------- Tables in tiles ---------- */
+.tile table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 10px 0 0; }
+.tile th { text-align: left; color: var(--text-dim); font-weight: 600; font-size: 0.75rem; letter-spacing: 0.05em; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+.tile td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); }
+.tile td .num, .tile td strong { color: var(--text); }
+.tile tr:last-child td { border-bottom: none; }
+
+/* ---------- Page Title ---------- */
+.page-head { margin: 8px 0 4px; }
+.page-head h1 {
+  font-family: var(--font-num); font-weight: 800; font-size: 2rem;
+  letter-spacing: -0.03em; margin: 0 0 6px; color: var(--text);
+}
+.page-head h1 .accent { color: var(--lime); }
+.page-head p { color: var(--text-muted); font-size: 0.92rem; margin: 0; }
+
+/* ---------- Footer ---------- */
+.bento-footer {
+  border-top: 1px solid var(--border); margin-top: 64px; padding: 28px 20px;
+  text-align: center; font-size: 0.78rem; color: var(--text-dim);
+}
+.bento-footer a { color: var(--text-muted); }
+
+/* =====================================================================
+ * SaaS Edition 追加コンポーネント
+ * ===================================================================== */
+
+/* ---------- CTA Banner (Xフォロー / note購読) ---------- */
+.cta-banner {
+  grid-column: span 12;
+  background: linear-gradient(135deg, rgba(222,255,154,0.12), rgba(222,255,154,0.03));
+  border: 1px solid rgba(222,255,154,0.3);
+  border-radius: var(--radius);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  padding: 32px;
+  text-align: center;
+}
+.cta-banner h2 { margin: 0 0 8px; font-size: 1.3rem; font-weight: 900; color: var(--text); }
+.cta-banner p { color: var(--text-muted); font-size: 0.9rem; margin: 0 0 18px; }
+.cta-banner .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* ---------- Story Blocks (About) ---------- */
+.story-num {
+  font-family: var(--font-num); font-weight: 900; font-size: 2.6rem;
+  letter-spacing: -0.04em; color: rgba(222,255,154,0.25); line-height: 1; margin-bottom: 8px;
+}
+.tile.pain { border-color: rgba(248,113,113,0.25); }
+.tile.pain .tile-label .dot { background: var(--red); }
+.tile.gain { border-color: rgba(222,255,154,0.25); }
+
+/* ---------- Quote ---------- */
+.bento-quote {
+  border-left: 3px solid var(--lime);
+  padding: 4px 0 4px 18px; margin: 14px 0;
+  font-size: 1.02rem; font-weight: 700; color: var(--text); line-height: 1.8;
+}
+.bento-quote small { display: block; font-weight: 400; color: var(--text-dim); font-size: 0.78rem; margin-top: 6px; }
+
+/* ---------- Share Button ---------- */
+.share-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 28px; border-radius: 999px; border: none; cursor: pointer;
+  background: var(--text); color: #0a0a0c; font-weight: 800; font-size: 0.92rem;
+  font-family: var(--font-jp); transition: all 0.15s;
+}
+.share-btn:hover { background: var(--lime); box-shadow: 0 0 24px rgba(222,255,154,0.35); }
+
+/* ---------- Fade-in on scroll ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .fade-in { opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .fade-in.visible { opacity: 1; transform: none; }
+}
