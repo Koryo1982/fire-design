@@ -678,7 +678,7 @@ class SimulatorUI {
 
     // --- 判定サマリー ---
     const verdict = this.$("verdict");
-    verdict.className = "";
+    verdict.classList.remove("v-safe", "v-ok", "v-warn", "v-danger");
     let badge, detail;
     if (rate >= 90) {
       verdict.classList.add("v-safe");

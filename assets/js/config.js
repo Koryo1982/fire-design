@@ -46,7 +46,7 @@
       { id: "home",      label: "ホーム",       href: BASE + "/" },
       { id: "about",     label: "About",        href: BASE + "/about.html" },
       // Phase 2〜3 完成までは既存ページへ向ける（リンク切れ防止）
-      { id: "plan",      label: "FIRE設計図",   href: BASE + "/design/" },
+      { id: "design",    label: "FIRE設計図",   href: BASE + "/design/" },
       { id: "simulator", label: "シミュレーター", href: BASE + "/simulator/" },
       { id: "report",    label: "月次レポート",  href: BASE + "/monthly-report/2026/06/15/monthly-report-002/" }
     ]

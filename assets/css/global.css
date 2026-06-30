@@ -377,6 +377,13 @@ details.sim-advanced .tile.advanced-body {
 .sim-verdict {
   text-align: center; padding: 28px 24px;
   transition: border-color 0.3s, background 0.3s;
+  min-width: 0;
+}
+.sim-verdict .v-badge,
+.sim-verdict .detail {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 .sim-verdict .v-badge {
   font-size: 1.15rem; font-weight: 800; display: block; margin-bottom: 8px; color: var(--text);

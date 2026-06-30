@@ -24,27 +24,20 @@
 </head>
 <body>
 
-<header class="bento-header">
-  <div class="bento-header-inner">
-    <a class="bento-logo" href="/fire-design/">father cafe<span class="logo-dot">.</span></a>
-    <nav class="bento-nav">
-      <a href="/fire-design/" {% if page.nav == 'home' %}class="active"{% endif %}>ホーム</a>
-      <a href="/fire-design/design/" {% if page.nav == 'design' %}class="active"{% endif %}>FIRE設計図</a>
-      <a href="/fire-design/simulator/" {% if page.nav == 'simulator' %}class="active"{% endif %}>シミュレーター</a>
-      <a href="/fire-design/monthly-report/2026/06/15/monthly-report-002/" {% if page.nav == 'report' %}class="active"{% endif %}>月次レポート</a>
-      <a href="/fire-design/about/" {% if page.nav == 'about' %}class="active"{% endif %}>About</a>
-    </nav>
-  </div>
-</header>
+<header class="bento-header" id="site-header"></header>
 
 <main class="bento-wrap">
 {{ content }}
 </main>
 
-<footer class="bento-footer">
-  <p>father cafe — FIRE&times;父親の実録 ／ <a href="https://x.com/father_cafe">X @father_cafe</a> ／ <a href="{{ site.github.repository_url }}">GitHub</a></p>
-  <p>本サイトの数値は個人の記録であり、投資助言ではありません。</p>
-</footer>
+<footer class="bento-footer" id="site-footer"></footer>
+
+<script src="{{ '/assets/js/config.js' | relative_url }}"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  try { SiteUI.init("{{ page.nav | default: 'home' }}"); } catch (e) { console.error(e); }
+});
+</script>
 
 </body>
 </html>
