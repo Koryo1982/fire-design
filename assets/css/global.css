@@ -416,3 +416,31 @@ details.sim-advanced .tile.advanced-body {
 }
 .sim-footnote { font-size: 0.78rem; color: var(--text-dim); margin-top: 14px; }
 .page-head .pill { margin-bottom: 12px; }
+
+/* ---------- Report / Markdown Prose (月次レポート等) ---------- */
+.bento-prose { padding-top: 8px; }
+.bento-prose > *:first-child { margin-top: 0; }
+.bento-prose h2 {
+  font-size: 1.05rem; font-weight: 700; color: var(--text);
+  margin: 28px 0 12px; padding-top: 20px; border-top: 1px solid var(--border);
+}
+.bento-prose > h2:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+.bento-prose h3 { font-size: 0.95rem; font-weight: 700; color: var(--text); margin: 18px 0 8px; }
+.bento-prose p { color: var(--text-muted); font-size: 0.88rem; margin: 8px 0; }
+.bento-prose ul, .bento-prose ol { color: var(--text-muted); font-size: 0.86rem; padding-left: 18px; margin: 8px 0; }
+.bento-prose li { margin: 4px 0; }
+.bento-prose strong { color: var(--text); }
+.bento-prose em { color: var(--text-dim); font-style: normal; }
+.bento-prose hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+.bento-prose table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 12px 0; }
+.bento-prose th {
+  text-align: left; color: var(--text-dim); font-weight: 600; font-size: 0.75rem;
+  letter-spacing: 0.05em; padding: 8px; border-bottom: 1px solid var(--border);
+  background: transparent;
+}
+.bento-prose td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); }
+.bento-prose td strong { color: var(--text); }
+.bento-prose tr:last-child td { border-bottom: none; }
+.bento-prose a { color: var(--lime); }
+.report-meta { color: var(--text-muted); font-size: 0.88rem; margin: 0; }
+.report-meta strong { color: var(--lime); }
