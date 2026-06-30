@@ -304,3 +304,108 @@ a.tile:hover { transform: translateY(-3px); background: var(--surface-hover); op
   .fade-in { opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; }
   .fade-in.visible { opacity: 1; transform: none; }
 }
+
+/* =====================================================================
+ * Simulator
+ * ===================================================================== */
+.sim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 560px) { .sim-grid { grid-template-columns: 1fr; } }
+
+.sim-field label {
+  display: block; font-size: 0.78rem; color: var(--text-dim); font-weight: 600;
+  letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.sim-field input[type="number"],
+.sim-field input[type="text"],
+table.events input {
+  width: 100%; box-sizing: border-box; padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text);
+  font-family: var(--font-num); font-size: 0.95rem;
+}
+.sim-field input:focus, table.events input:focus {
+  outline: none; border-color: var(--lime); box-shadow: 0 0 0 2px var(--lime-dim);
+}
+.sim-unit { font-size: 0.75rem; color: var(--text-dim); margin-left: 4px; font-weight: 400; }
+
+table.events { width: 100%; border-collapse: collapse; margin: 0; }
+table.events th {
+  text-align: left; font-size: 0.75rem; color: var(--text-dim); font-weight: 600;
+  letter-spacing: 0.05em; padding: 6px 8px; border-bottom: 1px solid var(--border);
+  background: transparent;
+}
+table.events td { padding: 6px 8px; border-bottom: none; }
+table.events tr:hover td { background: transparent; }
+
+.sim-btn-add {
+  display: block; width: 100%; margin-top: 10px; padding: 10px 16px;
+  background: transparent; color: var(--lime); border: 1px dashed rgba(222, 255, 154, 0.4);
+  border-radius: var(--radius-sm); font-size: 0.86rem; font-weight: 700; cursor: pointer;
+  font-family: var(--font-jp); transition: all 0.15s;
+}
+.sim-btn-add:hover { background: var(--lime-dim); border-color: var(--lime); }
+.sim-btn-del {
+  background: transparent; color: var(--red); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 10px; cursor: pointer; font-size: 0.85rem;
+}
+.sim-btn-del:hover { border-color: rgba(248, 113, 113, 0.5); background: rgba(248, 113, 113, 0.08); }
+
+details.sim-advanced { grid-column: span 12; }
+details.sim-advanced summary {
+  cursor: pointer; list-style: none; user-select: none;
+  background: var(--surface); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px 24px; font-size: 0.88rem; color: var(--text-muted); font-weight: 600;
+  transition: border-color 0.2s, background 0.2s;
+}
+details.sim-advanced summary:hover { border-color: var(--border-strong); background: var(--surface-hover); }
+details.sim-advanced summary::before { content: "▸ "; color: var(--lime); font-weight: 700; }
+details.sim-advanced[open] summary::before { content: "▾ "; }
+details.sim-advanced[open] summary {
+  border-radius: var(--radius) var(--radius) 0 0; border-bottom: none;
+}
+details.sim-advanced .tile.advanced-body {
+  border-radius: 0 0 var(--radius) var(--radius); margin-top: 0; border-top: none;
+}
+
+.toggle-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+.toggle-row input[type="checkbox"] {
+  width: 18px; height: 18px; margin-top: 3px; accent-color: var(--lime); flex-shrink: 0;
+}
+.toggle-row label { margin: 0; color: var(--text-muted); font-size: 0.86rem; line-height: 1.5; }
+
+.sim-verdict {
+  text-align: center; padding: 28px 24px;
+  transition: border-color 0.3s, background 0.3s;
+}
+.sim-verdict .v-badge {
+  font-size: 1.15rem; font-weight: 800; display: block; margin-bottom: 8px; color: var(--text);
+}
+.sim-verdict .detail { font-size: 0.88rem; color: var(--text-muted); }
+.sim-verdict.v-safe   { background: rgba(222, 255, 154, 0.06); border-color: rgba(222, 255, 154, 0.35) !important; }
+.sim-verdict.v-safe .v-badge { color: var(--lime); }
+.sim-verdict.v-ok     { background: rgba(96, 165, 250, 0.06); border-color: rgba(96, 165, 250, 0.35) !important; }
+.sim-verdict.v-ok .v-badge { color: var(--blue); }
+.sim-verdict.v-warn   { background: rgba(251, 191, 36, 0.06); border-color: rgba(251, 191, 36, 0.35) !important; }
+.sim-verdict.v-warn .v-badge { color: var(--amber); }
+.sim-verdict.v-danger { background: rgba(248, 113, 113, 0.06); border-color: rgba(248, 113, 113, 0.35) !important; }
+.sim-verdict.v-danger .v-badge { color: var(--red); }
+
+.sim-stat { text-align: center; }
+.sim-stat .tile-value { font-size: 1.75rem; margin-top: 4px; }
+
+.sim-error {
+  display: none; background: rgba(248, 113, 113, 0.08); border: 1px solid rgba(248, 113, 113, 0.4);
+  border-radius: var(--radius-sm); padding: 12px 16px; color: var(--red);
+  font-size: 0.86rem; margin-bottom: 16px; white-space: pre-wrap;
+}
+.sim-calc-status {
+  font-size: 0.75rem; color: var(--text-dim); text-align: right;
+  min-height: 18px; margin: 8px 0 0;
+}
+.sim-section-title {
+  font-size: 0.95rem !important; margin-top: 22px !important;
+  padding-top: 18px; border-top: 1px solid var(--border);
+}
+.sim-footnote { font-size: 0.78rem; color: var(--text-dim); margin-top: 14px; }
+.page-head .pill { margin-bottom: 12px; }

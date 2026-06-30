@@ -1,346 +1,255 @@
 ---
-layout: default
-title: FIREシミュレーターPro
-description: モンテカルロ法×ガードレール戦略のFIREシミュレーター。成功確率・資産推移のブレ幅・ライフイベントを考慮した本格シミュレーション。
+layout: null
 ---
-<style>
-  .simpro {
-    --sp-bg: #12121f;
-    --sp-panel: #1a1a2e;
-    --sp-panel2: #21213a;
-    --sp-border: #3a3a55;
-    --sp-text: #e8e8f0;
-    --sp-muted: #9a9ab0;
-    --sp-accent: #f0c040;
-    --sp-blue: #3b82f6;
-    --sp-green: #4ade80;
-    --sp-red: #f87171;
-    --sp-orange: #fb923c;
-    line-height: 1.6;
-  }
-  .simpro h1.sp-title { font-size: 22px; color: var(--sp-accent); margin: 0 0 4px; border: none; }
-  .simpro .subtitle { color: var(--sp-muted); font-size: 13px; margin-bottom: 24px; }
-  .simpro .sp-card {
-    background: var(--sp-panel);
-    border: 1px solid var(--sp-border);
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-  .simpro .sp-card h2 {
-    font-size: 15px;
-    color: var(--sp-accent);
-    margin: 0 0 14px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--sp-border);
-  }
-  .simpro .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media (max-width: 560px) { .simpro .grid { grid-template-columns: 1fr; } }
-  .simpro .field label {
-    display: block;
-    font-size: 13px;
-    color: var(--sp-muted);
-    margin-bottom: 4px;
-  }
-  .simpro .field input[type="number"] {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 9px 10px;
-    background: var(--sp-panel2);
-    border: 1px solid var(--sp-border);
-    border-radius: 6px;
-    color: var(--sp-text);
-    font-size: 15px;
-  }
-  .simpro .field input:focus { outline: none; border-color: var(--sp-blue); }
-  .simpro .unit { font-size: 12px; color: var(--sp-muted); margin-left: 4px; }
-  .simpro table.events { width: 100%; border-collapse: collapse; margin: 0; }
-  .simpro table.events th {
-    text-align: left;
-    font-size: 12px;
-    color: var(--sp-muted);
-    font-weight: normal;
-    padding: 4px 6px;
-    background: transparent;
-    border-bottom: none;
-  }
-  .simpro table.events td { padding: 4px 6px; border-bottom: none; }
-  .simpro table.events tr:hover td { background: transparent; }
-  .simpro table.events input {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 7px 8px;
-    background: var(--sp-panel2);
-    border: 1px solid var(--sp-border);
-    border-radius: 5px;
-    color: var(--sp-text);
-    font-size: 14px;
-  }
-  .simpro .sp-btn {
-    display: inline-block;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  .simpro .sp-btn-add { background: var(--sp-panel2); color: var(--sp-accent); border: 1px dashed var(--sp-accent); width: 100%; margin-top: 8px; }
-  .simpro .sp-btn-del { background: transparent; color: var(--sp-red); border: 1px solid var(--sp-border); padding: 6px 10px; }
-  .simpro details.advanced { margin-bottom: 20px; }
-  .simpro details.advanced summary {
-    cursor: pointer;
-    background: var(--sp-panel);
-    border: 1px solid var(--sp-border);
-    border-radius: 10px;
-    padding: 14px 20px;
-    font-size: 14px;
-    color: var(--sp-muted);
-    list-style: none;
-    user-select: none;
-  }
-  .simpro details.advanced summary::before { content: "▸ "; color: var(--sp-accent); }
-  .simpro details.advanced[open] summary::before { content: "▾ "; }
-  .simpro details.advanced[open] summary { border-radius: 10px 10px 0 0; border-bottom: none; }
-  .simpro details.advanced .sp-card { border-radius: 0 0 10px 10px; margin-bottom: 0; }
-  .simpro .toggle-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .simpro .toggle-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--sp-blue); }
-  .simpro #verdict {
-    border-radius: 10px;
-    padding: 22px;
-    text-align: center;
-    margin-bottom: 20px;
-    border: 1px solid var(--sp-border);
-  }
-  .simpro #verdict .v-badge { font-size: 22px; font-weight: bold; display: block; margin-bottom: 6px; }
-  .simpro #verdict .detail { font-size: 14px; color: var(--sp-muted); }
-  .simpro .v-safe   { background: rgba(74,222,128,0.08); border-color: var(--sp-green) !important; }
-  .simpro .v-safe .v-badge { color: var(--sp-green); }
-  .simpro .v-ok     { background: rgba(59,130,246,0.08); border-color: var(--sp-blue) !important; }
-  .simpro .v-ok .v-badge { color: var(--sp-blue); }
-  .simpro .v-warn   { background: rgba(251,146,60,0.08); border-color: var(--sp-orange) !important; }
-  .simpro .v-warn .v-badge { color: var(--sp-orange); }
-  .simpro .v-danger { background: rgba(248,113,113,0.08); border-color: var(--sp-red) !important; }
-  .simpro .v-danger .v-badge { color: var(--sp-red); }
-  .simpro .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
-  @media (max-width: 560px) { .simpro .stats { grid-template-columns: 1fr; } }
-  .simpro .stat {
-    background: var(--sp-panel);
-    border: 1px solid var(--sp-border);
-    border-radius: 10px;
-    padding: 14px;
-    text-align: center;
-  }
-  .simpro .stat .label { font-size: 12px; color: var(--sp-muted); }
-  .simpro .stat .value { font-size: 20px; font-weight: bold; color: var(--sp-text); }
-  .simpro #errorBox {
-    display: none;
-    background: rgba(248,113,113,0.1);
-    border: 1px solid var(--sp-red);
-    border-radius: 8px;
-    padding: 12px 16px;
-    color: var(--sp-red);
-    font-size: 13px;
-    margin-bottom: 16px;
-    white-space: pre-wrap;
-  }
-  .simpro .footnote { font-size: 12px; color: var(--sp-muted); margin-top: 16px; }
-  .simpro #calcStatus { font-size: 12px; color: var(--sp-muted); text-align: right; min-height: 18px; }
-</style>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>シミュレーター — モンテカルロ法FIRE試算 | father cafe</title>
+<meta name="description" content="モンテカルロ法×ガードレール戦略のFIREシミュレーター。成功確率・資産推移のブレ幅・ライフイベントを考慮した本格シミュレーション。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="シミュレーター — モンテカルロ法FIRE試算 | father cafe">
+<meta property="og:description" content="モンテカルロ法×ガードレール戦略のFIREシミュレーター。成功確率・資産推移のブレ幅・ライフイベントを考慮。">
+<meta property="og:url" content="https://koryo1982.github.io/fire-design/simulator/">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@father_cafe">
+<link rel="stylesheet" href="/fire-design/assets/css/global.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="/fire-design/assets/js/config.js"></script>
+</head>
+<body>
 
-<div class="simpro">
+<header class="bento-header" id="site-header"></header>
 
-  <h1 class="sp-title">🔥 FIREシミュレーター Pro</h1>
-  <p class="subtitle">モンテカルロ法（幾何ブラウン運動）× ガードレール動的取崩し × ライフイベント連動。数値を変えると自動で再計算されます。</p>
+<main class="bento-wrap">
 
-  <div id="errorBox"></div>
+  <div class="page-head fade-in">
+    <span class="pill">モンテカルロ × ガードレール</span>
+    <h1>シミュレーター<span class="accent">.</span></h1>
+    <p>モンテカルロ法（幾何ブラウン運動）× ガードレール動的取崩し × ライフイベント連動。数値を変えると自動で再計算されます。</p>
+  </div>
 
-  <!-- ============ 基本設定（常に表示） ============ -->
-  <div class="sp-card">
-    <h2>基本設定 — まずはこの4つだけでOK</h2>
-    <div class="grid">
-      <div class="field">
-        <label>現在の年齢<span class="unit">歳</span></label>
-        <input type="number" id="inpAge" value="43" min="20" max="80" step="1">
-      </div>
-      <div class="field">
-        <label>現在の総資産<span class="unit">万円</span></label>
-        <input type="number" id="inpAssets" value="10000" min="0" step="100">
-      </div>
-      <div class="field">
-        <label>目標FIRE年齢<span class="unit">歳</span></label>
-        <input type="number" id="inpFireAge" value="50" min="20" max="90" step="1">
-      </div>
-      <div class="field">
-        <label>基本の年間支出（現在価値）<span class="unit">万円</span></label>
-        <input type="number" id="inpExpense" value="300" min="0" step="10">
+  <div id="errorBox" class="sim-error"></div>
+
+  <!-- ============ 基本設定 ============ -->
+  <div class="bento-grid">
+    <div class="tile span-12 fade-in">
+      <div class="tile-label"><span class="dot"></span>基本設定</div>
+      <h2>まずはこの4つだけでOK</h2>
+      <div class="sim-grid">
+        <div class="sim-field">
+          <label>現在の年齢<span class="sim-unit">歳</span></label>
+          <input type="number" id="inpAge" value="43" min="20" max="80" step="1">
+        </div>
+        <div class="sim-field">
+          <label>現在の総資産<span class="sim-unit">万円</span></label>
+          <input type="number" id="inpAssets" value="10000" min="0" step="100">
+        </div>
+        <div class="sim-field">
+          <label>目標FIRE年齢<span class="sim-unit">歳</span></label>
+          <input type="number" id="inpFireAge" value="50" min="20" max="90" step="1">
+        </div>
+        <div class="sim-field">
+          <label>基本の年間支出（現在価値）<span class="sim-unit">万円</span></label>
+          <input type="number" id="inpExpense" value="300" min="0" step="10">
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- ============ ライフイベント（常に表示） ============ -->
-  <div class="sp-card">
-    <h2>ライフイベント設定 — 教育費・大きな買い物など</h2>
-    <table class="events">
-      <thead>
-        <tr><th style="width:22%">発生年齢</th><th style="width:46%">イベント名</th><th style="width:22%">金額（万円）</th><th></th></tr>
-      </thead>
-      <tbody id="eventRows"></tbody>
-    </table>
-    <button class="sp-btn sp-btn-add" id="btnAddEvent">＋ イベント追加</button>
-    <button class="sp-btn sp-btn-add" id="btnAddMarriage" style="margin-top:6px;">＋ プリセット: 子どもの結婚・独立支援（300万円）</button>
+  <!-- ============ ライフイベント ============ -->
+  <div class="bento-grid">
+    <div class="tile span-12 fade-in">
+      <div class="tile-label"><span class="dot"></span>ライフイベント</div>
+      <h2>教育費・大きな買い物など</h2>
+      <table class="events">
+        <thead>
+          <tr><th style="width:22%">発生年齢</th><th style="width:46%">イベント名</th><th style="width:22%">金額（万円）</th><th></th></tr>
+        </thead>
+        <tbody id="eventRows"></tbody>
+      </table>
+      <button type="button" class="sim-btn-add" id="btnAddEvent">＋ イベント追加</button>
+      <button type="button" class="sim-btn-add" id="btnAddMarriage" style="margin-top:6px;">＋ プリセット: 子どもの結婚・独立支援（300万円）</button>
+    </div>
   </div>
 
-  <!-- ============ 詳細設定（デフォルト非表示） ============ -->
-  <details class="advanced" id="advancedPanel">
-    <summary>詳細設定（市場前提・ガードレール・年金・税金・周期支出）— 慣れてきたら調整</summary>
-    <div class="sp-card">
-      <div class="grid">
-        <div class="field">
-          <label>期待リターン（年率）<span class="unit">%</span></label>
+  <!-- ============ 詳細設定 ============ -->
+  <div class="bento-grid">
+    <details class="sim-advanced fade-in" id="advancedPanel">
+      <summary>詳細設定（市場前提・ガードレール・年金・税金・周期支出）— 慣れてきたら調整</summary>
+      <div class="tile advanced-body">
+      <div class="sim-grid">
+        <div class="sim-field">
+          <label>期待リターン（年率）<span class="sim-unit">%</span></label>
           <input type="number" id="inpReturn" value="5" min="-5" max="15" step="0.1">
         </div>
-        <div class="field">
-          <label>リスク（標準偏差・年率）<span class="unit">%</span></label>
+        <div class="sim-field">
+          <label>リスク（標準偏差・年率）<span class="sim-unit">%</span></label>
           <input type="number" id="inpStdev" value="12" min="0" max="40" step="0.5">
         </div>
-        <div class="field">
-          <label>インフレ率（年率）<span class="unit">%</span></label>
+        <div class="sim-field">
+          <label>インフレ率（年率）<span class="sim-unit">%</span></label>
           <input type="number" id="inpInflation" value="1.5" min="0" max="10" step="0.1">
         </div>
-        <div class="field">
-          <label>FIREまでの年間積立額<span class="unit">万円</span></label>
+        <div class="sim-field">
+          <label>FIREまでの年間積立額<span class="sim-unit">万円</span></label>
           <input type="number" id="inpSavings" value="0" min="0" step="10">
         </div>
-        <div class="field">
-          <label>シミュレーション回数<span class="unit">回</span></label>
+        <div class="sim-field">
+          <label>シミュレーション回数<span class="sim-unit">回</span></label>
           <input type="number" id="inpTrials" value="3000" min="500" max="10000" step="500">
         </div>
       </div>
 
-      <h2 style="margin-top:22px;">ガードレール戦略（動的取崩し）</h2>
+      <h2 class="sim-section-title">ガードレール戦略（動的取崩し）</h2>
       <div class="toggle-row">
         <input type="checkbox" id="inpGuardrail" checked>
-        <label for="inpGuardrail" style="margin:0;color:var(--sp-text);font-size:14px;">ガードレール戦略を有効にする（暴落時 支出−10% / 好調時 支出＋10%）</label>
+        <label for="inpGuardrail">ガードレール戦略を有効にする（暴落時 支出−10% / 好調時 支出＋10%）</label>
       </div>
-      <div class="grid">
-        <div class="field">
-          <label>初期引出率<span class="unit">%</span></label>
+      <div class="sim-grid">
+        <div class="sim-field">
+          <label>初期引出率<span class="sim-unit">%</span></label>
           <input type="number" id="inpInitWR" value="4.5" min="1" max="10" step="0.1">
         </div>
-        <div class="field">
-          <label>ガードレール許容幅（初期引出率±）<span class="unit">%</span></label>
+        <div class="sim-field">
+          <label>ガードレール許容幅（初期引出率±）<span class="sim-unit">%</span></label>
           <input type="number" id="inpGrBand" value="20" min="5" max="50" step="5">
         </div>
       </div>
 
-      <h2 style="margin-top:22px;">年金・税金</h2>
-      <div class="grid">
-        <div class="field">
-          <label>年金の受給開始年齢<span class="unit">歳</span></label>
+      <h2 class="sim-section-title">年金・税金</h2>
+      <div class="sim-grid">
+        <div class="sim-field">
+          <label>年金の受給開始年齢<span class="sim-unit">歳</span></label>
           <input type="number" id="inpPensionAge" value="65" min="60" max="75" step="1">
         </div>
-        <div class="field">
-          <label>年金の年間受給額（夫婦合算）<span class="unit">万円</span></label>
+        <div class="sim-field">
+          <label>年金の年間受給額（夫婦合算）<span class="sim-unit">万円</span></label>
           <input type="number" id="inpPensionAmt" value="200" min="0" step="10">
         </div>
       </div>
       <div class="toggle-row" style="margin-top:10px;">
         <input type="checkbox" id="inpTax" checked>
-        <label for="inpTax" style="margin:0;color:var(--sp-text);font-size:14px;">取崩し時の譲渡益課税（20.315%）を考慮する</label>
+        <label for="inpTax">取崩し時の譲渡益課税（20.315%）を考慮する</label>
       </div>
 
-      <h2 style="margin-top:22px;">周期支出</h2>
-      <div class="grid">
-        <div class="field">
-          <label>車の買い替え費用<span class="unit">万円（0で無効）</span></label>
+      <h2 class="sim-section-title">周期支出</h2>
+      <div class="sim-grid">
+        <div class="sim-field">
+          <label>車の買い替え費用<span class="sim-unit">万円（0で無効）</span></label>
           <input type="number" id="inpCarCost" value="250" min="0" step="10">
         </div>
-        <div class="field">
-          <label>車の買い替え周期<span class="unit">年</span></label>
+        <div class="sim-field">
+          <label>車の買い替え周期<span class="sim-unit">年</span></label>
           <input type="number" id="inpCarCycle" value="7" min="1" max="30" step="1">
         </div>
-        <div class="field">
-          <label>住宅修繕費用<span class="unit">万円（0で無効）</span></label>
+        <div class="sim-field">
+          <label>住宅修繕費用<span class="sim-unit">万円（0で無効）</span></label>
           <input type="number" id="inpRepairCost" value="150" min="0" step="10">
         </div>
-        <div class="field">
-          <label>住宅修繕の周期<span class="unit">年</span></label>
+        <div class="sim-field">
+          <label>住宅修繕の周期<span class="sim-unit">年</span></label>
           <input type="number" id="inpRepairCycle" value="10" min="1" max="30" step="1">
         </div>
       </div>
 
-      <h2 style="margin-top:22px;">高度なライフステージ設定</h2>
+      <h2 class="sim-section-title">高度なライフステージ設定</h2>
       <div class="toggle-row">
         <input type="checkbox" id="inpTaxSpike" checked>
-        <label for="inpTaxSpike" style="margin:0;color:var(--sp-text);font-size:14px;">FIRE翌年の税金・社保スパイク（前年給与ベースの住民税・健康保険料）を加算する</label>
+        <label for="inpTaxSpike">FIRE翌年の税金・社保スパイク（前年給与ベースの住民税・健康保険料）を加算する</label>
       </div>
-      <div class="grid">
-        <div class="field">
-          <label>税金・社保スパイク額<span class="unit">万円</span></label>
+      <div class="sim-grid">
+        <div class="sim-field">
+          <label>税金・社保スパイク額<span class="sim-unit">万円</span></label>
           <input type="number" id="inpTaxSpikeAmt" value="150" min="0" max="1000" step="10">
         </div>
       </div>
       <div class="toggle-row" style="margin-top:14px;">
         <input type="checkbox" id="inpMedical" checked>
-        <label for="inpMedical" style="margin:0;color:var(--sp-text);font-size:14px;">高齢期の医療・介護費の自動ステップアップを有効にする</label>
+        <label for="inpMedical">高齢期の医療・介護費の自動ステップアップを有効にする</label>
       </div>
-      <div class="grid">
-        <div class="field">
-          <label>医療・介護バッファ開始年齢<span class="unit">歳</span></label>
+      <div class="sim-grid">
+        <div class="sim-field">
+          <label>医療・介護バッファ開始年齢<span class="sim-unit">歳</span></label>
           <input type="number" id="inpMedicalAge" value="75" min="60" max="100" step="1">
         </div>
-        <div class="field">
-          <label>年間医療・介護バッファ<span class="unit">万円</span></label>
+        <div class="sim-field">
+          <label>年間医療・介護バッファ<span class="sim-unit">万円</span></label>
           <input type="number" id="inpMedicalAmt" value="50" min="0" step="10">
         </div>
-        <div class="field">
-          <label>介護一時金の発生年齢<span class="unit">歳</span></label>
+        <div class="sim-field">
+          <label>介護一時金の発生年齢<span class="sim-unit">歳</span></label>
           <input type="number" id="inpCareAge" value="80" min="60" max="100" step="1">
         </div>
-        <div class="field">
-          <label>介護一時金<span class="unit">万円（0で無効）</span></label>
+        <div class="sim-field">
+          <label>介護一時金<span class="sim-unit">万円（0で無効）</span></label>
           <input type="number" id="inpCareAmt" value="500" min="0" step="50">
         </div>
       </div>
-      <p class="footnote" style="margin-top:10px;">※ 上記の特別支出およびライフイベント・周期支出は、ガードレール戦略の増減対象には含めず「基本の年間支出」のみを調整した上で固定費として上乗せされます。</p>
-    </div>
-  </details>
+      <p class="sim-footnote">※ 上記の特別支出およびライフイベント・周期支出は、ガードレール戦略の増減対象には含めず「基本の年間支出」のみを調整した上で固定費として上乗せされます。</p>
+      </div>
+    </details>
+  </div>
 
   <!-- ============ 結果出力 ============ -->
-  <div id="calcStatus"></div>
-  <div id="verdict" class="v-ok">
-    <span class="v-badge">計算中…</span>
-    <span class="detail"></span>
+  <div class="sim-calc-status" id="calcStatus"></div>
+
+  <div class="bento-grid">
+    <div class="tile span-12 sim-verdict v-ok fade-in" id="verdict">
+      <span class="v-badge">計算中…</span>
+      <span class="detail"></span>
+    </div>
   </div>
 
-  <div class="stats">
-    <div class="stat"><div class="label">資産が100歳まで持つ確率</div><div class="value" id="statSuccess">—</div></div>
-    <div class="stat"><div class="label">100歳時点の資産（中央値）</div><div class="value" id="statMedian">—</div></div>
-    <div class="stat"><div class="label">FIRE時点の資産（中央値）</div><div class="value" id="statFire">—</div></div>
+  <div class="bento-grid">
+    <div class="tile span-4 sim-stat fade-in">
+      <div class="tile-label"><span class="dot"></span>成功確率</div>
+      <div class="tile-value lime" id="statSuccess">—</div>
+      <div class="tile-sub">資産が100歳まで持つ確率</div>
+    </div>
+    <div class="tile span-4 sim-stat fade-in">
+      <div class="tile-label"><span class="dot"></span>100歳時点</div>
+      <div class="tile-value" id="statMedian">—</div>
+      <div class="tile-sub">資産の中央値（万円）</div>
+    </div>
+    <div class="tile span-4 sim-stat fade-in">
+      <div class="tile-label"><span class="dot"></span>FIRE時点</div>
+      <div class="tile-value" id="statFire">—</div>
+      <div class="tile-sub">資産の中央値（万円）</div>
+    </div>
   </div>
 
-  <div class="sp-card">
-    <h2>100歳までの資産推移（太線＝中央値 / 帯＝ブレ幅）</h2>
-    <canvas id="mainChart"></canvas>
-    <p class="footnote">濃い帯：25〜75パーセンタイル（半分のケースが収まる範囲）／薄い帯：10〜90パーセンタイル。金額は名目（インフレ調整前）です。</p>
+  <div class="bento-grid">
+    <div class="tile span-12 fade-in">
+      <div class="tile-label"><span class="dot"></span>資産推移</div>
+      <h2>100歳までの資産推移（太線＝中央値 / 帯＝ブレ幅）</h2>
+      <canvas id="mainChart"></canvas>
+      <p class="sim-footnote">濃い帯：25〜75パーセンタイル（半分のケースが収まる範囲）／薄い帯：10〜90パーセンタイル。金額は名目（インフレ調整前）です。</p>
+    </div>
   </div>
 
-  <div class="sp-card">
-    <h2>計算の前提</h2>
-    <ul style="font-size:13px;color:var(--sp-muted);margin:0;padding-left:20px;">
-      <li>資産リターンは幾何ブラウン運動（対数正規）に従う乱数で年次生成します。</li>
-      <li>支出はインフレ率で毎年複利増加。ライフイベント・周期支出は発生年に加算します。</li>
-      <li>年金開始後は必要取崩し額から年金を相殺します（年金もインフレ連動）。</li>
-      <li>税金は取得元本を追跡し、取崩し額のうち利益部分に20.315%を課税した上で手取りが必要額に一致するようグロスアップします。</li>
-      <li>ガードレール：引出率が初期引出率の許容幅を上回ると支出を10%カット、下回ると10%増額します（調整幅は基本支出の50〜150%に制限）。判定・調整の対象は「基本の年間支出」のみで、ライフイベント・周期支出・税社保スパイク・医療介護費などの特別支出は固定費としてそのまま上乗せします。</li>
-      <li>FIRE翌年に前年給与ベースの住民税・健康保険料（税金・社保スパイク）を一時費用として加算できます。</li>
-      <li>高齢期は指定年齢以降の年間医療・介護バッファと、特定年齢での介護一時金を自動加算できます。</li>
-      <li>本シミュレーションは将来の成果を保証するものではありません。</li>
-    </ul>
+  <div class="bento-grid">
+    <div class="tile span-12 fade-in">
+      <div class="tile-label"><span class="dot"></span>前提条件</div>
+      <h2>計算の前提</h2>
+      <ul>
+        <li>資産リターンは幾何ブラウン運動（対数正規）に従う乱数で年次生成します。</li>
+        <li>支出はインフレ率で毎年複利増加。ライフイベント・周期支出は発生年に加算します。</li>
+        <li>年金開始後は必要取崩し額から年金を相殺します（年金もインフレ連動）。</li>
+        <li>税金は取得元本を追跡し、取崩し額のうち利益部分に20.315%を課税した上で手取りが必要額に一致するようグロスアップします。</li>
+        <li>ガードレール：引出率が初期引出率の許容幅を上回ると支出を10%カット、下回ると10%増額します（調整幅は基本支出の50〜150%に制限）。判定・調整の対象は「基本の年間支出」のみで、ライフイベント・周期支出・税社保スパイク・医療介護費などの特別支出は固定費としてそのまま上乗せします。</li>
+        <li>FIRE翌年に前年給与ベースの住民税・健康保険料（税金・社保スパイク）を一時費用として加算できます。</li>
+        <li>高齢期は指定年齢以降の年間医療・介護バッファと、特定年齢での介護一時金を自動加算できます。</li>
+        <li>本シミュレーションは将来の成果を保証するものではありません。</li>
+      </ul>
+    </div>
   </div>
 
-</div>
+</main>
+
+<footer class="bento-footer" id="site-footer"></footer>
 
 <script>
 "use strict";
@@ -674,12 +583,12 @@ class SimulatorUI {
       '<td><input type="number" class="ev-age" min="20" max="100" step="1"></td>' +
       '<td><input type="text" class="ev-name" placeholder="例: 大学進学、車の購入"></td>' +
       '<td><input type="number" class="ev-amt" min="0" step="10"></td>' +
-      '<td><button class="sp-btn sp-btn-del" title="削除">✕</button></td>';
+      '<td><button type="button" class="sim-btn-del" title="削除">✕</button></td>';
     tr.querySelector(".ev-age").value = age;
     tr.querySelector(".ev-name").value = name;
     tr.querySelector(".ev-amt").value = amount;
     tr.querySelectorAll("input").forEach(el => el.addEventListener("input", () => this.scheduleRecalc()));
-    tr.querySelector(".sp-btn-del").addEventListener("click", () => {
+    tr.querySelector(".sim-btn-del").addEventListener("click", () => {
       tr.remove();
       this.scheduleRecalc();
     });
@@ -792,9 +701,9 @@ class SimulatorUI {
     verdict.querySelector(".detail").textContent = detail;
 
     // --- 統計値 ---
-    this.$("statSuccess").textContent = rate.toFixed(1) + " %";
-    this.$("statMedian").textContent = Math.round(result.medianFinal).toLocaleString() + " 万円";
-    this.$("statFire").textContent = Math.round(result.medianAtFire).toLocaleString() + " 万円";
+    this.$("statSuccess").textContent = rate.toFixed(1) + "%";
+    this.$("statMedian").textContent = Math.round(result.medianFinal).toLocaleString();
+    this.$("statFire").textContent = Math.round(result.medianAtFire).toLocaleString();
 
     // --- グラフ ---
     this.renderChart(params, result);
@@ -809,17 +718,17 @@ class SimulatorUI {
       // 10-90% 帯（薄い）
       { label: "10%タイル", data: round0(pct.p10), borderColor: "transparent", pointRadius: 0, fill: false, order: 10 },
       { label: "10〜90%の範囲", data: round0(pct.p90), borderColor: "transparent",
-        backgroundColor: "rgba(59,130,246,0.10)", pointRadius: 0, fill: "-1", order: 10 },
+        backgroundColor: "rgba(96, 165, 250, 0.10)", pointRadius: 0, fill: "-1", order: 10 },
       // 25-75% 帯（濃いめ）
       { label: "25%タイル", data: round0(pct.p25), borderColor: "transparent", pointRadius: 0, fill: false, order: 9 },
       { label: "25〜75%の範囲", data: round0(pct.p75), borderColor: "transparent",
-        backgroundColor: "rgba(59,130,246,0.22)", pointRadius: 0, fill: "-1", order: 9 },
+        backgroundColor: "rgba(96, 165, 250, 0.22)", pointRadius: 0, fill: "-1", order: 9 },
       // 中央値（メイン太線）
       { label: "中央値（最も確率の高い推移）", data: round0(pct.p50),
-        borderColor: "#4ade80", borderWidth: 3, pointRadius: 0, fill: false, tension: 0.25, order: 1 },
+        borderColor: "#deff9a", borderWidth: 3, pointRadius: 0, fill: false, tension: 0.25, order: 1 },
       // FIRE開始時点のマーカー
       { label: "FIRE開始", data: labels.map((_, i) => result.ages[i] === params.fireAge ? round0(pct.p50)[i] : null),
-        borderColor: "#f0c040", backgroundColor: "#f0c040", pointRadius: 6, pointStyle: "triangle",
+        borderColor: "#fbbf24", backgroundColor: "#fbbf24", pointRadius: 6, pointStyle: "triangle",
         showLine: false, order: 0 }
     ];
 
@@ -832,7 +741,7 @@ class SimulatorUI {
         plugins: {
           legend: {
             labels: {
-              color: "#ccc", font: { size: 12 },
+              color: "#9b9ba4", font: { family: "'Noto Sans JP', sans-serif", size: 12 },
               filter: item => !["10%タイル", "25%タイル"].includes(item.text)
             }
           },
@@ -844,10 +753,10 @@ class SimulatorUI {
           }
         },
         scales: {
-          x: { ticks: { color: "#aaa", maxTicksLimit: 15, font: { size: 11 } },
+          x: { ticks: { color: "#6b6b75", maxTicksLimit: 15, font: { size: 11 } },
                grid: { color: "rgba(255,255,255,0.05)" } },
           y: { beginAtZero: true,
-               ticks: { color: "#aaa", font: { size: 11 },
+               ticks: { color: "#6b6b75", font: { size: 11 },
                         callback: v => Number(v).toLocaleString() + "万" },
                grid: { color: "rgba(255,255,255,0.05)" } }
         }
@@ -866,6 +775,7 @@ class SimulatorUI {
 
 document.addEventListener("DOMContentLoaded", () => {
   try {
+    SiteUI.init("simulator");
     window.simulatorUI = new SimulatorUI();
   } catch (e) {
     console.error(e);
@@ -875,3 +785,5 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 </script>
+</body>
+</html>
