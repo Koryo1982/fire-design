@@ -503,7 +503,8 @@ table.events.periodic input[type="text"] { min-width: 0; }
   align-items: start;
 }
 .sim-child-card {
-  padding: 14px 16px;
+  position: relative;
+  padding: 36px 16px 14px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.02);
@@ -536,8 +537,9 @@ table.events.periodic input[type="text"] { min-width: 0; }
 .sim-edu-preview ul { margin: 0; padding-left: 1.2em; }
 .sim-edu-preview li { margin: 4px 0; }
 .sim-child-del {
-  margin-left: auto; padding: 6px 12px; font-size: 0.75rem;
-  color: var(--text-dim); background: transparent; border: 1px solid var(--border);
+  position: absolute; top: 10px; right: 10px; z-index: 2;
+  margin-left: 0; padding: 6px 12px; font-size: 0.75rem;
+  color: var(--text-dim); background: rgba(10, 10, 12, 0.85); border: 1px solid var(--border);
   border-radius: 6px; cursor: pointer;
 }
 .sim-child-del:hover { border-color: rgba(248, 113, 113, 0.5); color: #f87171; }

@@ -809,6 +809,7 @@ class SimulatorUI {
     this._initEventTable();
     this._initPeriodicTable();
     this._initChildren();
+    this._bindChildList();
     this._updateEducationPreview();
     this.scheduleRecalc(0);
   }
@@ -1003,6 +1004,23 @@ class SimulatorUI {
     for (var i = 0; i < kids.length; i++) this.addChildCard(kids[i]);
   }
 
+  _bindChildList() {
+    var list = this.$("childrenList");
+    if (!list || list.dataset.delBound) return;
+    list.dataset.delBound = "1";
+    var self = this;
+    list.addEventListener("click", function (e) {
+      var btn = e.target.closest(".sim-child-del");
+      if (!btn) return;
+      e.preventDefault();
+      var card = btn.closest(".sim-child-card");
+      if (!card || !list.contains(card)) return;
+      card.remove();
+      self._updateEducationPreview();
+      self.scheduleRecalc();
+    });
+  }
+
   _gradeOptions(selected) {
     return EducationPlanner.GRADES.map(function (g) {
       return "<option value=\"" + g + "\"" + (g === selected ? " selected" : "") + ">" + g + "</option>";
@@ -1102,11 +1120,6 @@ class SimulatorUI {
       });
     });
     card.querySelector(".ch-grad-enabled").addEventListener("change", function () {
-      self.scheduleRecalc();
-    });
-    card.querySelector(".sim-child-del").addEventListener("click", function () {
-      if (self.$("childrenList").children.length <= 1) return;
-      card.remove();
       self.scheduleRecalc();
     });
 
@@ -1357,7 +1370,7 @@ class SimulatorUI {
     const labels = result.ages.map(a => a + "歳");
     const pct = result.percentiles;
     const round0 = arr => arr.map(v => Math.round(v));
-    const yMax = this._chartYMax(pct);
+    const yRange = this._chartYRange(pct);
 
     const datasets = [
       // 10-90% 帯（外側のブレ）
@@ -1407,8 +1420,8 @@ class SimulatorUI {
           x: { ticks: { color: "#8b8b96", maxTicksLimit: 15, font: { size: 11 } },
                grid: { color: "rgba(255,255,255,0.08)" } },
           y: {
-            beginAtZero: true,
-            max: yMax,
+            min: yRange.min,
+            max: yRange.max,
             ticks: { color: "#8b8b96", font: { size: 11 },
                      callback: v => Number(v).toLocaleString() + "万" },
             grid: { color: "rgba(255,255,255,0.08)" }
@@ -1426,17 +1439,38 @@ class SimulatorUI {
     }
   }
 
-  /** Y軸上限：p90の外れ値で伸びすぎないよう p75 基準にキャップ */
-  _chartYMax(pct) {
-    var max50 = 0;
-    var max75 = 0;
+  /**
+   * Y軸レンジ：右端の中央値がグラフ縦中央付近に来るよう ymin/ymax を調整。
+   * 左側の積立ピーク（p75）も切れないよう下限を設ける。
+   */
+  _chartYRange(pct) {
+    var p50 = pct.p50;
+    var p75 = pct.p75;
+    var n = p50.length;
+    if (!n) return { min: 0, max: 10000 };
+    var p50End = p50[n - 1];
     var i;
-    for (i = 0; i < pct.p50.length; i++) {
-      if (pct.p50[i] > max50) max50 = pct.p50[i];
-      if (pct.p75[i] > max75) max75 = pct.p75[i];
+    var max75First = 0;
+    var split = Math.ceil(n * 0.58);
+    for (i = 0; i < split; i++) {
+      if (p75[i] > max75First) max75First = p75[i];
     }
-    var raw = Math.max(max75 * 1.1, max50 * 1.22, 300);
-    return Math.ceil(raw / 500) * 500;
+    var ymin = 0;
+    var ymax = 2 * p50End - ymin;
+    var peakNeed = Math.max(max75First * 1.04, p50End + 500);
+    if (ymax < peakNeed) {
+      ymax = peakNeed;
+      ymin = Math.max(0, 2 * p50End - ymax);
+    }
+    var span = ymax - ymin;
+    if (span < 1200) {
+      ymax = p50End + 600;
+      ymin = Math.max(0, p50End - 600);
+    }
+    ymax = Math.ceil(ymax / 500) * 500;
+    ymin = Math.floor(ymin / 200) * 200;
+    if (ymin >= ymax - 400) ymin = Math.max(0, ymax - 2000);
+    return { min: ymin, max: ymax };
   }
 }
 
