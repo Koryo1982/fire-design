@@ -14,17 +14,17 @@ description: 43歳会社員のCoast FIRE設計図。IPS（投資方針書）・3
 <div class="bento-grid">
   <div class="tile span-3">
     <div class="tile-label"><span class="dot"></span>総資産</div>
-    <div class="tile-value"><span id="dAssets">9,373</span><span class="vu">万円</span></div>
-    <div class="tile-sub">2026年5月時点</div>
+    <div class="tile-value"><span id="dAssets" data-finance="totalAssets">—</span><span class="vu">万円</span></div>
+    <div class="tile-sub" data-finance="updatedAtPoint">—時点</div>
   </div>
   <div class="tile span-3">
     <div class="tile-label"><span class="dot"></span>達成率</div>
-    <div class="tile-value lime"><span id="dProgress">69.4</span><span class="vu">%</span></div>
-    <div class="bento-progress"><div id="dProgressBar" style="width:69.4%"></div></div>
+    <div class="tile-value lime"><span id="dProgress" data-finance="progressLabel">—</span><span class="vu">%</span></div>
+    <div class="bento-progress"><div id="dProgressBar" data-finance-bar style="width:0%"></div></div>
   </div>
   <div class="tile span-3">
     <div class="tile-label"><span class="dot"></span>残り</div>
-    <div class="tile-value"><span id="dRemaining">3,491</span><span class="vu">万円</span></div>
+    <div class="tile-value"><span id="dRemaining" data-finance="remaining">—</span><span class="vu">万円</span></div>
     <div class="tile-sub">決行ラインまで</div>
   </div>
   <div class="tile span-3">
@@ -62,8 +62,8 @@ description: 43歳会社員のCoast FIRE設計図。IPS（投資方針書）・3
     <div class="tile-label"><span class="dot"></span>決行ライン</div>
     <table>
       <tr><th>ライン</th><th>金額</th><th>状態</th></tr>
-      <tr><td>検討ライン</td><td><span class="num">1億2,500万円</span></td><td><span class="pill amber">未達</span></td></tr>
-      <tr><td><strong>決行ライン</strong></td><td><strong class="num">1億3,500万円</strong></td><td><span class="pill amber">69.4%</span></td></tr>
+      <tr><td>検討ライン</td><td><span class="num" data-finance="fireConsiderLineMan">—</span></td><td><span class="pill amber">未達</span></td></tr>
+      <tr><td><strong>決行ライン</strong></td><td><strong class="num" data-finance="fireTargetMan">—</strong></td><td><span class="pill amber" data-finance="progressPct">—</span></td></tr>
     </table>
     <p style="font-size:0.82rem;margin-top:14px;"><strong>1億3,500万円の根拠</strong>：年間生活費360万円 ÷ 4%ルール = 9,000万円（完全FIREライン）に、教育費・老後医療費・予備費を加算し、Coast収入分を差し引いたネット必要額。</p>
     <p style="margin-bottom:0;"><a href="/fire-design/simulator/" class="bento-btn ghost" style="font-size:0.8rem;padding:8px 18px;">この前提で成功確率を試算 →</a></p>
@@ -77,7 +77,7 @@ description: 43歳会社員のCoast FIRE設計図。IPS（投資方針書）・3
   </div>
   <div class="tile span-4">
     <span class="pill blue">バケツ A ｜ 安全</span>
-    <div class="tile-value" style="margin-top:12px;"><span id="dBucketA">636</span><span class="vu">万円</span></div>
+    <div class="tile-value" style="margin-top:12px;"><span id="dBucketA" data-finance="bucketA">—</span><span class="vu">万円</span></div>
     <div class="tile-sub">現金・普通預金・短期債券</div>
     <ul>
       <li><strong>役割</strong>：FIRE後の生活費5年分。市場暴落時に取り崩さずに済む安全弁</li>
@@ -87,7 +87,7 @@ description: 43歳会社員のCoast FIRE設計図。IPS（投資方針書）・3
   </div>
   <div class="tile span-4">
     <span class="pill purple">バケツ B ｜ 安定</span>
-    <div class="tile-value" style="margin-top:12px;"><span id="dBucketB">1,200</span><span class="vu">万円</span></div>
+    <div class="tile-value" style="margin-top:12px;"><span id="dBucketB" data-finance="bucketB">—</span><span class="vu">万円</span></div>
     <div class="tile-sub">債券・バランスファンド・高配当株</div>
     <ul>
       <li><strong>役割</strong>：Aへの補充源。リスクを抑えた中期運用（5〜15年）</li>
@@ -97,7 +97,7 @@ description: 43歳会社員のCoast FIRE設計図。IPS（投資方針書）・3
   </div>
   <div class="tile span-4">
     <span class="pill">バケツ C ｜ 成長</span>
-    <div class="tile-value" style="margin-top:12px;"><span id="dBucketC">8,173</span><span class="vu">万円</span></div>
+    <div class="tile-value" style="margin-top:12px;"><span id="dBucketC" data-finance="bucketC">—</span><span class="vu">万円</span></div>
     <div class="tile-sub">インデックス投資信託（全世界株・米国株）</div>
     <ul>
       <li><strong>役割</strong>：長期成長の主力エンジン（15年以上）。基本ほったらかし</li>
@@ -187,39 +187,6 @@ description: 43歳会社員のCoast FIRE設計図。IPS（投資方針書）・3
         <p style="margin-bottom:0;">教育費・緊急出費に対応できる現金収入の余地を残す。</p>
       </div>
     </div>
-    <p style="margin-top:20px;margin-bottom:0;font-size:0.82rem;color:var(--text-dim);">迷った時はこのページに戻る。ルールが感情に勝つ。 — 月次の検証は<a href="/fire-design/monthly-report/2026/06/15/monthly-report-002/">月次レポート</a>で。</p>
+    <p style="margin-top:20px;margin-bottom:0;font-size:0.82rem;color:var(--text-dim);">迷った時はこのページに戻る。ルールが感情に勝つ。 — 月次の検証は<a href="#" data-report-link>月次レポート</a>で。</p>
   </div>
 </div>
-
-<script src="{{ '/assets/js/fire-store.js' | relative_url }}"></script>
-<script>
-"use strict";
-document.addEventListener("DOMContentLoaded", function () {
-  try {
-    var p = FireStore.load();
-    var d = FireStore.derive(p);
-    var $ = function (id) { return document.getElementById(id); };
-    var fmt = function (n) { return Math.round(n).toLocaleString(); };
-
-    $("dAssets").textContent = fmt(p.currentAssets);
-    $("dProgress").textContent = d.progressLabel;
-    $("dProgressBar").style.width = d.progressPct + "%";
-    $("dRemaining").textContent = fmt(d.remaining);
-    $("dBucketA").textContent = fmt(p.bucketA);
-    $("dBucketB").textContent = fmt(p.bucketB);
-    $("dBucketC").textContent = fmt(p.bucketC);
-
-    var total = d.totalBuckets;
-    if (total > 0) {
-      var bar = $("dAllocBar").children;
-      bar[0].style.width = (p.bucketA / total * 100).toFixed(1) + "%";
-      bar[1].style.width = (p.bucketB / total * 100).toFixed(1) + "%";
-      bar[2].style.width = (p.bucketC / total * 100).toFixed(1) + "%";
-      bar[1].textContent = Math.round(p.bucketB / total * 100) + "%";
-      bar[2].textContent = Math.round(p.bucketC / total * 100) + "%";
-    }
-  } catch (e) {
-    console.error("設計図ページ初期化エラー", e);
-  }
-});
-</script>

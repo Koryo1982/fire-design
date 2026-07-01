@@ -33,7 +33,9 @@
 <script src="{{ '/assets/js/config.js' | relative_url }}"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  try { SiteUI.init("{{ page.nav | default: 'home' }}"); } catch (e) { console.error(e); }
+  try {
+    SiteUI.init("{{ page.nav | default: 'home' }}", { financeLive: {% if page.financeLive %}true{% else %}false{% endif %} });
+  } catch (e) { console.error(e); }
 });
 </script>
 

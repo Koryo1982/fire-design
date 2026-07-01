@@ -1,36 +1,56 @@
 /* =====================================================================
- * FireStore — ページ間パラメータ共有モジュール（localStorage）
- * 設計図・シミュレーター・ダッシュボードで「基本生活費」「目標額」等を共有する。
- * 依存なし・グローバルに window.FireStore を公開。
+ * FireStore — 読者のシミュレーター設定（localStorage）
+ * サイト公開数値の SSOT は config.js。DEFAULTS は SiteConfig から同期する。
  * ===================================================================== */
 (function (global) {
   "use strict";
 
   var STORAGE_KEY = "fatherCafe.fireParams.v1";
 
-  // サイト全体の既定値（設計図の公開数値と同期させる）
-  var DEFAULTS = {
-    currentAge: 43,        // 現在年齢
-    currentAssets: 9373,   // 総資産（万円）
-    fireTarget: 13500,     // 決行ライン（万円）
-    fireAge: 50,           // 目標FIRE年齢
-    annualExpense: 360,    // 基本の年間生活費（万円）
-    coastIncome: 108,      // Coast収入の下限想定（万円/年）
-    fireTargetDate: "2032-12-27", // 50歳の誕生日
-    bucketA: 636,          // 生活防衛バケツ（万円）
-    bucketB: 1200,         // 安定バケツ（万円）
-    bucketC: 8173          // 成長バケツ（万円）
+  function defaultsFromSite() {
+    var c = global.SiteConfig;
+    if (!c || !c.finance) return null;
+    var f = c.finance;
+    return {
+      currentAge: c.profile && c.profile.age ? c.profile.age : 43,
+      currentAssets: f.totalAssets,
+      fireTarget: f.fireTarget,
+      fireAge: f.fireAge,
+      annualExpense: f.annualExpense,
+      coastIncome: f.coastIncomeMin,
+      fireTargetDate: f.fireTargetDate,
+      bucketA: f.buckets.A.amount,
+      bucketB: f.buckets.B.amount,
+      bucketC: f.buckets.C.amount
+    };
+  }
+
+  var FALLBACK = {
+    currentAge: 43,
+    currentAssets: 9520,
+    fireTarget: 13500,
+    fireAge: 50,
+    annualExpense: 360,
+    coastIncome: 108,
+    fireTargetDate: "2032-12-27",
+    bucketA: 650,
+    bucketB: 1210,
+    bucketC: 7660
   };
+
+  function getDefaults() {
+    return defaultsFromSite() || FALLBACK;
+  }
 
   function load() {
     try {
       var raw = global.localStorage.getItem(STORAGE_KEY);
       var saved = raw ? JSON.parse(raw) : {};
       if (typeof saved !== "object" || saved === null) saved = {};
-      return Object.assign({}, DEFAULTS, saved);
+      return Object.assign({}, getDefaults(), saved);
     } catch (e) {
       console.warn("FireStore: load failed, using defaults", e);
-      return Object.assign({}, DEFAULTS);
+      return Object.assign({}, getDefaults());
     }
   }
 
@@ -56,7 +76,6 @@
     return load();
   }
 
-  /** 達成率（%）・残額・FIRE目標日までの日数などの派生値を計算 */
   function derive(params) {
     var p = params || load();
     var progress = p.fireTarget > 0 ? (p.currentAssets / p.fireTarget) * 100 : 0;
@@ -77,5 +96,5 @@
     };
   }
 
-  global.FireStore = { load: load, save: save, reset: reset, derive: derive, DEFAULTS: DEFAULTS };
+  global.FireStore = { load: load, save: save, reset: reset, derive: derive, getDefaults: getDefaults };
 })(window);

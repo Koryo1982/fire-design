@@ -9,12 +9,17 @@
 
   var BASE = "/fire-design";
 
-  /* ---------- 管理者の公開データ（SSOT） ---------- */
+  /* ---------- 管理者の公開データ（SSOT） ----------
+   * 月次更新時はこのファイルだけ編集すれば全ページが追従する。
+   * 1. finance / updatedAt / report を更新
+   * 2. 新しい月次レポート Markdown を financeLive: true で作成
+   * 過去レポートはスナップショットのため financeLive を付けない。
+   * ------------------------------------------------ */
   var SiteConfig = {
     base: BASE,
     brand: "father cafe",
     tagline: "FIRE×父親の実録",
-    updatedAt: "2026年5月",
+    updatedAt: "2026年7月",
 
     profile: {
       age: 43,
@@ -26,8 +31,17 @@
       note: "https://note.com/father_cafe"
     },
 
+    report: {
+      number: 3,
+      month: "2026年7月",
+      published: "7月31日",
+      href: BASE + "/monthly-report/2026/07/31/monthly-report-003/",
+      tileTitle: "2026年7月号（#003）"
+    },
+
     finance: {
-      totalAssets: 9373,        // 総資産（万円）
+      totalAssets: 9520,        // 総資産（万円）
+      monthOverMonth: 73,       // 前月比（万円）
       fireTarget: 13500,        // 決行ライン（万円）
       fireConsiderLine: 12500,  // 検討ライン（万円）
       fireAge: 50,              // 目標FIRE年齢
@@ -36,21 +50,28 @@
       coastIncomeMin: 108,      // Coast収入 下限（万円/年）
       coastIncomeMax: 216,      // Coast収入 上限（万円/年）
       buckets: {
-        A: { amount: 636,  label: "生活防衛", desc: "現金・短期債", color: "#93c5fd" },
-        B: { amount: 1200, label: "安定",     desc: "債券・バランス", color: "#c4b5fd" },
-        C: { amount: 8173, label: "成長",     desc: "株式インデックス", color: "#deff9a" }
+        A: { amount: 650,  label: "生活防衛", desc: "現金・短期債", color: "#93c5fd" },
+        B: { amount: 1210, label: "安定",     desc: "債券・バランス", color: "#c4b5fd" },
+        C: { amount: 7660, label: "成長",     desc: "株式インデックス", color: "#deff9a" }
       }
     },
 
     nav: [
       { id: "home",      label: "ホーム",       href: BASE + "/" },
       { id: "about",     label: "About",        href: BASE + "/about.html" },
-      // Phase 2〜3 完成までは既存ページへ向ける（リンク切れ防止）
       { id: "design",    label: "FIRE設計図",   href: BASE + "/design/" },
       { id: "simulator", label: "シミュレーター", href: BASE + "/simulator/" },
-      { id: "report",    label: "月次レポート",  href: BASE + "/monthly-report/2026/06/15/monthly-report-002/" }
+      { id: "report",    label: "月次レポート",  href: BASE + "/monthly-report/2026/07/31/monthly-report-003/" }
     ]
   };
+
+  /* ナビの月次レポートリンクを report.href と常に同期 */
+  (function syncReportNav(c) {
+    if (!c.report || !c.report.href) return;
+    for (var i = 0; i < c.nav.length; i++) {
+      if (c.nav[i].id === "report") { c.nav[i].href = c.report.href; break; }
+    }
+  })(SiteConfig);
 
   /* ---------- 派生値の計算 ---------- */
   SiteConfig.derived = (function (f) {
@@ -162,11 +183,106 @@
       }
     },
 
+    /** SSOT の財務値マップ（data-finance 属性用） */
+    financeValues: function () {
+      var f = SiteConfig.finance;
+      var d = SiteConfig.derived;
+      var r = SiteConfig.report || {};
+      var fmt = this.fmt;
+      var mom = f.monthOverMonth;
+      var momText = mom == null ? "—" : ((mom >= 0 ? "+" : "") + fmt(mom));
+      return {
+        totalAssets: fmt(f.totalAssets),
+        totalAssetsMan: fmt(f.totalAssets) + "万円",
+        fireTarget: fmt(f.fireTarget),
+        fireTargetMan: fmt(f.fireTarget) + "万円",
+        fireConsiderLine: fmt(f.fireConsiderLine),
+        fireConsiderLineMan: fmt(f.fireConsiderLine) + "万円",
+        progressLabel: d.progressLabel,
+        progressPct: d.progressLabel + "%",
+        remaining: fmt(d.remaining),
+        remainingMan: fmt(d.remaining) + "万円",
+        updatedAt: SiteConfig.updatedAt,
+        updatedAtPoint: SiteConfig.updatedAt + "時点",
+        bucketA: fmt(f.buckets.A.amount),
+        bucketB: fmt(f.buckets.B.amount),
+        bucketC: fmt(f.buckets.C.amount),
+        monthOverMonth: momText,
+        monthOverMonthMan: momText + "万円",
+        reportMonth: r.month || SiteConfig.updatedAt,
+        reportNumber: r.number != null ? String(r.number) : "—",
+        reportPublished: r.published || "—",
+        reportProgress: d.progressLabel + "%",
+        annualExpense: fmt(f.annualExpense)
+      };
+    },
+
+    /** [data-finance="key"] 要素に SSOT 値を注入 */
+    applyFinanceBindings: function (root) {
+      try {
+        var scope = root || document;
+        var map = this.financeValues();
+        scope.querySelectorAll("[data-finance]").forEach(function (el) {
+          var key = el.getAttribute("data-finance");
+          if (map[key] !== undefined) el.textContent = map[key];
+        });
+        scope.querySelectorAll("[data-finance-bar]").forEach(function (el) {
+          el.style.width = SiteConfig.derived.progressPct + "%";
+        });
+      } catch (e) {
+        console.error("config.js: applyFinanceBindings failed", e);
+      }
+    },
+
+    /** 最新月次レポートへのリンクを同期 */
+    syncReportLinks: function () {
+      try {
+        var href = SiteConfig.report && SiteConfig.report.href;
+        if (!href) return;
+        document.querySelectorAll("[data-report-link]").forEach(function (el) {
+          el.setAttribute("href", href);
+        });
+        var title = SiteConfig.report.tileTitle;
+        document.querySelectorAll("[data-report-title]").forEach(function (el) {
+          if (title) el.textContent = title;
+        });
+      } catch (e) {
+        console.warn("config.js: syncReportLinks failed", e);
+      }
+    },
+
+    /** FIRE設計図ページの動的描画 */
+    bindDesignPage: function () {
+      try {
+        this.applyFinanceBindings();
+        var f = SiteConfig.finance;
+        var d = SiteConfig.derived;
+        var fmt = this.fmt;
+        var bar = document.getElementById("dAllocBar");
+        if (bar && d.totalBuckets > 0) {
+          var keys = ["A", "B", "C"];
+          var children = bar.children;
+          for (var i = 0; i < keys.length; i++) {
+            var pct = f.buckets[keys[i]].amount / d.totalBuckets * 100;
+            children[i].style.width = pct.toFixed(1) + "%";
+            if (pct >= 8) children[i].textContent = Math.round(pct) + "%";
+          }
+        }
+        this.syncReportLinks();
+      } catch (e) {
+        console.error("config.js: bindDesignPage failed", e);
+      }
+    },
+
     /** ページ共通初期化 */
-    init: function (activeId) {
+    init: function (activeId, opts) {
+      opts = opts || {};
       this.renderNav(activeId);
       this.renderFooter();
       this.initFadeIn();
+      this.syncReportLinks();
+      if (activeId === "design") this.bindDesignPage();
+      if (opts.financeLive) this.applyFinanceBindings();
     }
   };
 
