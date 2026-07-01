@@ -74,7 +74,11 @@
       stableDividendYield: 3.5,   // 安定層（B）配当利回り（年率%・現金受取）
       stableCapitalReturn: 2,     // 安定層（B）値上がり分（年率%）
       stableStdev: 8,             // 安定層の標準偏差（年率%）
-      cashReturn: 0.1             // 生活防衛層（A）金利（年率%）
+      cashReturn: 0.1,            // 生活防衛層（A）金利（年率%）
+      periodicExpenses: [         // 定期支出プリセット（初回年齢・周期）
+        { name: "車の買い替え", amount: 250, cycle: 7,  firstAge: 50 },
+        { name: "住宅修繕",     amount: 150, cycle: 10, firstAge: 53 }
+      ]
     },
 
     nav: [

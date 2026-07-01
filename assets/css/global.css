@@ -473,6 +473,26 @@ details.sim-advanced .tile.advanced-body {
   margin-top: 10px;
   line-height: 1.6;
 }
+.sim-subsection {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.sim-subsection:first-of-type { margin-top: 8px; padding-top: 0; border-top: none; }
+.sim-subsection h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+.sim-subsection .sim-sub-desc {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+table.events.periodic th { font-size: 0.72rem; }
+table.events.periodic input[type="text"] { min-width: 0; }
 .page-head .pill { margin-bottom: 12px; }
 
 /* ---------- Report / Markdown Prose (月次レポート等) ---------- */

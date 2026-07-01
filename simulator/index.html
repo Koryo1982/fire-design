@@ -38,7 +38,7 @@ layout: null
     <div class="tile span-12 fade-in">
       <div class="tile-label"><span class="dot"></span>基本設定</div>
       <h2>まずはこの5つだけでOK</h2>
-      <p class="sim-lead-note">「世帯の年間生活費」は食費・住居・光熱・保険など<strong>家計全体の総額</strong>です。仕送り・学費・習い事は含めず、下のライフイベントで別途足してください。</p>
+      <p class="sim-lead-note">「世帯の年間生活費」は食費・住居・光熱・保険など<strong>家計全体の総額</strong>です。仕送り・学費は下の<strong>突発支出</strong>、車・修繕・旅行は<strong>定期支出</strong>で別途足してください。</p>
       <div class="sim-grid">
         <div class="sim-field">
           <label>現在の年齢<span class="sim-unit">歳</span></label>
@@ -136,26 +136,43 @@ layout: null
     </div>
   </div>
 
-  <!-- ============ ライフイベント ============ -->
+  <!-- ============ 支出イベント ============ -->
   <div class="bento-grid">
     <div class="tile span-12 fade-in">
-      <div class="tile-label"><span class="dot"></span>ライフイベント</div>
-      <h2>教育費・大きな買い物など</h2>
-      <table class="events">
-        <thead>
-          <tr><th style="width:22%">発生年齢</th><th style="width:46%">イベント名</th><th style="width:22%">金額（万円）</th><th></th></tr>
-        </thead>
-        <tbody id="eventRows"></tbody>
-      </table>
-      <button type="button" class="sim-btn-add" id="btnAddEvent">＋ イベント追加</button>
-      <button type="button" class="sim-btn-add" id="btnAddMarriage" style="margin-top:6px;">＋ プリセット: 子どもの結婚・独立支援（300万円）</button>
+      <div class="tile-label"><span class="dot"></span>支出イベント</div>
+      <p class="sim-lead-note" style="margin-top:0;margin-bottom:4px;">家計の<strong>突発</strong>（一度きり）と<strong>定期</strong>（何年ごと）を分けて入力します。いずれもガードレール調整の対象外・インフレ連動の固定費として上乗せされます。</p>
+
+      <div class="sim-subsection">
+        <h3>突発支出 — 一度きりの大きな出費</h3>
+        <p class="sim-sub-desc">大学進学・結婚支援・転居など、特定の年齢に一括で発生する支出。</p>
+        <table class="events">
+          <thead>
+            <tr><th style="width:22%">発生年齢</th><th style="width:46%">内容</th><th style="width:22%">金額（万円）</th><th></th></tr>
+          </thead>
+          <tbody id="eventRows"></tbody>
+        </table>
+        <button type="button" class="sim-btn-add" id="btnAddEvent">＋ 突発支出を追加</button>
+        <button type="button" class="sim-btn-add" id="btnAddMarriage" style="margin-top:6px;">＋ プリセット: 子どもの結婚・独立支援（300万円）</button>
+      </div>
+
+      <div class="sim-subsection">
+        <h3>定期支出 — 何年ごとに繰り返す出費</h3>
+        <p class="sim-sub-desc">車の買い替え・住宅修繕・旅行など、周期と初回年齢が決まっている支出。初回以降は周期ごとに自動加算されます。</p>
+        <table class="events periodic">
+          <thead>
+            <tr><th style="width:28%">内容</th><th style="width:18%">金額（万円）</th><th style="width:18%">周期（年）</th><th style="width:18%">初回年齢</th><th></th></tr>
+          </thead>
+          <tbody id="periodicRows"></tbody>
+        </table>
+        <button type="button" class="sim-btn-add" id="btnAddPeriodic">＋ 定期支出を追加</button>
+      </div>
     </div>
   </div>
 
   <!-- ============ 詳細設定 ============ -->
   <div class="bento-grid">
     <details class="sim-advanced fade-in" id="advancedPanel">
-      <summary>詳細設定（リスク・ガードレール・年金・税金・周期支出）— 慣れてきたら調整</summary>
+      <summary>詳細設定（リスク・ガードレール・年金・税金）— 慣れてきたら調整</summary>
       <div class="tile advanced-body">
       <div class="sim-grid">
         <div class="sim-field">
@@ -208,26 +225,6 @@ layout: null
         <label for="inpTax">取崩し時の譲渡益課税（20.315%）を考慮する</label>
       </div>
 
-      <h2 class="sim-section-title">周期支出</h2>
-      <div class="sim-grid">
-        <div class="sim-field">
-          <label>車の買い替え費用<span class="sim-unit">万円（0で無効）</span></label>
-          <input type="number" id="inpCarCost" value="250" min="0" step="10">
-        </div>
-        <div class="sim-field">
-          <label>車の買い替え周期<span class="sim-unit">年</span></label>
-          <input type="number" id="inpCarCycle" value="7" min="1" max="30" step="1">
-        </div>
-        <div class="sim-field">
-          <label>住宅修繕費用<span class="sim-unit">万円（0で無効）</span></label>
-          <input type="number" id="inpRepairCost" value="150" min="0" step="10">
-        </div>
-        <div class="sim-field">
-          <label>住宅修繕の周期<span class="sim-unit">年</span></label>
-          <input type="number" id="inpRepairCycle" value="10" min="1" max="30" step="1">
-        </div>
-      </div>
-
       <h2 class="sim-section-title">高度なライフステージ設定</h2>
       <div class="toggle-row">
         <input type="checkbox" id="inpTaxSpike" checked>
@@ -261,7 +258,7 @@ layout: null
           <input type="number" id="inpCareAmt" value="500" min="0" step="50">
         </div>
       </div>
-      <p class="sim-footnote">※ 上記の特別支出およびライフイベント・周期支出は、ガードレール戦略の増減対象には含めず「世帯の年間生活費」のみを調整した上で固定費として上乗せされます。Coast収入はFIRE後の基本生活費から差し引きます。</p>
+      <p class="sim-footnote">※ 突発・定期の特別支出および税社保スパイク・医療介護費は、ガードレールの調整対象外（固定費）です。Coast収入・配当は世帯生活費から差し引きます。</p>
       </div>
     </details>
   </div>
@@ -312,10 +309,10 @@ layout: null
         <li>資産は設計図の3層（A/B/C）比率で分割。成長層はトータルリターン、安定層は配当現金＋値上がり、生活防衛層は金利のみ。</li>
         <li>安定層の配当は積立期間中は再投資、FIRE後はCoast収入・年金と合わせて生活費から差し引き（売却取崩しを減らす）。</li>
         <li>「世帯の年間生活費」は夫婦の暮らし全体の総額（現在価値）。FIRE後はCoast収入・配当・年金を差し引いた残りを資産から売却して賄います。</li>
-        <li>支出はインフレ率で毎年複利増加。ライフイベント・周期支出は発生年に加算します。</li>
+        <li>支出はインフレ率で毎年複利増加。突発支出は指定年齢に、定期支出は初回年齢以降・周期ごとに加算します。</li>
         <li>年金開始後は、Coast収入・配当と合わせて必要取崩し額から相殺します（いずれもインフレ連動）。</li>
         <li>税金は取得元本を追跡し、取崩し額のうち利益部分に20.315%を課税した上で手取りが必要額に一致するようグロスアップします。</li>
-        <li>ガードレール：引出率が初期引出率の許容幅を上回ると支出を10%カット、下回ると10%増額します（調整幅は世帯生活費の50〜150%に制限）。判定・調整の対象は「世帯の年間生活費」のみで、ライフイベント・周期支出・税社保スパイク・医療介護費などの特別支出は固定費としてそのまま上乗せします。</li>
+        <li>ガードレール：判定・調整の対象は「世帯の年間生活費」のみ。突発・定期の特別支出・税社保スパイク・医療介護費は固定費として上乗せします。</li>
         <li>FIRE翌年に前年給与ベースの住民税・健康保険料（税金・社保スパイク）を一時費用として加算できます。</li>
         <li>高齢期は指定年齢以降の年間医療・介護バッファと、特定年齢での介護一時金を自動加算できます。</li>
         <li>本シミュレーションは将来の成果を保証するものではありません。</li>
@@ -398,31 +395,27 @@ class FireSimulationEngine {
         if (a < this.p.currentAge || a > this.endAge) return;
         map[a] = (map[a] || 0) + amt;
       };
-      // 1) ユーザー定義ライフイベント
+      // 1) ユーザー定義・突発支出
       for (const ev of this.p.events) add(ev.age, ev.amount);
-      // 2) 車の買い替え（周期）
-      if (this.p.carCost > 0 && this.p.carCycle >= 1) {
-        for (let a = this.p.currentAge + this.p.carCycle; a <= this.endAge; a += this.p.carCycle) {
-          add(a, this.p.carCost);
+      // 2) 定期支出（初回年齢以降、周期ごと）
+      for (const per of this.p.periodic || []) {
+        const cycle = Math.round(per.cycle);
+        const first = Math.round(per.firstAge);
+        if (!Number.isFinite(per.amount) || per.amount <= 0 || cycle < 1 || !Number.isFinite(first)) continue;
+        for (let a = first; a <= this.endAge; a += cycle) {
+          add(a, per.amount);
         }
       }
-      // 3) 住宅修繕（周期）
-      if (this.p.repairCost > 0 && this.p.repairCycle >= 1) {
-        for (let a = this.p.currentAge + this.p.repairCycle; a <= this.endAge; a += this.p.repairCycle) {
-          add(a, this.p.repairCost);
-        }
-      }
-      // 4) FIRE翌年の税金・社保スパイク（前年給与ベースの住民税・健康保険料）
       if (this.p.taxSpikeEnabled && this.p.taxSpikeAmount > 0) {
         add(this.p.fireAge + 1, this.p.taxSpikeAmount);
       }
-      // 5) 高齢期の医療・介護バッファ（開始年齢以降、毎年加算）
+      // 3) 高齢期の医療・介護バッファ（開始年齢以降、毎年加算）
       if (this.p.medicalEnabled && this.p.medicalAmount > 0) {
         for (let a = Math.max(this.p.medicalStartAge, this.p.currentAge + 1); a <= this.endAge; a++) {
           add(a, this.p.medicalAmount);
         }
       }
-      // 6) 介護一時金（特定年齢で一括発生）
+      // 4) 介護一時金（特定年齢で一括発生）
       if (this.p.medicalEnabled && this.p.careLumpAmount > 0) {
         add(this.p.careLumpAge, this.p.careLumpAmount);
       }
@@ -640,9 +633,16 @@ class SimulatorUI {
           { age: 41, name: "長子 大学進学", amount: 500 },
           { age: 43, name: "次子 大学進学", amount: 500 }
         ];
+    this.defaultPeriodic = (typeof SiteConfig !== "undefined" && SiteConfig.simulator && SiteConfig.simulator.periodicExpenses)
+      ? SiteConfig.simulator.periodicExpenses.slice()
+      : [
+          { name: "車の買い替え", amount: 250, cycle: 7, firstAge: 50 },
+          { name: "住宅修繕", amount: 150, cycle: 10, firstAge: 53 }
+        ];
     this._applyConfigDefaults();
     this._bindInputs();
     this._initEventTable();
+    this._initPeriodicTable();
     this._updateBudgetPanel();
     this.scheduleRecalc(0);
   }
@@ -741,7 +741,6 @@ class SimulatorUI {
       "inpGrowthStdev", "inpStableStdev", "inpInflation", "inpTrials",
       "inpGuardrail", "inpInitWR", "inpGrBand",
       "inpPensionAge", "inpPensionAmt", "inpTax",
-      "inpCarCost", "inpCarCycle", "inpRepairCost", "inpRepairCycle",
       "inpTaxSpike", "inpTaxSpikeAmt",
       "inpMedical", "inpMedicalAge", "inpMedicalAmt", "inpCareAge", "inpCareAmt"
     ];
@@ -757,7 +756,6 @@ class SimulatorUI {
     });
     this.$("btnAddMarriage").addEventListener("click", () => {
       try {
-        // 子どもの結婚・独立支援プリセット：現在年齢+15年あたりを初期値に設定
         const presetAge = Math.min(99, this._num("inpAge", 43) + 15);
         this.addEventRow(presetAge, "子どもの結婚・独立支援", 300);
         this.scheduleRecalc();
@@ -765,6 +763,55 @@ class SimulatorUI {
         console.error("プリセットイベントの追加に失敗しました", e);
       }
     });
+    this.$("btnAddPeriodic").addEventListener("click", () => {
+      const age = Math.round(this._num("inpAge", 43));
+      this.addPeriodicRow("旅行・帰省", 30, 3, age + 3);
+      this.scheduleRecalc();
+    });
+  }
+
+  _initPeriodicTable() {
+    for (const per of this.defaultPeriodic) {
+      this.addPeriodicRow(per.name, per.amount, per.cycle, per.firstAge);
+    }
+  }
+
+  addPeriodicRow(name, amount, cycle, firstAge) {
+    const tr = document.createElement("tr");
+    tr.innerHTML =
+      '<td><input type="text" class="per-name" placeholder="例: 車の買い替え、家族旅行"></td>' +
+      '<td><input type="number" class="per-amt" min="0" step="10"></td>' +
+      '<td><input type="number" class="per-cycle" min="1" max="30" step="1"></td>' +
+      '<td><input type="number" class="per-first" min="20" max="100" step="1"></td>' +
+      '<td><button type="button" class="sim-btn-del" title="削除">✕</button></td>';
+    tr.querySelector(".per-name").value = name;
+    tr.querySelector(".per-amt").value = amount;
+    tr.querySelector(".per-cycle").value = cycle;
+    tr.querySelector(".per-first").value = firstAge;
+    tr.querySelectorAll("input").forEach(el => el.addEventListener("input", () => this.scheduleRecalc()));
+    tr.querySelector(".sim-btn-del").addEventListener("click", () => {
+      tr.remove();
+      this.scheduleRecalc();
+    });
+    this.$("periodicRows").appendChild(tr);
+  }
+
+  collectPeriodic() {
+    const items = [];
+    document.querySelectorAll("#periodicRows tr").forEach(tr => {
+      const amount = parseFloat(tr.querySelector(".per-amt").value);
+      const cycle = parseFloat(tr.querySelector(".per-cycle").value);
+      const firstAge = parseFloat(tr.querySelector(".per-first").value);
+      if (Number.isFinite(amount) && amount > 0 && Number.isFinite(cycle) && cycle >= 1 && Number.isFinite(firstAge)) {
+        items.push({
+          name: tr.querySelector(".per-name").value,
+          amount,
+          cycle,
+          firstAge
+        });
+      }
+    });
+    return items;
   }
 
   _initEventTable() {
@@ -823,6 +870,7 @@ class SimulatorUI {
       stableStdev: Math.max(0, this._num("inpStableStdev", 8)) / 100,
       cashReturn: Math.max(0, this._num("inpCashReturn", 0.1)) / 100,
       events: this.collectEvents(),
+      periodic: this.collectPeriodic(),
       inflation: Math.max(0, this._num("inpInflation", 1.5)) / 100,
       trials: Math.min(10000, Math.max(500, Math.round(this._num("inpTrials", 3000)))),
       guardrailEnabled: this.$("inpGuardrail").checked,
@@ -831,10 +879,6 @@ class SimulatorUI {
       pensionAge: Math.round(this._num("inpPensionAge", 65)),
       pensionAmount: Math.max(0, this._num("inpPensionAmt", 192)),
       taxEnabled: this.$("inpTax").checked,
-      carCost: Math.max(0, this._num("inpCarCost", 0)),
-      carCycle: Math.max(1, Math.round(this._num("inpCarCycle", 7))),
-      repairCost: Math.max(0, this._num("inpRepairCost", 0)),
-      repairCycle: Math.max(1, Math.round(this._num("inpRepairCycle", 10))),
       taxSpikeEnabled: this.$("inpTaxSpike").checked,
       taxSpikeAmount: Math.max(0, this._num("inpTaxSpikeAmt", 150)),
       medicalEnabled: this.$("inpMedical").checked,
