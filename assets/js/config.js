@@ -34,8 +34,8 @@
     report: {
       number: 3,
       month: "2026年7月",
-      published: "7月31日",
-      href: BASE + "/monthly-report/2026/07/31/monthly-report-003/",
+      published: "7月1日",
+      href: BASE + "/monthly-report/2026/07/01/monthly-report-003/",
       tileTitle: "2026年7月号（#003）"
     },
 
@@ -61,7 +61,7 @@
       { id: "about",     label: "About",        href: BASE + "/about.html" },
       { id: "design",    label: "FIRE設計図",   href: BASE + "/design/" },
       { id: "simulator", label: "シミュレーター", href: BASE + "/simulator/" },
-      { id: "report",    label: "月次レポート",  href: BASE + "/monthly-report/2026/07/31/monthly-report-003/" }
+      { id: "report",    label: "月次レポート",  href: BASE + "/monthly-report/2026/07/01/monthly-report-003/" }
     ]
   };
 

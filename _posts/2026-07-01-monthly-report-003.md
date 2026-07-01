@@ -1,7 +1,7 @@
 ---
 layout: bento
 title: "月次レポート #003 │ 2026年7月 │ Coast FIRE進捗"
-date: 2026-07-31
+date: 2026-07-01
 nav: report
 financeLive: true
 categories: monthly-report
@@ -62,7 +62,7 @@ description: "2026年7月の資産・峠超への進捗。Coast FIRE達成率 70
 
 ### 市場は堅調、Coast FIREラインが一段近づいた
 
-7月末時点の総資産は **<span data-finance="totalAssetsMan">—</span>**。5月のサイト開設時（9,373万円）から <span data-finance="monthOverMonthMan">—</span> と、インデックスの上昇と積立の継続で緩やかに増加しました。決行ライン1億3,500万円に対する達成率は **<span data-finance="progressPct">—</span>** です。
+7月末時点の総資産は **<span data-finance="totalAssetsMan">—</span>**。5月のサイト開設時（9,373万円）から緩やかに増加し、決行ライン1億3,500万円に対する達成率は **<span data-finance="progressPct">—</span>** です。
 
 ### 3バケツの動き
 
