@@ -38,6 +38,28 @@
       publicHighlight: "難関国立大・理系"
     },
 
+    /* シミュレーター教育費プリセット（年齢・学年のみ。生年月日は my-life 側） */
+    children: [
+      {
+        label: "長子",
+        currentAge: 20,
+        grade: "大学3年",
+        university: { entryLump: 0, monthly: 10, remainingYears: null },
+        graduate: { enabled: true, entryLump: 0, monthly: 10, years: 2 },
+        parentShare: 100,
+        scholarshipMonthly: 0
+      },
+      {
+        label: "次子",
+        currentAge: 19,
+        grade: "大学1年",
+        university: { entryLump: 50, monthly: 10, remainingYears: null },
+        graduate: { enabled: false, entryLump: 0, monthly: 10, years: 2 },
+        parentShare: 100,
+        scholarshipMonthly: 0
+      }
+    ],
+
     report: {
       number: 3,
       month: "2026年7月",

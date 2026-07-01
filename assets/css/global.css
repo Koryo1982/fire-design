@@ -493,6 +493,43 @@ details.sim-advanced .tile.advanced-body {
 }
 table.events.periodic th { font-size: 0.72rem; }
 table.events.periodic input[type="text"] { min-width: 0; }
+
+/* 教育費 — 子どもカード（P1） */
+.sim-children-list { display: flex; flex-direction: column; gap: 14px; margin-top: 12px; }
+.sim-child-card {
+  padding: 16px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+}
+.sim-child-head {
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin-bottom: 14px;
+}
+.sim-child-head .sim-field { flex: 1; min-width: 100px; }
+.sim-child-phase {
+  margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border);
+}
+.sim-child-phase h4 {
+  font-size: 0.8rem; font-weight: 700; color: var(--purple, #c4b5fd); margin: 0 0 10px;
+}
+.sim-child-phase .sim-grid { margin-bottom: 0; }
+.sim-edu-preview {
+  margin-top: 16px; padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(196, 181, 253, 0.06);
+  border: 1px solid rgba(196, 181, 253, 0.2);
+  font-size: 0.8rem; color: var(--text-muted); line-height: 1.65;
+}
+.sim-edu-preview h4 { font-size: 0.78rem; color: #c4b5fd; margin: 0 0 8px; }
+.sim-edu-preview ul { margin: 0; padding-left: 1.2em; }
+.sim-edu-preview li { margin: 4px 0; }
+.sim-child-del {
+  margin-left: auto; padding: 6px 12px; font-size: 0.75rem;
+  color: var(--text-dim); background: transparent; border: 1px solid var(--border);
+  border-radius: 6px; cursor: pointer;
+}
+.sim-child-del:hover { border-color: rgba(248, 113, 113, 0.5); color: #f87171; }
+.toggle-row.compact { margin-top: 8px; margin-bottom: 0; }
 .page-head .pill { margin-bottom: 12px; }
 
 /* ---------- Report / Markdown Prose (月次レポート等) ---------- */

@@ -136,15 +136,29 @@ layout: null
     </div>
   </div>
 
+  <!-- ============ 教育費 ============ -->
+  <div class="bento-grid">
+    <div class="tile span-12 fade-in">
+      <div class="tile-label"><span class="dot"></span>教育費</div>
+      <p class="sim-lead-note" style="margin-top:0;margin-bottom:4px;">子どもごとに<strong>学年・年齢</strong>と<strong>大学／大学院</strong>の支出を入力します。仕送り・学費は月額×残り年数で試算し、父の年齢タイムラインに自動変換されます（世帯生活費には含めません）。</p>
+      <div class="sim-children-list" id="childrenList"></div>
+      <button type="button" class="sim-btn-add" id="btnAddChild">＋ 子どもを追加</button>
+      <div class="sim-edu-preview" id="educationPreview" aria-live="polite">
+        <h4>父の年齢での教育費流出（プレビュー）</h4>
+        <ul id="educationPreviewList"><li>—</li></ul>
+      </div>
+    </div>
+  </div>
+
   <!-- ============ 支出イベント ============ -->
   <div class="bento-grid">
     <div class="tile span-12 fade-in">
       <div class="tile-label"><span class="dot"></span>支出イベント</div>
-      <p class="sim-lead-note" style="margin-top:0;margin-bottom:4px;">家計の<strong>突発</strong>（一度きり）と<strong>定期</strong>（何年ごと）を分けて入力します。いずれもガードレール調整の対象外・インフレ連動の固定費として上乗せされます。</p>
+      <p class="sim-lead-note" style="margin-top:0;margin-bottom:4px;">家計の<strong>突発</strong>（一度きり）と<strong>定期</strong>（何年ごと）を分けて入力します。教育費は上のタイルで設定してください。</p>
 
       <div class="sim-subsection">
         <h3>突発支出 — 一度きりの大きな出費</h3>
-        <p class="sim-sub-desc">大学進学・結婚支援・転居など、特定の年齢に一括で発生する支出。</p>
+        <p class="sim-sub-desc">結婚支援・転居など、教育費以外の一度きりの支出。</p>
         <table class="events">
           <thead>
             <tr><th style="width:22%">発生年齢</th><th style="width:46%">内容</th><th style="width:22%">金額（万円）</th><th></th></tr>
@@ -309,6 +323,7 @@ layout: null
         <li>資産は設計図の3層（A/B/C）比率で分割。成長層はトータルリターン、安定層は配当現金＋値上がり、生活防衛層は金利のみ。</li>
         <li>安定層の配当は積立期間中は再投資、FIRE後はCoast収入・年金と合わせて生活費から差し引き（売却取崩しを減らす）。</li>
         <li>「世帯の年間生活費」は夫婦の暮らし全体の総額（現在価値）。FIRE後はCoast収入・配当・年金を差し引いた残りを資産から売却して賄います。</li>
+        <li>教育費は子どもごとの月額×残り年数＋入学金を、父の年齢に展開して毎年の特別支出に加算します。</li>
         <li>支出はインフレ率で毎年複利増加。突発支出は指定年齢に、定期支出は初回年齢以降・周期ごとに加算します。</li>
         <li>年金開始後は、Coast収入・配当と合わせて必要取崩し額から相殺します（いずれもインフレ連動）。</li>
         <li>税金は取得元本を追跡し、取崩し額のうち利益部分に20.315%を課税した上で手取りが必要額に一致するようグロスアップします。</li>
@@ -328,6 +343,127 @@ layout: null
 "use strict";
 
 /* =========================================================================
+ * 教育費プランナー — 学年・年齢から父の年齢ベースの支出を展開
+ * ========================================================================= */
+
+const EducationPlanner = {
+  GRADES: (function () {
+    var g = [];
+    var i;
+    for (i = 1; i <= 6; i++) g.push("小学" + i + "年");
+    for (i = 1; i <= 3; i++) g.push("中学" + i + "年");
+    for (i = 1; i <= 3; i++) g.push("高校" + i + "年");
+    for (i = 1; i <= 4; i++) g.push("大学" + i + "年");
+    for (i = 1; i <= 3; i++) g.push("大学院" + i + "年");
+    g.push("社会人");
+    return g;
+  })(),
+
+  parseGrade: function (grade) {
+    var m = String(grade).match(/^(小学|中学|高校|大学|大学院)(\d)年$/);
+    if (!m) return null;
+    var max = { "小学": 6, "中学": 3, "高校": 3, "大学": 4, "大学院": 3 };
+    return { phase: m[1], year: parseInt(m[2], 10), maxYears: max[m[1]] };
+  },
+
+  remainingYears: function (grade) {
+    var p = this.parseGrade(grade);
+    if (!p) return 0;
+    return p.maxYears - p.year + 1;
+  },
+
+  parentNetAnnual: function (monthly, parentShare, scholarshipMonthly) {
+    var gross = Math.max(0, monthly) * 12;
+    var net = Math.max(0, gross - Math.max(0, scholarshipMonthly) * 12);
+    return net * (Math.max(0, Math.min(100, parentShare)) / 100);
+  },
+
+  buildSchedule: function (parentAge, child) {
+    var lines = [];
+    var spot = {};
+    var annual = {};
+    var self = this;
+    var g = this.parseGrade(child.grade);
+    var share = child.parentShare;
+    var schol = child.scholarshipMonthly;
+    var u = child.university || {};
+    var gr = child.graduate || {};
+
+    function addSpot(age, amt, desc) {
+      if (!Number.isFinite(age) || !Number.isFinite(amt) || amt <= 0) return;
+      var a = Math.round(age);
+      spot[a] = (spot[a] || 0) + amt;
+      lines.push(child.label + "：" + desc + " 父" + a + "歳 " + Math.round(amt) + "万円");
+    }
+    function addAnnual(from, to, amt, desc) {
+      if (!Number.isFinite(amt) || amt <= 0) return;
+      var start = Math.round(from);
+      var end = Math.round(to);
+      if (end < start) return;
+      for (var a = start; a <= end; a++) annual[a] = (annual[a] || 0) + amt;
+      lines.push(child.label + "：" + desc + " 父" + start + "〜" + end + "歳 年" + Math.round(amt) + "万円");
+    }
+
+    if (g && g.phase === "大学") {
+      var uniEntry = parentAge - (g.year - 1);
+      var remain = child.universityRemaining != null && child.universityRemaining > 0
+        ? child.universityRemaining
+        : (g.maxYears - g.year + 1);
+      var payFrom = parentAge;
+      var payTo = parentAge + remain - 1;
+      var annualAmt = self.parentNetAnnual(u.monthly, share, schol);
+      if (g.year === 1 && u.entryLump > 0) {
+        addSpot(uniEntry, u.entryLump * share / 100, "大学入学金");
+      }
+      addAnnual(payFrom, payTo, annualAmt, "大学（仕送り・学費）");
+
+      if (gr.enabled) {
+        var gradStart = uniEntry + 4;
+        var gradYears = gr.years > 0 ? gr.years : 2;
+        var gradAnnual = self.parentNetAnnual(gr.monthly, share, schol);
+        if (gr.entryLump > 0) {
+          addSpot(gradStart, gr.entryLump * share / 100, "大学院入学金");
+        }
+        addAnnual(gradStart, gradStart + gradYears - 1, gradAnnual, "大学院（進学予定）");
+      }
+    } else if (g && g.phase === "大学院") {
+      var gradEntry = parentAge - (g.year - 1);
+      var gradRemain = child.graduateYears != null && child.graduateYears > 0
+        ? child.graduateYears
+        : (g.maxYears - g.year + 1);
+      var gf = parentAge;
+      var gt = parentAge + gradRemain - 1;
+      var gAnnual = self.parentNetAnnual(gr.monthly, share, schol);
+      if (g.year === 1 && gr.entryLump > 0) {
+        addSpot(gradEntry, gr.entryLump * share / 100, "大学院入学金");
+      }
+      addAnnual(gf, gt, gAnnual, "大学院");
+    }
+
+    return { spot: spot, annual: annual, lines: lines };
+  },
+
+  mergeIntoExpenseMap: function (map, parentAge, children, endAge, currentAge) {
+    var preview = [];
+    for (var i = 0; i < (children || []).length; i++) {
+      var sch = this.buildSchedule(parentAge, children[i]);
+      preview = preview.concat(sch.lines);
+      var ages = Object.keys(sch.spot);
+      for (var j = 0; j < ages.length; j++) {
+        var a = parseInt(ages[j], 10);
+        if (a >= currentAge && a <= endAge) map[a] = (map[a] || 0) + sch.spot[ages[j]];
+      }
+      ages = Object.keys(sch.annual);
+      for (var k = 0; k < ages.length; k++) {
+        var a2 = parseInt(ages[k], 10);
+        if (a2 >= currentAge && a2 <= endAge) map[a2] = (map[a2] || 0) + sch.annual[ages[k]];
+      }
+    }
+    return preview;
+  }
+};
+
+/* =========================================================================
  * バックエンド：シミュレーション計算エンジン（DOMに一切依存しない）
  * ========================================================================= */
 
@@ -344,6 +480,7 @@ class FireSimulationEngine {
     this.GUARDRAIL_RAISE = 0.10; // 支出増額幅 10%
     this.ADJ_MIN = 0.5;          // 支出調整係数の下限
     this.ADJ_MAX = 1.5;          // 支出調整係数の上限
+    this._educationPreview = [];
     this.spotByAge = this._buildSpotExpenseMap();
   }
 
@@ -419,6 +556,10 @@ class FireSimulationEngine {
       if (this.p.medicalEnabled && this.p.careLumpAmount > 0) {
         add(this.p.careLumpAge, this.p.careLumpAmount);
       }
+      // 5) 教育費（子どもごとの月額・入学金 → 父の年齢に展開）
+      this._educationPreview = EducationPlanner.mergeIntoExpenseMap(
+        map, this.p.currentAge, this.p.children, this.endAge, this.p.currentAge
+      );
     } catch (e) {
       console.error("特別支出マップの構築に失敗しました", e);
       throw new Error("特別支出マップの構築に失敗しました: " + e.message);
@@ -624,15 +765,10 @@ class SimulatorUI {
   constructor() {
     this.chart = null;
     this.debounceTimer = null;
-    this.defaultEvents = (typeof SiteConfig !== "undefined" && SiteConfig.education)
-      ? [
-          { age: SiteConfig.education.eldestUniAtAge, name: "長子 大学進学", amount: SiteConfig.education.amountPerChild },
-          { age: SiteConfig.education.youngestUniAtAge, name: "次子 大学進学", amount: SiteConfig.education.amountPerChild }
-        ]
-      : [
-          { age: 41, name: "長子 大学進学", amount: 500 },
-          { age: 43, name: "次子 大学進学", amount: 500 }
-        ];
+    this.defaultEvents = [];
+    this.defaultChildren = (typeof SiteConfig !== "undefined" && SiteConfig.children)
+      ? JSON.parse(JSON.stringify(SiteConfig.children))
+      : [];
     this.defaultPeriodic = (typeof SiteConfig !== "undefined" && SiteConfig.simulator && SiteConfig.simulator.periodicExpenses)
       ? SiteConfig.simulator.periodicExpenses.slice()
       : [
@@ -643,7 +779,8 @@ class SimulatorUI {
     this._bindInputs();
     this._initEventTable();
     this._initPeriodicTable();
-    this._updateBudgetPanel();
+    this._initChildren();
+    this._updateEducationPreview();
     this.scheduleRecalc(0);
   }
 
@@ -785,6 +922,184 @@ class SimulatorUI {
       this.addPeriodicRow("旅行・帰省", 30, 3, age + 3);
       this.scheduleRecalc();
     });
+    this.$("btnAddChild").addEventListener("click", () => {
+      this.addChildCard(this._emptyChildTemplate());
+      this.scheduleRecalc();
+    });
+  }
+
+  _emptyChildTemplate() {
+    return {
+      label: "子ども",
+      currentAge: 6,
+      grade: "小学1年",
+      university: { entryLump: 0, monthly: 0, remainingYears: null },
+      graduate: { enabled: false, entryLump: 0, monthly: 10, years: 2 },
+      parentShare: 100,
+      scholarshipMonthly: 0
+    };
+  }
+
+  _initChildren() {
+    var list = this.$("childrenList");
+    list.innerHTML = "";
+    var kids = this.defaultChildren.length ? this.defaultChildren : [];
+    if (!kids.length) kids = [this._emptyChildTemplate()];
+    for (var i = 0; i < kids.length; i++) this.addChildCard(kids[i]);
+  }
+
+  _gradeOptions(selected) {
+    return EducationPlanner.GRADES.map(function (g) {
+      return "<option value=\"" + g + "\"" + (g === selected ? " selected" : "") + ">" + g + "</option>";
+    }).join("");
+  }
+
+  _syncChildRemaining(card) {
+    var grade = card.querySelector(".ch-grade").value;
+    var uniRemain = card.querySelector(".ch-uni-remain");
+    var gradYears = card.querySelector(".ch-grad-years");
+    var p = EducationPlanner.parseGrade(grade);
+    if (p && p.phase === "大学" && !uniRemain.dataset.touched) {
+      uniRemain.value = EducationPlanner.remainingYears(grade);
+    }
+    if (p && p.phase === "大学院" && !gradYears.dataset.touched) {
+      gradYears.value = EducationPlanner.remainingYears(grade);
+    }
+    var gradBlock = card.querySelector(".ch-grad-block");
+    var uniGradToggle = card.querySelector(".ch-grad-enabled");
+    if (p && p.phase === "大学") {
+      gradBlock.style.display = "";
+      uniGradToggle.disabled = false;
+    } else if (p && p.phase === "大学院") {
+      gradBlock.style.display = "";
+      uniGradToggle.checked = false;
+      uniGradToggle.disabled = true;
+    } else {
+      gradBlock.style.display = "none";
+      uniGradToggle.checked = false;
+    }
+  }
+
+  addChildCard(data) {
+    var card = document.createElement("div");
+    card.className = "sim-child-card";
+    var u = data.university || {};
+    var gr = data.graduate || {};
+    var uniRemain = u.remainingYears != null ? u.remainingYears : EducationPlanner.remainingYears(data.grade);
+    card.innerHTML =
+      "<div class=\"sim-child-head\">" +
+      "<div class=\"sim-field\"><label>呼称</label><input type=\"text\" class=\"ch-label\" value=\"\"></div>" +
+      "<div class=\"sim-field\"><label>現在の学年</label><select class=\"ch-grade\"></select></div>" +
+      "<div class=\"sim-field\"><label>現在の年齢</label><input type=\"number\" class=\"ch-age\" min=\"0\" max=\"40\" step=\"1\"></div>" +
+      "<button type=\"button\" class=\"sim-child-del\" title=\"この子を削除\">削除</button>" +
+      "</div>" +
+      "<div class=\"sim-child-phase ch-uni-block\">" +
+      "<h4>大学</h4>" +
+      "<div class=\"sim-grid\">" +
+      "<div class=\"sim-field\"><label>入学金（一括）</label><input type=\"number\" class=\"ch-uni-lump\" min=\"0\" step=\"10\"><span class=\"sim-unit\">万円</span></div>" +
+      "<div class=\"sim-field\"><label>仕送り・学費（月額）</label><input type=\"number\" class=\"ch-uni-monthly\" min=\"0\" step=\"1\"><span class=\"sim-unit\">万円</span></div>" +
+      "<div class=\"sim-field\"><label>残り年数</label><input type=\"number\" class=\"ch-uni-remain\" min=\"0\" max=\"6\" step=\"1\"><span class=\"sim-unit\">年（学年から自動）</span></div>" +
+      "</div></div>" +
+      "<div class=\"sim-child-phase ch-grad-block\">" +
+      "<h4>大学院</h4>" +
+      "<div class=\"toggle-row compact\"><input type=\"checkbox\" class=\"ch-grad-enabled\" id=\"\"><label class=\"ch-grad-enabled-label\">大学卒業後に進学予定</label></div>" +
+      "<div class=\"sim-grid\">" +
+      "<div class=\"sim-field\"><label>入学金（一括）</label><input type=\"number\" class=\"ch-grad-lump\" min=\"0\" step=\"10\"><span class=\"sim-unit\">万円</span></div>" +
+      "<div class=\"sim-field\"><label>仕送り・学費（月額）</label><input type=\"number\" class=\"ch-grad-monthly\" min=\"0\" step=\"1\"><span class=\"sim-unit\">万円</span></div>" +
+      "<div class=\"sim-field\"><label>年数</label><input type=\"number\" class=\"ch-grad-years\" min=\"0\" max=\"6\" step=\"1\"><span class=\"sim-unit\">年</span></div>" +
+      "</div></div>" +
+      "<div class=\"sim-child-phase\">" +
+      "<h4>親の負担</h4>" +
+      "<div class=\"sim-grid\">" +
+      "<div class=\"sim-field\"><label>親負担率</label><input type=\"number\" class=\"ch-share\" min=\"0\" max=\"100\" step=\"5\"><span class=\"sim-unit\">%</span></div>" +
+      "<div class=\"sim-field\"><label>奨学金（月額）</label><input type=\"number\" class=\"ch-scholarship\" min=\"0\" step=\"1\"><span class=\"sim-unit\">万円</span></div>" +
+      "</div></div>";
+
+    card.querySelector(".ch-label").value = data.label || "";
+    card.querySelector(".ch-grade").innerHTML = this._gradeOptions(data.grade);
+    card.querySelector(".ch-age").value = data.currentAge;
+    card.querySelector(".ch-uni-lump").value = u.entryLump != null ? u.entryLump : 0;
+    card.querySelector(".ch-uni-monthly").value = u.monthly != null ? u.monthly : 0;
+    card.querySelector(".ch-uni-remain").value = uniRemain;
+    card.querySelector(".ch-grad-enabled").checked = !!gr.enabled;
+    card.querySelector(".ch-grad-lump").value = gr.entryLump != null ? gr.entryLump : 0;
+    card.querySelector(".ch-grad-monthly").value = gr.monthly != null ? gr.monthly : 10;
+    card.querySelector(".ch-grad-years").value = gr.years != null ? gr.years : 2;
+    card.querySelector(".ch-share").value = data.parentShare != null ? data.parentShare : 100;
+    card.querySelector(".ch-scholarship").value = data.scholarshipMonthly != null ? data.scholarshipMonthly : 0;
+
+    var self = this;
+    card.querySelectorAll("input, select").forEach(function (el) {
+      el.addEventListener("input", function () {
+        if (el.classList.contains("ch-uni-remain") || el.classList.contains("ch-grad-years")) {
+          el.dataset.touched = "1";
+        }
+        if (el.classList.contains("ch-grade")) {
+          card.querySelector(".ch-uni-remain").dataset.touched = "";
+          card.querySelector(".ch-grad-years").dataset.touched = "";
+          self._syncChildRemaining(card);
+        }
+        self.scheduleRecalc();
+      });
+      el.addEventListener("change", function () {
+        if (el.classList.contains("ch-grade")) self._syncChildRemaining(card);
+        self.scheduleRecalc();
+      });
+    });
+    card.querySelector(".ch-grad-enabled").addEventListener("change", function () {
+      self.scheduleRecalc();
+    });
+    card.querySelector(".sim-child-del").addEventListener("click", function () {
+      if (self.$("childrenList").children.length <= 1) return;
+      card.remove();
+      self.scheduleRecalc();
+    });
+
+    this._syncChildRemaining(card);
+    this.$("childrenList").appendChild(card);
+  }
+
+  collectChildren() {
+    var out = [];
+    var self = this;
+    this.$("childrenList").querySelectorAll(".sim-child-card").forEach(function (card) {
+      var grade = card.querySelector(".ch-grade").value;
+      var uniRemainRaw = self._cellNum(card.querySelector(".ch-uni-remain").value);
+      var gradYearsRaw = self._cellNum(card.querySelector(".ch-grad-years").value);
+      out.push({
+        label: card.querySelector(".ch-label").value || "子ども",
+        grade: grade,
+        currentAge: Math.max(0, Math.round(self._cellNum(card.querySelector(".ch-age").value) || 0)),
+        parentShare: self._cellNum(card.querySelector(".ch-share").value) || 100,
+        scholarshipMonthly: Math.max(0, self._cellNum(card.querySelector(".ch-scholarship").value) || 0),
+        university: {
+          entryLump: Math.max(0, self._cellNum(card.querySelector(".ch-uni-lump").value) || 0),
+          monthly: Math.max(0, self._cellNum(card.querySelector(".ch-uni-monthly").value) || 0)
+        },
+        universityRemaining: Number.isFinite(uniRemainRaw) && uniRemainRaw > 0 ? Math.round(uniRemainRaw) : null,
+        graduate: {
+          enabled: card.querySelector(".ch-grad-enabled").checked,
+          entryLump: Math.max(0, self._cellNum(card.querySelector(".ch-grad-lump").value) || 0),
+          monthly: Math.max(0, self._cellNum(card.querySelector(".ch-grad-monthly").value) || 0),
+          years: Number.isFinite(gradYearsRaw) && gradYearsRaw > 0 ? Math.round(gradYearsRaw) : 2
+        },
+        graduateYears: Number.isFinite(gradYearsRaw) && gradYearsRaw > 0 ? Math.round(gradYearsRaw) : null
+      });
+    });
+    return out;
+  }
+
+  _updateEducationPreview() {
+    var parentAge = Math.round(this._num("inpAge", 43));
+    var children = this.collectChildren();
+    var map = {};
+    var lines = EducationPlanner.mergeIntoExpenseMap(map, parentAge, children, 100, parentAge);
+    var ul = this.$("educationPreviewList");
+    if (!lines.length) {
+      ul.innerHTML = "<li>教育費の流出はありません（大学・大学院以外の学年は P1b で習い事等を追加予定）</li>";
+      return;
+    }
+    ul.innerHTML = lines.map(function (l) { return "<li>" + l + "</li>"; }).join("");
   }
 
   _initPeriodicTable() {
@@ -888,6 +1203,7 @@ class SimulatorUI {
       cashReturn: Math.max(0, this._num("inpCashReturn", 0.1)) / 100,
       events: this.collectEvents(),
       periodic: this.collectPeriodic(),
+      children: this.collectChildren(),
       inflation: Math.max(0, this._num("inpInflation", 1.5)) / 100,
       trials: Math.min(10000, Math.max(500, Math.round(this._num("inpTrials", 3000)))),
       guardrailEnabled: this.$("inpGuardrail").checked,
@@ -909,6 +1225,7 @@ class SimulatorUI {
   scheduleRecalc(delay = 350) {
     clearTimeout(this.debounceTimer);
     this._updateBudgetPanel();
+    this._updateEducationPreview();
     this.$("calcStatus").textContent = "再計算待ち…";
     this.debounceTimer = setTimeout(() => this.recalc(), delay);
   }
