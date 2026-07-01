@@ -56,6 +56,9 @@
       annualExpense: 360,       // 基本の年間生活費（万円）
       coastIncomeMin: 108,      // Coast収入 下限（万円/年）
       coastIncomeMax: 216,      // Coast収入 上限（万円/年）
+      coastIncomePlan: 120,     // シミュレーター初期値（月10万想定）
+      pensionAnnual: 192,       // 公的年金 通常受給（万円/年・夫婦合算目安）
+      initialWithdrawalRate: 4.5, // ガードレール初期引出率（%）
       buckets: {
         A: { amount: 650,  label: "生活防衛", desc: "現金・短期債", color: "#93c5fd" },
         B: { amount: 1210, label: "安定",     desc: "債券・バランス", color: "#c4b5fd" },

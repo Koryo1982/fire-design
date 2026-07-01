@@ -28,7 +28,7 @@ layout: null
   <div class="page-head fade-in">
     <span class="pill">モンテカルロ × ガードレール</span>
     <h1>シミュレーター<span class="accent">.</span></h1>
-    <p>モンテカルロ法（幾何ブラウン運動）× ガードレール動的取崩し × ライフイベント連動。数値を変えると自動で再計算されます。</p>
+    <p>モンテカルロ法 × ガードレール動的取崩し。FIREが難しくても、<strong style="color:var(--text);">給与がなくても暮らせる年齢</strong>を試算できます。数値を変えると自動で再計算されます。</p>
   </div>
 
   <div id="errorBox" class="sim-error"></div>
@@ -37,7 +37,8 @@ layout: null
   <div class="bento-grid">
     <div class="tile span-12 fade-in">
       <div class="tile-label"><span class="dot"></span>基本設定</div>
-      <h2>まずはこの4つだけでOK</h2>
+      <h2>まずはこの5つだけでOK</h2>
+      <p class="sim-lead-note">「世帯の年間生活費」は食費・住居・光熱・保険など<strong>家計全体の総額</strong>です。仕送り・学費・習い事は含めず、下のライフイベントで別途足してください。</p>
       <div class="sim-grid">
         <div class="sim-field">
           <label>現在の年齢<span class="sim-unit">歳</span></label>
@@ -52,9 +53,31 @@ layout: null
           <input type="number" id="inpFireAge" value="50" min="20" max="90" step="1">
         </div>
         <div class="sim-field">
-          <label>基本の年間支出（現在価値）<span class="sim-unit">万円</span></label>
-          <input type="number" id="inpExpense" value="300" min="0" step="10">
+          <label>世帯の年間生活費（総額）<span class="sim-unit">万円</span></label>
+          <input type="number" id="inpExpense" value="360" min="0" step="10">
         </div>
+        <div class="sim-field">
+          <label>Coast収入（FIRE後の年間）<span class="sim-unit">万円</span></label>
+          <input type="number" id="inpCoastIncome" value="120" min="0" step="10">
+        </div>
+      </div>
+
+      <div class="sim-budget" id="budgetPanel" aria-live="polite">
+        <h3>資産から引く額の内訳（現在価値・設計図と同じ考え方）</h3>
+        <div class="sim-budget-phase">
+          <div class="sim-budget-phase-title" id="budgetPhasePre">FIRE後〜年金前（<span id="budgetFireAgeLabel">50</span>〜64歳）</div>
+          <div class="sim-budget-row"><span>世帯の年間生活費</span><strong><span id="budgetExpense">—</span>万円</strong></div>
+          <div class="sim-budget-row minus"><span>− Coast収入（発信・副業など）</span><strong><span id="budgetCoast">—</span>万円</strong></div>
+          <div class="sim-budget-row total"><span>＝ 資産からの取崩し目安</span><strong><span id="budgetNetPre">—</span>万円/年</strong></div>
+        </div>
+        <div class="sim-budget-phase">
+          <div class="sim-budget-phase-title">年金開始後（<span id="budgetPensionAgeLabel">65</span>歳〜）</div>
+          <div class="sim-budget-row"><span>世帯の年間生活費</span><strong><span id="budgetExpense2">—</span>万円</strong></div>
+          <div class="sim-budget-row minus"><span>− Coast収入</span><strong><span id="budgetCoast2">—</span>万円</strong></div>
+          <div class="sim-budget-row minus"><span>− 公的年金（夫婦合算）</span><strong><span id="budgetPension">—</span>万円</strong></div>
+          <div class="sim-budget-row total"><span>＝ 資産からの取崩し目安</span><strong><span id="budgetNetPost">—</span>万円/年</strong></div>
+        </div>
+        <div class="sim-budget-wr" id="budgetWrNote">—</div>
       </div>
     </div>
   </div>
@@ -127,7 +150,7 @@ layout: null
         </div>
         <div class="sim-field">
           <label>年金の年間受給額（夫婦合算）<span class="sim-unit">万円</span></label>
-          <input type="number" id="inpPensionAmt" value="200" min="0" step="10">
+          <input type="number" id="inpPensionAmt" value="192" min="0" step="10">
         </div>
       </div>
       <div class="toggle-row" style="margin-top:10px;">
@@ -188,7 +211,7 @@ layout: null
           <input type="number" id="inpCareAmt" value="500" min="0" step="50">
         </div>
       </div>
-      <p class="sim-footnote">※ 上記の特別支出およびライフイベント・周期支出は、ガードレール戦略の増減対象には含めず「基本の年間支出」のみを調整した上で固定費として上乗せされます。</p>
+      <p class="sim-footnote">※ 上記の特別支出およびライフイベント・周期支出は、ガードレール戦略の増減対象には含めず「世帯の年間生活費」のみを調整した上で固定費として上乗せされます。Coast収入はFIRE後の基本生活費から差し引きます。</p>
       </div>
     </details>
   </div>
@@ -236,10 +259,11 @@ layout: null
       <h2>計算の前提</h2>
       <ul>
         <li>資産リターンは幾何ブラウン運動（対数正規）に従う乱数で年次生成します。</li>
+        <li>「世帯の年間生活費」は夫婦の暮らし全体の総額（現在価値）。FIRE後はCoast収入・年金を差し引いた残りを資産から取り崩します。</li>
         <li>支出はインフレ率で毎年複利増加。ライフイベント・周期支出は発生年に加算します。</li>
-        <li>年金開始後は必要取崩し額から年金を相殺します（年金もインフレ連動）。</li>
+        <li>年金開始後は、Coast収入と合わせて必要取崩し額から相殺します（いずれもインフレ連動）。</li>
         <li>税金は取得元本を追跡し、取崩し額のうち利益部分に20.315%を課税した上で手取りが必要額に一致するようグロスアップします。</li>
-        <li>ガードレール：引出率が初期引出率の許容幅を上回ると支出を10%カット、下回ると10%増額します（調整幅は基本支出の50〜150%に制限）。判定・調整の対象は「基本の年間支出」のみで、ライフイベント・周期支出・税社保スパイク・医療介護費などの特別支出は固定費としてそのまま上乗せします。</li>
+        <li>ガードレール：引出率が初期引出率の許容幅を上回ると支出を10%カット、下回ると10%増額します（調整幅は世帯生活費の50〜150%に制限）。判定・調整の対象は「世帯の年間生活費」のみで、ライフイベント・周期支出・税社保スパイク・医療介護費などの特別支出は固定費としてそのまま上乗せします。</li>
         <li>FIRE翌年に前年給与ベースの住民税・健康保険料（税金・社保スパイク）を一時費用として加算できます。</li>
         <li>高齢期は指定年齢以降の年間医療・介護バッファと、特定年齢での介護一時金を自動加算できます。</li>
         <li>本シミュレーションは将来の成果を保証するものではありません。</li>
@@ -394,12 +418,14 @@ class FireSimulationEngine {
         // 【ガードレール分離】基本生活費のみを調整対象とし、特別支出（ライフイベント・
         // 周期支出・税社保スパイク・医療介護費）は固定費としてそのまま上乗せする。
         const baseExpense = p.annualExpense * inflFactor * adjFactor;
+        const coast = age > p.fireAge ? p.coastIncome * inflFactor : 0;
         const pension = age >= p.pensionAge ? p.pensionAmount * inflFactor : 0;
+        const retirementIncome = coast + pension;
 
-        // 年金はまず基本生活費から相殺し、余剰があれば特別支出にも充当する
-        const baseNet = Math.max(0, baseExpense - pension);
-        const pensionSurplus = Math.max(0, pension - baseExpense);
-        const specialNet = Math.max(0, spot - pensionSurplus);
+        // 年金・Coast収入はまず基本生活費から相殺し、余剰があれば特別支出にも充当
+        const baseNet = Math.max(0, baseExpense - retirementIncome);
+        const incomeSurplus = Math.max(0, retirementIncome - baseExpense);
+        const specialNet = Math.max(0, spot - incomeSurplus);
 
         // 基本支出分のグロス取崩し（ガードレール判定のベース）
         const grossBase = this._grossUpForTax(baseNet, assets, costBasis);
@@ -537,9 +563,61 @@ class SimulatorUI {
           { age: 41, name: "長子 大学進学", amount: 500 },
           { age: 43, name: "次子 大学進学", amount: 500 }
         ];
+    this._applyConfigDefaults();
     this._bindInputs();
     this._initEventTable();
+    this._updateBudgetPanel();
     this.scheduleRecalc(0);
+  }
+
+  _applyConfigDefaults() {
+    if (typeof SiteConfig === "undefined" || !SiteConfig.finance) return;
+    var f = SiteConfig.finance;
+    var p = SiteConfig.profile || {};
+    this.$("inpAge").value = p.age || 43;
+    this.$("inpAssets").value = f.totalAssets || 10000;
+    this.$("inpFireAge").value = f.fireAge || 50;
+    this.$("inpExpense").value = f.annualExpense || 360;
+    this.$("inpCoastIncome").value = f.coastIncomePlan != null ? f.coastIncomePlan : 120;
+    if (f.pensionAnnual != null) this.$("inpPensionAmt").value = f.pensionAnnual;
+    if (f.initialWithdrawalRate != null) this.$("inpInitWR").value = f.initialWithdrawalRate;
+  }
+
+  _updateBudgetPanel() {
+    var expense = Math.max(0, this._num("inpExpense", 360));
+    var coast = Math.max(0, this._num("inpCoastIncome", 120));
+    var pension = Math.max(0, this._num("inpPensionAmt", 192));
+    var assets = Math.max(0, this._num("inpAssets", 10000));
+    var fireAge = Math.round(this._num("inpFireAge", 50));
+    var pensionAge = Math.round(this._num("inpPensionAge", 65));
+    var wrPct = this._num("inpInitWR", 4.5);
+    var netPre = Math.max(0, expense - coast);
+    var netPost = Math.max(0, expense - coast - pension);
+    var wrAmt = Math.round(assets * wrPct / 100);
+
+    var fmt = function (n) { return Math.round(n).toLocaleString(); };
+    this.$("budgetFireAgeLabel").textContent = fireAge;
+    this.$("budgetPensionAgeLabel").textContent = pensionAge;
+    this.$("budgetExpense").textContent = fmt(expense);
+    this.$("budgetCoast").textContent = fmt(coast);
+    this.$("budgetNetPre").textContent = fmt(netPre);
+    this.$("budgetExpense2").textContent = fmt(expense);
+    this.$("budgetCoast2").textContent = fmt(coast);
+    this.$("budgetPension").textContent = fmt(pension);
+    this.$("budgetNetPost").textContent = fmt(netPost);
+
+    var wrNote = "参考：FIRE時点の総資産 " + fmt(assets) + "万円 × 初期引出率 " + wrPct + "% ＝ 約 " + fmt(wrAmt) + "万円/年。";
+    if (netPre > 0) {
+      var impliedWr = (netPre / assets) * 100;
+      wrNote += " 上の取崩し目安（" + fmt(netPre) + "万円）は引出率 約" + impliedWr.toFixed(1) + "% に相当";
+      if (Math.abs(impliedWr - wrPct) > 0.5) {
+        wrNote += impliedWr > wrPct ? "（ガードレール上限に近い水準）" : "（余裕あり）";
+      }
+      wrNote += "。";
+    } else {
+      wrNote += " Coast収入で生活費を賄えるため、資産からの取崩しは不要です。";
+    }
+    this.$("budgetWrNote").textContent = wrNote;
   }
 
   $(id) { return document.getElementById(id); }
@@ -551,7 +629,7 @@ class SimulatorUI {
 
   _bindInputs() {
     const ids = [
-      "inpAge", "inpAssets", "inpFireAge", "inpExpense",
+      "inpAge", "inpAssets", "inpFireAge", "inpExpense", "inpCoastIncome",
       "inpReturn", "inpStdev", "inpInflation", "inpSavings", "inpTrials",
       "inpGuardrail", "inpInitWR", "inpGrBand",
       "inpPensionAge", "inpPensionAmt", "inpTax",
@@ -560,7 +638,10 @@ class SimulatorUI {
       "inpMedical", "inpMedicalAge", "inpMedicalAmt", "inpCareAge", "inpCareAmt"
     ];
     for (const id of ids) {
-      this.$(id).addEventListener("input", () => this.scheduleRecalc());
+      this.$(id).addEventListener("input", () => {
+        this._updateBudgetPanel();
+        this.scheduleRecalc();
+      });
     }
     this.$("btnAddEvent").addEventListener("click", () => {
       this.addEventRow(this._num("inpAge", 43) + 5, "", 100);
@@ -620,7 +701,8 @@ class SimulatorUI {
       currentAge,
       currentAssets: Math.max(0, this._num("inpAssets", 10000)),
       fireAge,
-      annualExpense: Math.max(0, this._num("inpExpense", 300)),
+      annualExpense: Math.max(0, this._num("inpExpense", 360)),
+      coastIncome: Math.max(0, this._num("inpCoastIncome", 120)),
       events: this.collectEvents(),
       expReturn: this._num("inpReturn", 5) / 100,
       stdev: Math.max(0, this._num("inpStdev", 12)) / 100,
@@ -631,7 +713,7 @@ class SimulatorUI {
       initialWR: Math.max(0.001, this._num("inpInitWR", 4.5) / 100),
       grBand: Math.max(0.01, this._num("inpGrBand", 20) / 100),
       pensionAge: Math.round(this._num("inpPensionAge", 65)),
-      pensionAmount: Math.max(0, this._num("inpPensionAmt", 200)),
+      pensionAmount: Math.max(0, this._num("inpPensionAmt", 192)),
       taxEnabled: this.$("inpTax").checked,
       carCost: Math.max(0, this._num("inpCarCost", 0)),
       carCycle: Math.max(1, Math.round(this._num("inpCarCycle", 7))),
@@ -649,6 +731,7 @@ class SimulatorUI {
 
   scheduleRecalc(delay = 350) {
     clearTimeout(this.debounceTimer);
+    this._updateBudgetPanel();
     this.$("calcStatus").textContent = "再計算待ち…";
     this.debounceTimer = setTimeout(() => this.recalc(), delay);
   }

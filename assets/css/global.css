@@ -415,6 +415,64 @@ details.sim-advanced .tile.advanced-body {
   padding-top: 18px; border-top: 1px solid var(--border);
 }
 .sim-footnote { font-size: 0.78rem; color: var(--text-dim); margin-top: 14px; }
+
+/* 予算・取り崩しの見える化（P0） */
+.sim-budget {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border-radius: var(--radius-sm);
+  background: rgba(222, 255, 154, 0.04);
+  border: 1px solid rgba(222, 255, 154, 0.15);
+}
+.sim-budget h3 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--lime);
+  margin: 0 0 12px;
+  letter-spacing: 0.04em;
+}
+.sim-budget-phase {
+  margin-bottom: 14px;
+}
+.sim-budget-phase:last-of-type { margin-bottom: 0; }
+.sim-budget-phase-title {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+.sim-budget-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 0.84rem;
+  padding: 3px 0;
+  color: var(--text-muted);
+}
+.sim-budget-row strong { color: var(--text); font-weight: 600; }
+.sim-budget-row.minus strong { color: var(--amber); }
+.sim-budget-row.total {
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+.sim-budget-row.total strong { color: var(--lime); font-size: 1rem; }
+.sim-budget-wr {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  line-height: 1.55;
+}
+.sim-budget-wr strong { color: var(--text-muted); }
+.sim-lead-note {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  margin-top: 10px;
+  line-height: 1.6;
+}
 .page-head .pill { margin-bottom: 12px; }
 
 /* ---------- Report / Markdown Prose (月次レポート等) ---------- */
