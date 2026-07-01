@@ -19,26 +19,59 @@ layout: null
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="/fire-design/assets/js/config.js"></script>
 </head>
-<body>
+<body class="page-simulator">
 
 <header class="bento-header" id="site-header"></header>
 
 <main class="bento-wrap">
 
-  <div class="page-head fade-in">
+  <div class="page-head fade-in sim-page-head">
     <span class="pill">モンテカルロ × ガードレール</span>
     <h1>シミュレーター<span class="accent">.</span></h1>
-    <p>モンテカルロ法 × ガードレール動的取崩し。FIREが難しくても、<strong style="color:var(--text);">給与がなくても暮らせる年齢</strong>を試算できます。数値を変えると自動で再計算されます。</p>
+    <p class="sim-page-lead">数値を変えると<strong>上のグラフがリアルタイム</strong>に更新されます（モンテカルロ試行）。</p>
   </div>
 
   <div id="errorBox" class="sim-error"></div>
 
-  <div class="sim-tabs-shell fade-in">
+  <!-- ============ 結果ダッシュボード（上部固定） ============ -->
+  <div class="sim-dashboard fade-in" id="simDashboard" aria-live="polite">
+    <div class="sim-dash-side">
+      <div class="sim-dash-rate">
+        <span class="sim-dash-rate-label">成功確率</span>
+        <span class="sim-dash-rate-value" id="statSuccess">—</span>
+      </div>
+      <div class="sim-dash-metrics">
+        <div class="sim-dash-metric">
+          <span class="sim-dash-metric-label">FIRE時</span>
+          <span class="sim-dash-metric-value" id="statFire">—</span>
+          <span class="sim-dash-metric-unit">万</span>
+        </div>
+        <div class="sim-dash-metric">
+          <span class="sim-dash-metric-label">100歳</span>
+          <span class="sim-dash-metric-value" id="statMedian">—</span>
+          <span class="sim-dash-metric-unit">万</span>
+        </div>
+      </div>
+      <div class="sim-verdict sim-verdict-compact v-ok" id="verdict">
+        <span class="v-badge">計算中…</span>
+        <span class="detail"></span>
+      </div>
+      <div class="sim-calc-status" id="calcStatus"></div>
+    </div>
+    <div class="sim-dash-chart-wrap">
+      <canvas id="mainChart" aria-label="100歳までの資産推移"></canvas>
+      <p class="sim-dash-chart-note">太線＝中央値／帯＝ブレ幅</p>
+    </div>
+  </div>
+
+  <!-- ============ 入力ゾーン ============ -->
+  <div class="sim-input-zone fade-in">
+  <div class="sim-tabs-shell">
+    <h2 class="sim-input-heading">前提を入力</h2>
     <nav class="sim-tabs" id="simTabs" role="tablist" aria-label="シミュレーター入力">
       <button type="button" role="tab" id="simTabBtnBasic" class="sim-tab-btn is-active" data-tab="basic" aria-selected="true" aria-controls="simTabPanelBasic">基本<span class="sim-tier-badge is-free">無料</span></button>
       <button type="button" role="tab" id="simTabBtnLife" class="sim-tab-btn" data-tab="life" aria-selected="false" aria-controls="simTabPanelLife">ライフイベント<span class="sim-tier-badge is-member">会員</span></button>
       <button type="button" role="tab" id="simTabBtnAdvanced" class="sim-tab-btn" data-tab="advanced" aria-selected="false" aria-controls="simTabPanelAdvanced">詳細設定<span class="sim-tier-badge is-member">会員</span></button>
-      <button type="button" role="tab" id="simTabBtnAbout" class="sim-tab-btn" data-tab="about" aria-selected="false" aria-controls="simTabPanelAbout">前提<span class="sim-tier-badge is-free">無料</span></button>
     </nav>
     <p class="sim-tier-hint"><span class="sim-tier-badge is-member">会員</span>タブは note メンバーシップ（月額500〜1,000円未満予定）向けの拡張です。<strong>現在はすべて無料</strong>でお試しできます。ご意見は <a href="https://x.com/father_cafe">@father_cafe</a> へ。</p>
 
@@ -299,11 +332,11 @@ layout: null
 
     </div><!-- /simTabPanelAdvanced -->
 
-    <div class="sim-tab-panel" id="simTabPanelAbout" role="tabpanel" data-tab="about" aria-labelledby="simTabBtnAbout" hidden>
+  </div><!-- /sim-tabs-shell -->
 
-  <div class="bento-grid">
-    <div class="tile span-12">
-      <div class="tile-label"><span class="dot"></span>前提条件</div>
+  <details class="sim-assumptions fade-in" id="simAssumptions">
+    <summary>計算の前提・無料／会員の境界（予定）</summary>
+    <div class="sim-assumptions-body tile">
       <h2>計算の前提</h2>
       <ul>
         <li>成長層・安定層のリターンは幾何ブラウン運動（対数正規）で年次生成。生活防衛層は固定金利です。</li>
@@ -326,48 +359,9 @@ layout: null
         <li>会員機能はラベルのみ先行表示中。note メンバーシップ開始まではすべて無料です。</li>
       </ul>
     </div>
-  </div>
+  </details>
 
-    </div><!-- /simTabPanelAbout -->
-
-  </div><!-- /sim-tabs-shell -->
-
-  <!-- ============ 結果出力 ============ -->
-  <div class="sim-calc-status" id="calcStatus"></div>
-
-  <div class="bento-grid">
-    <div class="tile span-12 sim-verdict v-ok fade-in" id="verdict">
-      <span class="v-badge">計算中…</span>
-      <span class="detail"></span>
-    </div>
-  </div>
-
-  <div class="bento-grid">
-    <div class="tile span-4 sim-stat fade-in">
-      <div class="tile-label"><span class="dot"></span>成功確率</div>
-      <div class="tile-value lime" id="statSuccess">—</div>
-      <div class="tile-sub">資産が100歳まで持つ確率</div>
-    </div>
-    <div class="tile span-4 sim-stat fade-in">
-      <div class="tile-label"><span class="dot"></span>100歳時点</div>
-      <div class="tile-value" id="statMedian">—</div>
-      <div class="tile-sub">資産の中央値（万円）</div>
-    </div>
-    <div class="tile span-4 sim-stat fade-in">
-      <div class="tile-label"><span class="dot"></span>FIRE時点</div>
-      <div class="tile-value" id="statFire">—</div>
-      <div class="tile-sub">資産の中央値（万円）</div>
-    </div>
-  </div>
-
-  <div class="bento-grid">
-    <div class="tile span-12 fade-in">
-      <div class="tile-label"><span class="dot"></span>資産推移</div>
-      <h2>100歳までの資産推移（太線＝中央値 / 帯＝ブレ幅）</h2>
-      <canvas id="mainChart"></canvas>
-      <p class="sim-footnote">濃い帯：25〜75パーセンタイル（半分のケースが収まる範囲）／薄い帯：10〜90パーセンタイル。金額は名目（インフレ調整前）です。</p>
-    </div>
-  </div>
+  </div><!-- /sim-input-zone -->
 
 </main>
 
@@ -1287,13 +1281,17 @@ class SimulatorUI {
     clearTimeout(this.debounceTimer);
     this._updateBudgetPanel();
     this._updateEducationPreview();
+    var dash = this.$("simDashboard");
+    if (dash) dash.classList.add("is-busy");
     this.$("calcStatus").textContent = "再計算待ち…";
     this.debounceTimer = setTimeout(() => this.recalc(), delay);
   }
 
   recalc() {
     const errorBox = this.$("errorBox");
+    const dash = this.$("simDashboard");
     errorBox.style.display = "none";
+    if (dash) dash.classList.add("is-busy");
     this.$("calcStatus").textContent = "計算中…";
     // UI描画を1フレーム挟んでから重い計算を実行
     requestAnimationFrame(() => setTimeout(() => {
@@ -1308,11 +1306,13 @@ class SimulatorUI {
         this.render(params, result);
         this.$("calcStatus").textContent =
           `${result.trialsRun.toLocaleString()}回シミュレーション完了（${elapsed}ms）`;
+        if (dash) dash.classList.remove("is-busy");
       } catch (e) {
         console.error(e);
         errorBox.textContent = "エラー: " + e.message;
         errorBox.style.display = "block";
         this.$("calcStatus").textContent = "計算エラー";
+        if (dash) dash.classList.remove("is-busy");
       }
     }, 0));
   }
@@ -1381,9 +1381,11 @@ class SimulatorUI {
       data: { labels, datasets },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         interaction: { mode: "index", intersect: false },
         plugins: {
           legend: {
+            display: false,
             labels: {
               color: "#9b9ba4", font: { family: "'Noto Sans JP', sans-serif", size: 12 },
               filter: item => !["10%タイル", "25%タイル"].includes(item.text)
