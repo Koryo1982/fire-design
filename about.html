@@ -8,7 +8,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="About — なぜCoast FIREか | father cafe">
 <meta property="og:description" content="教育費×FIREのリアル。43歳会社員がCoast FIREを選んだ理由。">
-<meta property="og:url" content="https://koryo1982.github.io/fire-design/about.html">
+<meta property="og:site_name" content="father cafe">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@father_cafe">
@@ -32,7 +32,7 @@
       <div class="story-num">01</div>
       <div class="tile-label"><span class="dot"></span>Pain — 教育費とFIREは両立しないのか</div>
       <h2>「子2人が大学生」という現実</h2>
-      <p>私は43歳の会社員。子どもは2人とも大学生（法学系・理工系）です。FIRE系の発信を見ていると、独身や子なし世帯の事例が多く、こう感じていました——</p>
+      <p>私は43歳の会社員。子どもは2人とも難関国立大学の理系に進学した大学生です。FIRE系の発信を見ていると、独身や子なし世帯の事例が多く、こう感じていました——</p>
       <div class="bento-quote">
         「教育費のピークを抱えた40代の会社員に、FIREなんて本当に可能なのか？」
         <small>—— 数年前の自分の本音</small>
@@ -85,7 +85,7 @@
     <div class="tile span-6 fade-in">
       <div class="tile-label"><span class="dot"></span>プロフィール</div>
       <table>
-        <tr><td>年齢</td><td><strong class="num" id="abAge">—</strong>歳（1982年生まれ）</td></tr>
+        <tr><td>年齢</td><td><strong class="num" id="abAge">—</strong>歳</td></tr>
         <tr><td>仕事</td><td id="abJob">—</td></tr>
         <tr><td>家族</td><td id="abFamily">—</td></tr>
         <tr><td>目標</td><td><strong>50歳でCoast FIRE</strong>（2032年12月）</td></tr>
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
     $("btnShareAbout").addEventListener("click", function () {
       SiteUI.share(
         "教育費を抱えた43歳会社員のCoast FIRE実録。設計図も実績も全部公開されてる ☕ #fathercafe",
-        "https://koryo1982.github.io/fire-design/about.html"
+        window.location.href
       );
     });
   } catch (e) {

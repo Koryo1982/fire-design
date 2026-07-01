@@ -23,12 +23,19 @@
 
     profile: {
       age: 43,
-      birthYear: 1982,
-      job: "会社員（岐阜県・持ち家ローン完済）",
-      family: "夫婦＋大学生の子2人（法学系・理工系）",
+      job: "会社員（持ち家ローン完済）",
+      family: "夫婦＋難関国立大・理系の大学生2人",
       x: "https://x.com/father_cafe",
       xHandle: "@father_cafe",
       note: "https://note.com/father_cafe"
+    },
+
+    /* 教育費イベント（父の年齢基準）。設計図タイムライン・シミュレーター初期値と同期 */
+    education: {
+      eldestUniAtAge: 41,
+      youngestUniAtAge: 43,
+      amountPerChild: 500,
+      publicHighlight: "難関国立大・理系"
     },
 
     report: {

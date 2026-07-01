@@ -11,7 +11,7 @@ layout: null
 <meta property="og:type" content="website">
 <meta property="og:title" content="シミュレーター — モンテカルロ法FIRE試算 | father cafe">
 <meta property="og:description" content="モンテカルロ法×ガードレール戦略のFIREシミュレーター。成功確率・資産推移のブレ幅・ライフイベントを考慮。">
-<meta property="og:url" content="https://koryo1982.github.io/fire-design/simulator/">
+<meta property="og:site_name" content="father cafe">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@father_cafe">
@@ -528,10 +528,15 @@ class SimulatorUI {
   constructor() {
     this.chart = null;
     this.debounceTimer = null;
-    this.defaultEvents = [
-      { age: 47, name: "長子 大学進学", amount: 500 },
-      { age: 50, name: "次子 大学進学", amount: 500 }
-    ];
+    this.defaultEvents = (typeof SiteConfig !== "undefined" && SiteConfig.education)
+      ? [
+          { age: SiteConfig.education.eldestUniAtAge, name: "長子 大学進学", amount: SiteConfig.education.amountPerChild },
+          { age: SiteConfig.education.youngestUniAtAge, name: "次子 大学進学", amount: SiteConfig.education.amountPerChild }
+        ]
+      : [
+          { age: 41, name: "長子 大学進学", amount: 500 },
+          { age: 43, name: "次子 大学進学", amount: 500 }
+        ];
     this._bindInputs();
     this._initEventTable();
     this.scheduleRecalc(0);

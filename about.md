@@ -14,10 +14,10 @@ description: "father cafe 運営者のプロフィール。43歳・会社員・�
 |---|---|
 | 年齢 | 43歳 |
 | 軌跡 | 新卒で一般企業に入社、現在も同一企業に勤務 |
-| 家族 | 妻 + 子2人（法学系・理工系） |
-| 資産 | 9,373万円（2026年5月） |
+| 家族 | 妻 + 子2人（難関国立大・理系） |
+| 資産 | 9,520万円（2026年7月） |
 | FIREタイプ | Coast FIRE（3バケツ戦略） |
-| 目標 | 1億1,500万円（45～50歳で検討） |
+| 目標 | 1億3,500万円（50歳で検討） |
 | SNS | [X: @father_cafe](https://x.com/father_cafe) |
 
 ---
@@ -43,4 +43,3 @@ description: "father cafe 運営者のプロフィール。43歳・会社員・�
 
 - X: [@father_cafe](https://x.com/father_cafe) （日次の気づき）
 - note: 深掘り記事（週次）
-- GitHub: [fire-design](https://github.com/Koryo1982/fire-design)
