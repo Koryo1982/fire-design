@@ -327,6 +327,13 @@ table.events input {
   outline: none; border-color: var(--lime); box-shadow: 0 0 0 2px var(--lime-dim);
 }
 .sim-unit { font-size: 0.75rem; color: var(--text-dim); margin-left: 4px; font-weight: 400; }
+.sim-field-hint {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  line-height: 1.4;
+  margin-top: 4px;
+}
 
 table.events { width: 100%; border-collapse: collapse; margin: 0; }
 table.events th {

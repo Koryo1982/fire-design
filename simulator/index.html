@@ -85,15 +85,16 @@ layout: null
       <p class="sim-lead-note">「世帯の年間生活費」は<strong>夫婦二人の暮らしのベース</strong>（現在価値）。子どもの仕送り・学費は<strong>ライフイベント</strong>タブ、車・修繕・旅行は同タブの定期支出で上乗せします。</p>
       <div class="sim-grid">
         <div class="sim-field">
-          <label>現在の年齢<span class="sim-unit">歳</span></label>
-          <input type="number" id="inpAge" value="43" min="20" max="80" step="1">
+          <label>現在の年齢<span class="sim-unit">満年齢・今日</span></label>
+          <input type="number" id="inpAge" value="43" min="20" max="80" step="1" aria-describedby="inpAgeHint">
+          <span class="sim-field-hint" id="inpAgeHint">誕生月日は無視し、今の満何歳かを入力（年度年齢ではありません）</span>
         </div>
         <div class="sim-field">
           <label>現在の総資産<span class="sim-unit">万円</span></label>
           <input type="number" id="inpAssets" value="10000" min="0" step="100">
         </div>
         <div class="sim-field">
-          <label>目標FIRE年齢<span class="sim-unit">歳</span></label>
+          <label>目標FIRE年齢<span class="sim-unit">満年齢</span></label>
           <input type="number" id="inpFireAge" value="50" min="20" max="90" step="1">
         </div>
         <div class="sim-field">
@@ -189,11 +190,11 @@ layout: null
   <div class="bento-grid">
     <div class="tile span-12">
       <div class="tile-label"><span class="dot"></span>教育費 <span class="sim-tier-badge is-member">会員</span></div>
-      <p class="sim-lead-note" style="margin-top:0;margin-bottom:4px;">子どもごとに<strong>学年・年齢</strong>と<strong>大学／大学院</strong>の支出を入力します。仕送り・学費は月額×残り年数で試算し、父の年齢タイムラインに自動変換されます（世帯生活費には含めません）。</p>
+      <p class="sim-lead-note" style="margin-top:0;margin-bottom:4px;">子どもごとに<strong>学年（今年度・4月時点）</strong>と<strong>大学／大学院</strong>の支出を入力します。仕送り・学費は月額×残り年数で試算し、父の満年齢タイムラインに自動変換されます（世帯生活費には含めません）。</p>
       <div class="sim-children-list" id="childrenList"></div>
       <button type="button" class="sim-btn-add" id="btnAddChild">＋ 子どもを追加</button>
       <div class="sim-edu-preview" id="educationPreview" aria-live="polite">
-        <h4>父の年齢での教育費流出（プレビュー）</h4>
+        <h4>父の満年齢での教育費流出（プレビュー）</h4>
         <ul id="educationPreviewList"><li>—</li></ul>
       </div>
     </div>
@@ -207,7 +208,7 @@ layout: null
 
       <div class="sim-subsection">
         <h3>突発支出 — 一度きりの大きな出費</h3>
-        <p class="sim-sub-desc">結婚支援・転居など、教育費以外の一度きりの支出。</p>
+        <p class="sim-sub-desc">結婚支援・転居など、教育費以外の一度きりの支出。発生年齢は<strong>父の満年齢</strong>です。</p>
         <table class="events">
           <thead>
             <tr><th style="width:22%">発生年齢</th><th style="width:46%">内容</th><th style="width:22%">金額（万円）</th><th></th></tr>
@@ -220,7 +221,7 @@ layout: null
 
       <div class="sim-subsection">
         <h3>定期支出 — 何年ごとに繰り返す出費</h3>
-        <p class="sim-sub-desc">車の買い替え・住宅修繕・旅行など、周期と初回年齢が決まっている支出。初回以降は周期ごとに自動加算されます。</p>
+        <p class="sim-sub-desc">車の買い替え・住宅修繕・旅行など。初回年齢は<strong>父の満年齢</strong>、以降は周期ごとに自動加算されます。</p>
         <table class="events periodic">
           <thead>
             <tr><th style="width:28%">内容</th><th style="width:18%">金額（万円）</th><th style="width:18%">周期（年）</th><th style="width:18%">初回年齢</th><th></th></tr>
@@ -343,7 +344,9 @@ layout: null
         <li>資産は設計図の3層（A/B/C）比率で分割。成長層はトータルリターン、安定層は配当現金＋値上がり、生活防衛層は金利のみ。</li>
         <li>安定層の配当は積立期間中は再投資、FIRE後はCoast収入・年金と合わせて生活費から差し引き（売却取崩しを減らす）。</li>
         <li>「世帯の年間生活費」は夫婦の暮らしのベース（現在価値）。子ども関連はライフイベントタブで上乗せします。</li>
-        <li>教育費は子どもごとの月額×残り年数＋入学金を、父の年齢に展開して毎年の特別支出に加算します。</li>
+        <li>年齢はすべて<strong>満年齢の整数</strong>で、1年刻みで進みます（誕生日の月日・4月年度は区別しません）。</li>
+        <li>「現在の年齢」は<strong>今日時点の満年齢</strong>。子どもの学年は<strong>今年度（4月時点）</strong>で選びます。</li>
+        <li>教育費は子どもごとの月額×残り年数＋入学金を、父の満年齢に展開して毎年の特別支出に加算します。</li>
         <li>支出はインフレ率で毎年複利増加。突発支出は指定年齢に、定期支出は初回年齢以降・周期ごとに加算します。</li>
         <li>年金開始後は、Coast収入・配当と合わせて必要取崩し額から相殺します（いずれもインフレ連動）。</li>
         <li>税金は取得元本を追跡し、取崩し額のうち利益部分に20.315%を課税した上で手取りが必要額に一致するようグロスアップします。</li>
@@ -1062,8 +1065,8 @@ class SimulatorUI {
     card.innerHTML =
       "<div class=\"sim-child-head\">" +
       "<div class=\"sim-field\"><label>呼称</label><input type=\"text\" class=\"ch-label\" value=\"\"></div>" +
-      "<div class=\"sim-field\"><label>現在の学年</label><select class=\"ch-grade\"></select></div>" +
-      "<div class=\"sim-field\"><label>現在の年齢</label><input type=\"number\" class=\"ch-age\" min=\"0\" max=\"40\" step=\"1\"></div>" +
+      "<div class=\"sim-field\"><label>現在の学年</label><select class=\"ch-grade\"></select><span class=\"sim-field-hint\">今年度（4月時点）</span></div>" +
+      "<div class=\"sim-field\"><label>参考：子の満年齢</label><input type=\"number\" class=\"ch-age\" min=\"0\" max=\"40\" step=\"1\"><span class=\"sim-field-hint\">メモ用（試算は学年ベース）</span></div>" +
       "<button type=\"button\" class=\"sim-child-del\" title=\"この子を削除\">削除</button>" +
       "</div>" +
       "<div class=\"sim-child-phase ch-uni-block\">" +
