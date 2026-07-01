@@ -730,7 +730,11 @@ class SimulatorUI {
   $(id) { return document.getElementById(id); }
 
   _num(id, fallback) {
-    const v = parseFloat(this.$(id).value);
+    const el = this.$(id);
+    if (!el) return fallback;
+    const raw = String(el.value).trim();
+    if (raw === "") return 0;
+    const v = parseFloat(raw);
     return Number.isFinite(v) ? v : fallback;
   }
 
