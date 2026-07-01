@@ -729,14 +729,27 @@ class SimulatorUI {
 
   $(id) { return document.getElementById(id); }
 
+  /** 空欄時にフォールバックへ戻すID（基礎3項目＋各種年齢）。それ以外は空欄・不正値＝0 */
+  _FALLBACK_IF_EMPTY_IDS = ["inpAge", "inpAssets", "inpFireAge", "inpPensionAge", "inpMedicalAge", "inpCareAge"];
+
   _num(id, fallback) {
     const el = this.$(id);
     if (!el) return fallback;
     const raw = String(el.value).trim();
-    if (raw === "") return 0;
+    const useFallback = this._FALLBACK_IF_EMPTY_IDS.includes(id);
+    if (raw === "") return useFallback ? fallback : 0;
     const v = parseFloat(raw);
-    return Number.isFinite(v) ? v : fallback;
-  }
+    if (!Number.isFinite(v)) return useFallback ? fallback : 0;
+    return v;
+  },
+
+  /** テーブル行の数値（空欄は NaN＝行を無視） */
+  _cellNum(value) {
+    const raw = String(value).trim();
+    if (raw === "") return NaN;
+    const v = parseFloat(raw);
+    return Number.isFinite(v) ? v : NaN;
+  },
 
   _bindInputs() {
     const ids = [
@@ -803,9 +816,9 @@ class SimulatorUI {
   collectPeriodic() {
     const items = [];
     document.querySelectorAll("#periodicRows tr").forEach(tr => {
-      const amount = parseFloat(tr.querySelector(".per-amt").value);
-      const cycle = parseFloat(tr.querySelector(".per-cycle").value);
-      const firstAge = parseFloat(tr.querySelector(".per-first").value);
+      const amount = this._cellNum(tr.querySelector(".per-amt").value);
+      const cycle = this._cellNum(tr.querySelector(".per-cycle").value);
+      const firstAge = this._cellNum(tr.querySelector(".per-first").value);
       if (Number.isFinite(amount) && amount > 0 && Number.isFinite(cycle) && cycle >= 1 && Number.isFinite(firstAge)) {
         items.push({
           name: tr.querySelector(".per-name").value,
@@ -843,8 +856,8 @@ class SimulatorUI {
   collectEvents() {
     const events = [];
     document.querySelectorAll("#eventRows tr").forEach(tr => {
-      const age = parseFloat(tr.querySelector(".ev-age").value);
-      const amount = parseFloat(tr.querySelector(".ev-amt").value);
+      const age = this._cellNum(tr.querySelector(".ev-age").value);
+      const amount = this._cellNum(tr.querySelector(".ev-amt").value);
       if (Number.isFinite(age) && Number.isFinite(amount) && amount > 0) {
         events.push({ age, amount, name: tr.querySelector(".ev-name").value });
       }
@@ -908,6 +921,7 @@ class SimulatorUI {
     requestAnimationFrame(() => setTimeout(() => {
       try {
         const params = this.collectParams();
+        if (params.currentAge < 20) throw new Error("現在年齢を入力してください（20歳以上）。");
         if (params.currentAge >= 100) throw new Error("現在年齢は100歳未満で入力してください。");
         const t0 = performance.now();
         const engine = new FireSimulationEngine(params);
