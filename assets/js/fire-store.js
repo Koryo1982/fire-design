@@ -11,6 +11,7 @@
     var c = global.SiteConfig;
     if (!c || !c.finance) return null;
     var f = c.finance;
+    var s = c.simulator || {};
     return {
       currentAge: c.profile && c.profile.age ? c.profile.age : 43,
       currentAssets: f.totalAssets,
@@ -18,6 +19,7 @@
       fireAge: f.fireAge,
       annualExpense: f.annualExpense,
       coastIncome: f.coastIncomePlan != null ? f.coastIncomePlan : f.coastIncomeMin,
+      annualSavings: s.annualSavings != null ? s.annualSavings : 0,
       fireTargetDate: f.fireTargetDate,
       bucketA: f.buckets.A.amount,
       bucketB: f.buckets.B.amount,
@@ -32,6 +34,7 @@
     fireAge: 50,
     annualExpense: 360,
     coastIncome: 120,
+    annualSavings: 0,
     fireTargetDate: "2032-12-27",
     bucketA: 650,
     bucketB: 1210,

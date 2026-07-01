@@ -61,21 +61,75 @@ layout: null
           <input type="number" id="inpCoastIncome" value="120" min="0" step="10">
         </div>
       </div>
+    </div>
+  </div>
 
-      <div class="sim-budget" id="budgetPanel" aria-live="polite">
+  <!-- ============ 積立フェーズ ============ -->
+  <div class="bento-grid">
+    <div class="tile span-12 fade-in">
+      <div class="tile-label"><span class="dot"></span>積立フェーズ — FIREまで</div>
+      <h2>あなたがコントロールできる変数</h2>
+      <p class="sim-lead-note">給与から証券口座へ回す<strong>年間積立額</strong>です。Coast FIRE到達後は積立0が前提（設計図と同じ）。市場リターンとは別物として考えます。</p>
+      <div class="sim-grid" style="max-width:420px;">
+        <div class="sim-field">
+          <label>FIREまでの年間積立額<span class="sim-unit">万円</span></label>
+          <input type="number" id="inpSavings" value="0" min="0" step="10">
+        </div>
+        <div class="sim-field">
+          <label>積立残り年数<span class="sim-unit">年（自動）</span></label>
+          <input type="text" id="savingsYearsLeft" value="—" readonly style="opacity:0.7;cursor:default;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 運用前提 ============ -->
+  <div class="bento-grid">
+    <div class="tile span-12 fade-in">
+      <div class="tile-label"><span class="dot"></span>運用前提 — 市場・3層構造</div>
+      <h2>市場がコントロールする変数（設計図のA/B/C層）</h2>
+      <p class="sim-lead-note">成長層（C・インデックス）は<strong>トータルリターン</strong>（配当再投資込み）。安定層（B・高配当）は<strong>配当＝現金</strong>＋値上がりを分離。配当はFIRE後は生活費に充当、積立期間中は再投資されます。層の割合は設計図の資産配分（A <span id="allocALabel">—</span>% / B <span id="allocBLabel">—</span>% / C <span id="allocCLabel">—</span>%）を使用。</p>
+      <div class="sim-grid">
+        <div class="sim-field">
+          <label>成長層（C）期待リターン<span class="sim-unit">% / 年・TR</span></label>
+          <input type="number" id="inpGrowthReturn" value="6" min="-5" max="15" step="0.1">
+        </div>
+        <div class="sim-field">
+          <label>安定層（B）配当利回り<span class="sim-unit">% / 年・現金</span></label>
+          <input type="number" id="inpStableDividend" value="3.5" min="0" max="10" step="0.1">
+        </div>
+        <div class="sim-field">
+          <label>安定層（B）値上がり<span class="sim-unit">% / 年</span></label>
+          <input type="number" id="inpStableCapital" value="2" min="-5" max="10" step="0.1">
+        </div>
+        <div class="sim-field">
+          <label>生活防衛層（A）金利<span class="sim-unit">% / 年</span></label>
+          <input type="number" id="inpCashReturn" value="0.1" min="0" max="5" step="0.05">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 取り崩し内訳 ============ -->
+  <div class="bento-grid">
+    <div class="tile span-12 fade-in">
+      <div class="tile-label"><span class="dot"></span>キャッシュフロー試算</div>
+      <div class="sim-budget" id="budgetPanel" aria-live="polite" style="margin-top:0;">
         <h3>資産から引く額の内訳（現在価値・設計図と同じ考え方）</h3>
         <div class="sim-budget-phase">
           <div class="sim-budget-phase-title" id="budgetPhasePre">FIRE後〜年金前（<span id="budgetFireAgeLabel">50</span>〜64歳）</div>
           <div class="sim-budget-row"><span>世帯の年間生活費</span><strong><span id="budgetExpense">—</span>万円</strong></div>
           <div class="sim-budget-row minus"><span>− Coast収入（発信・副業など）</span><strong><span id="budgetCoast">—</span>万円</strong></div>
-          <div class="sim-budget-row total"><span>＝ 資産からの取崩し目安</span><strong><span id="budgetNetPre">—</span>万円/年</strong></div>
+          <div class="sim-budget-row minus"><span>− 配当現金（安定層B・<span id="budgetAllocB">—</span>%）</span><strong><span id="budgetDividend">—</span>万円</strong></div>
+          <div class="sim-budget-row total"><span>＝ 資産からの売却取崩し目安</span><strong><span id="budgetNetPre">—</span>万円/年</strong></div>
         </div>
         <div class="sim-budget-phase">
           <div class="sim-budget-phase-title">年金開始後（<span id="budgetPensionAgeLabel">65</span>歳〜）</div>
           <div class="sim-budget-row"><span>世帯の年間生活費</span><strong><span id="budgetExpense2">—</span>万円</strong></div>
           <div class="sim-budget-row minus"><span>− Coast収入</span><strong><span id="budgetCoast2">—</span>万円</strong></div>
+          <div class="sim-budget-row minus"><span>− 配当現金（安定層B）</span><strong><span id="budgetDividend2">—</span>万円</strong></div>
           <div class="sim-budget-row minus"><span>− 公的年金（夫婦合算）</span><strong><span id="budgetPension">—</span>万円</strong></div>
-          <div class="sim-budget-row total"><span>＝ 資産からの取崩し目安</span><strong><span id="budgetNetPost">—</span>万円/年</strong></div>
+          <div class="sim-budget-row total"><span>＝ 資産からの売却取崩し目安</span><strong><span id="budgetNetPost">—</span>万円/年</strong></div>
         </div>
         <div class="sim-budget-wr" id="budgetWrNote">—</div>
       </div>
@@ -101,24 +155,20 @@ layout: null
   <!-- ============ 詳細設定 ============ -->
   <div class="bento-grid">
     <details class="sim-advanced fade-in" id="advancedPanel">
-      <summary>詳細設定（市場前提・ガードレール・年金・税金・周期支出）— 慣れてきたら調整</summary>
+      <summary>詳細設定（リスク・ガードレール・年金・税金・周期支出）— 慣れてきたら調整</summary>
       <div class="tile advanced-body">
       <div class="sim-grid">
         <div class="sim-field">
-          <label>期待リターン（年率）<span class="sim-unit">%</span></label>
-          <input type="number" id="inpReturn" value="5" min="-5" max="15" step="0.1">
+          <label>成長層（C）リスク・標準偏差<span class="sim-unit">%</span></label>
+          <input type="number" id="inpGrowthStdev" value="12" min="0" max="40" step="0.5">
         </div>
         <div class="sim-field">
-          <label>リスク（標準偏差・年率）<span class="sim-unit">%</span></label>
-          <input type="number" id="inpStdev" value="12" min="0" max="40" step="0.5">
+          <label>安定層（B）リスク・標準偏差<span class="sim-unit">%</span></label>
+          <input type="number" id="inpStableStdev" value="8" min="0" max="40" step="0.5">
         </div>
         <div class="sim-field">
           <label>インフレ率（年率）<span class="sim-unit">%</span></label>
           <input type="number" id="inpInflation" value="1.5" min="0" max="10" step="0.1">
-        </div>
-        <div class="sim-field">
-          <label>FIREまでの年間積立額<span class="sim-unit">万円</span></label>
-          <input type="number" id="inpSavings" value="0" min="0" step="10">
         </div>
         <div class="sim-field">
           <label>シミュレーション回数<span class="sim-unit">回</span></label>
@@ -258,10 +308,12 @@ layout: null
       <div class="tile-label"><span class="dot"></span>前提条件</div>
       <h2>計算の前提</h2>
       <ul>
-        <li>資産リターンは幾何ブラウン運動（対数正規）に従う乱数で年次生成します。</li>
-        <li>「世帯の年間生活費」は夫婦の暮らし全体の総額（現在価値）。FIRE後はCoast収入・年金を差し引いた残りを資産から取り崩します。</li>
+        <li>成長層・安定層のリターンは幾何ブラウン運動（対数正規）で年次生成。生活防衛層は固定金利です。</li>
+        <li>資産は設計図の3層（A/B/C）比率で分割。成長層はトータルリターン、安定層は配当現金＋値上がり、生活防衛層は金利のみ。</li>
+        <li>安定層の配当は積立期間中は再投資、FIRE後はCoast収入・年金と合わせて生活費から差し引き（売却取崩しを減らす）。</li>
+        <li>「世帯の年間生活費」は夫婦の暮らし全体の総額（現在価値）。FIRE後はCoast収入・配当・年金を差し引いた残りを資産から売却して賄います。</li>
         <li>支出はインフレ率で毎年複利増加。ライフイベント・周期支出は発生年に加算します。</li>
-        <li>年金開始後は、Coast収入と合わせて必要取崩し額から相殺します（いずれもインフレ連動）。</li>
+        <li>年金開始後は、Coast収入・配当と合わせて必要取崩し額から相殺します（いずれもインフレ連動）。</li>
         <li>税金は取得元本を追跡し、取崩し額のうち利益部分に20.315%を課税した上で手取りが必要額に一致するようグロスアップします。</li>
         <li>ガードレール：引出率が初期引出率の許容幅を上回ると支出を10%カット、下回ると10%増額します（調整幅は世帯生活費の50〜150%に制限）。判定・調整の対象は「世帯の年間生活費」のみで、ライフイベント・周期支出・税社保スパイク・医療介護費などの特別支出は固定費としてそのまま上乗せします。</li>
         <li>FIRE翌年に前年給与ベースの住民税・健康保険料（税金・社保スパイク）を一時費用として加算できます。</li>
@@ -306,12 +358,30 @@ class FireSimulationEngine {
     return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
   }
 
-  /** 幾何ブラウン運動による1年分の総リターン倍率 */
-  _annualGrowthFactor() {
-    const mu = this.p.expReturn;
-    const sigma = this.p.stdev;
+  /** 幾何ブラウン運動による1年分のリターン倍率（層ごと） */
+  _annualGrowthFactor(mu, sigma) {
     const z = FireSimulationEngine.randNorm();
     return Math.exp((mu - 0.5 * sigma * sigma) + sigma * z);
+  }
+
+  /** 安定層（B）からの配当現金（万円・名目） */
+  _dividendCash(assets, inflFactor) {
+    if (assets <= 0) return 0;
+    return assets * this.p.allocB * this.p.stableDividendYield * inflFactor;
+  }
+
+  /** 3層それぞれのリターンを適用した年末資産 */
+  _applyMarketReturn(assets) {
+    const p = this.p;
+    if (assets <= 0) return 0;
+    const amtA = assets * p.allocA;
+    const amtB = assets * p.allocB;
+    const amtC = assets * p.allocC;
+    return (
+      amtA * (1 + p.cashReturn) +
+      amtB * this._annualGrowthFactor(p.stableCapitalReturn, p.stableStdev) +
+      amtC * this._annualGrowthFactor(p.growthReturn, p.growthStdev)
+    );
   }
 
   /**
@@ -406,6 +476,12 @@ class FireSimulationEngine {
         // 積立フェーズ：給与等から支出・スポット支出は賄われる前提。積立のみ資産へ。
         assets += p.annualSavings;
         costBasis += p.annualSavings;
+        // 安定層配当は積立期間中は再投資
+        const divReinvest = this._dividendCash(assets, inflFactor);
+        if (divReinvest > 0) {
+          assets += divReinvest;
+          costBasis += divReinvest;
+        }
         // ただしFIRE前でもライフイベントが家計を超える場合は資産から支出
         if (spot > 0) {
           const gross = this._grossUpForTax(spot, assets, costBasis);
@@ -420,7 +496,8 @@ class FireSimulationEngine {
         const baseExpense = p.annualExpense * inflFactor * adjFactor;
         const coast = age > p.fireAge ? p.coastIncome * inflFactor : 0;
         const pension = age >= p.pensionAge ? p.pensionAmount * inflFactor : 0;
-        const retirementIncome = coast + pension;
+        const dividend = this._dividendCash(assets, inflFactor);
+        const retirementIncome = coast + pension + dividend;
 
         // 年金・Coast収入はまず基本生活費から相殺し、余剰があれば特別支出にも充当
         const baseNet = Math.max(0, baseExpense - retirementIncome);
@@ -451,9 +528,9 @@ class FireSimulationEngine {
         costBasis = Math.max(0, costBasis - basisOut);
       }
 
-      // --- 市場リターン（幾何ブラウン運動） ---
+      // --- 市場リターン（3層モデル） ---
       if (assets > 0) {
-        assets *= this._annualGrowthFactor();
+        assets = this._applyMarketReturn(assets);
       }
 
       // --- 枯渇判定 ---
@@ -570,10 +647,20 @@ class SimulatorUI {
     this.scheduleRecalc(0);
   }
 
+  _getAlloc() {
+    if (typeof SiteConfig !== "undefined" && SiteConfig.derived) {
+      var d = SiteConfig.derived;
+      return { a: d.allocA || 0, b: d.allocB || 0, c: d.allocC || 0 };
+    }
+    return { a: 0.068, b: 0.127, c: 0.805 };
+  }
+
   _applyConfigDefaults() {
     if (typeof SiteConfig === "undefined" || !SiteConfig.finance) return;
     var f = SiteConfig.finance;
     var p = SiteConfig.profile || {};
+    var s = SiteConfig.simulator || {};
+    var alloc = this._getAlloc();
     this.$("inpAge").value = p.age || 43;
     this.$("inpAssets").value = f.totalAssets || 10000;
     this.$("inpFireAge").value = f.fireAge || 50;
@@ -581,6 +668,16 @@ class SimulatorUI {
     this.$("inpCoastIncome").value = f.coastIncomePlan != null ? f.coastIncomePlan : 120;
     if (f.pensionAnnual != null) this.$("inpPensionAmt").value = f.pensionAnnual;
     if (f.initialWithdrawalRate != null) this.$("inpInitWR").value = f.initialWithdrawalRate;
+    if (s.annualSavings != null) this.$("inpSavings").value = s.annualSavings;
+    if (s.growthReturn != null) this.$("inpGrowthReturn").value = s.growthReturn;
+    if (s.growthStdev != null) this.$("inpGrowthStdev").value = s.growthStdev;
+    if (s.stableDividendYield != null) this.$("inpStableDividend").value = s.stableDividendYield;
+    if (s.stableCapitalReturn != null) this.$("inpStableCapital").value = s.stableCapitalReturn;
+    if (s.stableStdev != null) this.$("inpStableStdev").value = s.stableStdev;
+    if (s.cashReturn != null) this.$("inpCashReturn").value = s.cashReturn;
+    this.$("allocALabel").textContent = (alloc.a * 100).toFixed(1);
+    this.$("allocBLabel").textContent = (alloc.b * 100).toFixed(1);
+    this.$("allocCLabel").textContent = (alloc.c * 100).toFixed(1);
   }
 
   _updateBudgetPanel() {
@@ -589,33 +686,43 @@ class SimulatorUI {
     var pension = Math.max(0, this._num("inpPensionAmt", 192));
     var assets = Math.max(0, this._num("inpAssets", 10000));
     var fireAge = Math.round(this._num("inpFireAge", 50));
+    var currentAge = Math.round(this._num("inpAge", 43));
     var pensionAge = Math.round(this._num("inpPensionAge", 65));
     var wrPct = this._num("inpInitWR", 4.5);
-    var netPre = Math.max(0, expense - coast);
-    var netPost = Math.max(0, expense - coast - pension);
+    var divYield = this._num("inpStableDividend", 3.5);
+    var alloc = this._getAlloc();
+    var divIncome = Math.round(assets * alloc.b * divYield / 100);
+    var netPre = Math.max(0, expense - coast - divIncome);
+    var netPost = Math.max(0, expense - coast - divIncome - pension);
     var wrAmt = Math.round(assets * wrPct / 100);
+    var yearsLeft = Math.max(0, fireAge - currentAge);
 
     var fmt = function (n) { return Math.round(n).toLocaleString(); };
+    this.$("savingsYearsLeft").value = yearsLeft + "年";
     this.$("budgetFireAgeLabel").textContent = fireAge;
     this.$("budgetPensionAgeLabel").textContent = pensionAge;
+    this.$("budgetAllocB").textContent = (alloc.b * 100).toFixed(1);
     this.$("budgetExpense").textContent = fmt(expense);
     this.$("budgetCoast").textContent = fmt(coast);
+    this.$("budgetDividend").textContent = fmt(divIncome);
+    this.$("budgetDividend2").textContent = fmt(divIncome);
     this.$("budgetNetPre").textContent = fmt(netPre);
     this.$("budgetExpense2").textContent = fmt(expense);
     this.$("budgetCoast2").textContent = fmt(coast);
     this.$("budgetPension").textContent = fmt(pension);
     this.$("budgetNetPost").textContent = fmt(netPost);
 
-    var wrNote = "参考：FIRE時点の総資産 " + fmt(assets) + "万円 × 初期引出率 " + wrPct + "% ＝ 約 " + fmt(wrAmt) + "万円/年。";
+    var wrNote = "参考：FIRE時点の総資産 " + fmt(assets) + "万円 × 初期引出率 " + wrPct + "% ＝ 約 " + fmt(wrAmt) + "万円/年（売却ベース）。";
+    wrNote += " 配当 " + fmt(divIncome) + "万円は安定層B（" + (alloc.b * 100).toFixed(1) + "%）× 利回り " + divYield + "% で試算。";
     if (netPre > 0) {
       var impliedWr = (netPre / assets) * 100;
-      wrNote += " 上の取崩し目安（" + fmt(netPre) + "万円）は引出率 約" + impliedWr.toFixed(1) + "% に相当";
+      wrNote += " 売却取崩し目安（" + fmt(netPre) + "万円）は実効引出率 約" + impliedWr.toFixed(1) + "%";
       if (Math.abs(impliedWr - wrPct) > 0.5) {
-        wrNote += impliedWr > wrPct ? "（ガードレール上限に近い水準）" : "（余裕あり）";
+        wrNote += impliedWr > wrPct ? "（ガードレール上限に近い）" : "（余裕あり）";
       }
       wrNote += "。";
     } else {
-      wrNote += " Coast収入で生活費を賄えるため、資産からの取崩しは不要です。";
+      wrNote += " Coast収入＋配当で生活費を賄えるため、売却取崩しは不要です。";
     }
     this.$("budgetWrNote").textContent = wrNote;
   }
@@ -629,8 +736,9 @@ class SimulatorUI {
 
   _bindInputs() {
     const ids = [
-      "inpAge", "inpAssets", "inpFireAge", "inpExpense", "inpCoastIncome",
-      "inpReturn", "inpStdev", "inpInflation", "inpSavings", "inpTrials",
+      "inpAge", "inpAssets", "inpFireAge", "inpExpense", "inpCoastIncome", "inpSavings",
+      "inpGrowthReturn", "inpStableDividend", "inpStableCapital", "inpCashReturn",
+      "inpGrowthStdev", "inpStableStdev", "inpInflation", "inpTrials",
       "inpGuardrail", "inpInitWR", "inpGrBand",
       "inpPensionAge", "inpPensionAmt", "inpTax",
       "inpCarCost", "inpCarCycle", "inpRepairCost", "inpRepairCycle",
@@ -696,18 +804,26 @@ class SimulatorUI {
   collectParams() {
     const currentAge = Math.round(this._num("inpAge", 43));
     let fireAge = Math.round(this._num("inpFireAge", 50));
-    if (fireAge < currentAge) fireAge = currentAge; // FIRE済み扱い
+    if (fireAge < currentAge) fireAge = currentAge;
+    const alloc = this._getAlloc();
     return {
       currentAge,
       currentAssets: Math.max(0, this._num("inpAssets", 10000)),
       fireAge,
       annualExpense: Math.max(0, this._num("inpExpense", 360)),
       coastIncome: Math.max(0, this._num("inpCoastIncome", 120)),
-      events: this.collectEvents(),
-      expReturn: this._num("inpReturn", 5) / 100,
-      stdev: Math.max(0, this._num("inpStdev", 12)) / 100,
-      inflation: Math.max(0, this._num("inpInflation", 1.5)) / 100,
       annualSavings: Math.max(0, this._num("inpSavings", 0)),
+      allocA: alloc.a,
+      allocB: alloc.b,
+      allocC: alloc.c,
+      growthReturn: this._num("inpGrowthReturn", 6) / 100,
+      growthStdev: Math.max(0, this._num("inpGrowthStdev", 12)) / 100,
+      stableDividendYield: Math.max(0, this._num("inpStableDividend", 3.5)) / 100,
+      stableCapitalReturn: this._num("inpStableCapital", 2) / 100,
+      stableStdev: Math.max(0, this._num("inpStableStdev", 8)) / 100,
+      cashReturn: Math.max(0, this._num("inpCashReturn", 0.1)) / 100,
+      events: this.collectEvents(),
+      inflation: Math.max(0, this._num("inpInflation", 1.5)) / 100,
       trials: Math.min(10000, Math.max(500, Math.round(this._num("inpTrials", 3000)))),
       guardrailEnabled: this.$("inpGuardrail").checked,
       initialWR: Math.max(0.001, this._num("inpInitWR", 4.5) / 100),

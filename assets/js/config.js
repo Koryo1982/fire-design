@@ -66,6 +66,17 @@
       }
     },
 
+    /* シミュレーター初期値（運用・積立）。設計図の3層比率と連動 */
+    simulator: {
+      annualSavings: 0,           // FIREまでの年間積立（万円）。Coast到達後は0
+      growthReturn: 6,            // 成長層（C）トータルリターン想定（年率%・配当再投資込み）
+      growthStdev: 12,            // 成長層の標準偏差（年率%）
+      stableDividendYield: 3.5,   // 安定層（B）配当利回り（年率%・現金受取）
+      stableCapitalReturn: 2,     // 安定層（B）値上がり分（年率%）
+      stableStdev: 8,             // 安定層の標準偏差（年率%）
+      cashReturn: 0.1             // 生活防衛層（A）金利（年率%）
+    },
+
     nav: [
       { id: "home",      label: "ホーム",       href: BASE + "/" },
       { id: "about",     label: "About",        href: BASE + "/about.html" },
@@ -98,7 +109,10 @@
         progressLabel: progress.toFixed(1),
         remaining: Math.max(0, f.fireTarget - f.totalAssets),
         daysToFire: days,
-        totalBuckets: totalBuckets
+        totalBuckets: totalBuckets,
+        allocA: totalBuckets > 0 ? f.buckets.A.amount / totalBuckets : 0,
+        allocB: totalBuckets > 0 ? f.buckets.B.amount / totalBuckets : 0,
+        allocC: totalBuckets > 0 ? f.buckets.C.amount / totalBuckets : 0
       };
     } catch (e) {
       console.error("config.js: derived calculation failed", e);
