@@ -582,7 +582,7 @@ class FireSimulationEngine {
 
   /**
    * 1試行（1本の人生パス）を実行する。
-   * @returns {{path:number[], depletedAge:(number|null), assetsAtFire:number}}
+   * @returns {Object} path, depletedAge, assetsAtFire
    */
   runSingleTrial() {
     const p = this.p;
@@ -878,7 +878,7 @@ class SimulatorUI {
     const v = parseFloat(raw);
     if (!Number.isFinite(v)) return useFallback ? fallback : 0;
     return v;
-  },
+  }
 
   /** テーブル行の数値（空欄は NaN＝行を無視） */
   _cellNum(value) {
@@ -886,7 +886,7 @@ class SimulatorUI {
     if (raw === "") return NaN;
     const v = parseFloat(raw);
     return Number.isFinite(v) ? v : NaN;
-  },
+  }
 
   _bindInputs() {
     const ids = [
