@@ -33,12 +33,23 @@ layout: null
 
   <div id="errorBox" class="sim-error"></div>
 
+  <div class="sim-tabs-shell fade-in">
+    <nav class="sim-tabs" id="simTabs" role="tablist" aria-label="シミュレーター入力">
+      <button type="button" role="tab" id="simTabBtnBasic" class="sim-tab-btn is-active" data-tab="basic" aria-selected="true" aria-controls="simTabPanelBasic">基本<span class="sim-tier-badge is-free">無料</span></button>
+      <button type="button" role="tab" id="simTabBtnLife" class="sim-tab-btn" data-tab="life" aria-selected="false" aria-controls="simTabPanelLife">ライフイベント<span class="sim-tier-badge is-member">会員</span></button>
+      <button type="button" role="tab" id="simTabBtnAdvanced" class="sim-tab-btn" data-tab="advanced" aria-selected="false" aria-controls="simTabPanelAdvanced">詳細設定<span class="sim-tier-badge is-member">会員</span></button>
+      <button type="button" role="tab" id="simTabBtnAbout" class="sim-tab-btn" data-tab="about" aria-selected="false" aria-controls="simTabPanelAbout">前提<span class="sim-tier-badge is-free">無料</span></button>
+    </nav>
+    <p class="sim-tier-hint"><span class="sim-tier-badge is-member">会員</span>タブは note メンバーシップ（月額500〜1,000円未満予定）向けの拡張です。<strong>現在はすべて無料</strong>でお試しできます。ご意見は <a href="https://x.com/father_cafe">@father_cafe</a> へ。</p>
+
+    <div class="sim-tab-panel is-active" id="simTabPanelBasic" role="tabpanel" data-tab="basic" aria-labelledby="simTabBtnBasic">
+
   <!-- ============ 基本設定 ============ -->
   <div class="bento-grid">
-    <div class="tile span-12 fade-in">
+    <div class="tile span-12">
       <div class="tile-label"><span class="dot"></span>基本設定</div>
       <h2>まずはこの5つだけでOK</h2>
-      <p class="sim-lead-note">「世帯の年間生活費」は食費・住居・光熱・保険など<strong>家計全体の総額</strong>です。仕送り・学費は下の<strong>突発支出</strong>、車・修繕・旅行は<strong>定期支出</strong>で別途足してください。</p>
+      <p class="sim-lead-note">「世帯の年間生活費」は<strong>夫婦二人の暮らしのベース</strong>（現在価値）。子どもの仕送り・学費は<strong>ライフイベント</strong>タブ、車・修繕・旅行は同タブの定期支出で上乗せします。</p>
       <div class="sim-grid">
         <div class="sim-field">
           <label>現在の年齢<span class="sim-unit">歳</span></label>
@@ -66,7 +77,7 @@ layout: null
 
   <!-- ============ 積立フェーズ ============ -->
   <div class="bento-grid">
-    <div class="tile span-12 fade-in">
+    <div class="tile span-12">
       <div class="tile-label"><span class="dot"></span>積立フェーズ — FIREまで</div>
       <h2>あなたがコントロールできる変数</h2>
       <p class="sim-lead-note">給与から証券口座へ回す<strong>年間積立額</strong>です。Coast FIRE到達後は積立0が前提（設計図と同じ）。市場リターンとは別物として考えます。</p>
@@ -85,7 +96,7 @@ layout: null
 
   <!-- ============ 運用前提 ============ -->
   <div class="bento-grid">
-    <div class="tile span-12 fade-in">
+    <div class="tile span-12">
       <div class="tile-label"><span class="dot"></span>運用前提 — 市場・3層構造</div>
       <h2>市場がコントロールする変数（設計図のA/B/C層）</h2>
       <p class="sim-lead-note">成長層（C・インデックス）は<strong>トータルリターン</strong>（配当再投資込み）。安定層（B・高配当）は<strong>配当＝現金</strong>＋値上がりを分離。配当はFIRE後は生活費に充当、積立期間中は再投資されます。層の割合は設計図の資産配分（A <span id="allocALabel">—</span>% / B <span id="allocBLabel">—</span>% / C <span id="allocCLabel">—</span>%）を使用。</p>
@@ -112,7 +123,7 @@ layout: null
 
   <!-- ============ 取り崩し内訳 ============ -->
   <div class="bento-grid">
-    <div class="tile span-12 fade-in">
+    <div class="tile span-12">
       <div class="tile-label"><span class="dot"></span>キャッシュフロー試算</div>
       <div class="sim-budget" id="budgetPanel" aria-live="polite" style="margin-top:0;">
         <h3>資産から引く額の内訳（現在価値・設計図と同じ考え方）</h3>
@@ -136,10 +147,15 @@ layout: null
     </div>
   </div>
 
+    </div><!-- /simTabPanelBasic -->
+
+    <div class="sim-tab-panel" id="simTabPanelLife" role="tabpanel" data-tab="life" aria-labelledby="simTabBtnLife" hidden>
+      <p class="sim-tier-note"><span class="sim-tier-badge is-member">会員予定</span> 教育費のフル入力・支出イベントの無制限追加など。現時点では無料で全機能をお試しください。</p>
+
   <!-- ============ 教育費 ============ -->
   <div class="bento-grid">
-    <div class="tile span-12 fade-in">
-      <div class="tile-label"><span class="dot"></span>教育費</div>
+    <div class="tile span-12">
+      <div class="tile-label"><span class="dot"></span>教育費 <span class="sim-tier-badge is-member">会員</span></div>
       <p class="sim-lead-note" style="margin-top:0;margin-bottom:4px;">子どもごとに<strong>学年・年齢</strong>と<strong>大学／大学院</strong>の支出を入力します。仕送り・学費は月額×残り年数で試算し、父の年齢タイムラインに自動変換されます（世帯生活費には含めません）。</p>
       <div class="sim-children-list" id="childrenList"></div>
       <button type="button" class="sim-btn-add" id="btnAddChild">＋ 子どもを追加</button>
@@ -152,8 +168,8 @@ layout: null
 
   <!-- ============ 支出イベント ============ -->
   <div class="bento-grid">
-    <div class="tile span-12 fade-in">
-      <div class="tile-label"><span class="dot"></span>支出イベント</div>
+    <div class="tile span-12">
+      <div class="tile-label"><span class="dot"></span>支出イベント <span class="sim-tier-badge is-member">会員</span></div>
       <p class="sim-lead-note" style="margin-top:0;margin-bottom:4px;">家計の<strong>突発</strong>（一度きり）と<strong>定期</strong>（何年ごと）を分けて入力します。教育費は上のタイルで設定してください。</p>
 
       <div class="sim-subsection">
@@ -183,11 +199,16 @@ layout: null
     </div>
   </div>
 
-  <!-- ============ 詳細設定 ============ -->
+    </div><!-- /simTabPanelLife -->
+
+    <div class="sim-tab-panel" id="simTabPanelAdvanced" role="tabpanel" data-tab="advanced" aria-labelledby="simTabBtnAdvanced" hidden>
+      <p class="sim-tier-note"><span class="sim-tier-badge is-member">会員予定</span> ガードレール・年金・税金・医療介護などの詳細チューニング。現時点では無料で全機能をお試しください。</p>
+
   <div class="bento-grid">
-    <details class="sim-advanced fade-in" id="advancedPanel">
-      <summary>詳細設定（リスク・ガードレール・年金・税金）— 慣れてきたら調整</summary>
-      <div class="tile advanced-body">
+    <div class="tile span-12 advanced-body" id="advancedPanel">
+      <div class="tile-label"><span class="dot"></span>詳細設定 <span class="sim-tier-badge is-member">会員</span></div>
+      <h2>リスク・ガードレール・年金・税金</h2>
+      <p class="sim-lead-note" style="margin-top:0;">慣れてきたら調整してください。基本タブの5項目だけでも試算できます。</p>
       <div class="sim-grid">
         <div class="sim-field">
           <label>成長層（C）リスク・標準偏差<span class="sim-unit">%</span></label>
@@ -273,9 +294,43 @@ layout: null
         </div>
       </div>
       <p class="sim-footnote">※ 突発・定期の特別支出および税社保スパイク・医療介護費は、ガードレールの調整対象外（固定費）です。Coast収入・配当は世帯生活費から差し引きます。</p>
-      </div>
-    </details>
+    </div>
   </div>
+
+    </div><!-- /simTabPanelAdvanced -->
+
+    <div class="sim-tab-panel" id="simTabPanelAbout" role="tabpanel" data-tab="about" aria-labelledby="simTabBtnAbout" hidden>
+
+  <div class="bento-grid">
+    <div class="tile span-12">
+      <div class="tile-label"><span class="dot"></span>前提条件</div>
+      <h2>計算の前提</h2>
+      <ul>
+        <li>成長層・安定層のリターンは幾何ブラウン運動（対数正規）で年次生成。生活防衛層は固定金利です。</li>
+        <li>資産は設計図の3層（A/B/C）比率で分割。成長層はトータルリターン、安定層は配当現金＋値上がり、生活防衛層は金利のみ。</li>
+        <li>安定層の配当は積立期間中は再投資、FIRE後はCoast収入・年金と合わせて生活費から差し引き（売却取崩しを減らす）。</li>
+        <li>「世帯の年間生活費」は夫婦の暮らしのベース（現在価値）。子ども関連はライフイベントタブで上乗せします。</li>
+        <li>教育費は子どもごとの月額×残り年数＋入学金を、父の年齢に展開して毎年の特別支出に加算します。</li>
+        <li>支出はインフレ率で毎年複利増加。突発支出は指定年齢に、定期支出は初回年齢以降・周期ごとに加算します。</li>
+        <li>年金開始後は、Coast収入・配当と合わせて必要取崩し額から相殺します（いずれもインフレ連動）。</li>
+        <li>税金は取得元本を追跡し、取崩し額のうち利益部分に20.315%を課税した上で手取りが必要額に一致するようグロスアップします。</li>
+        <li>ガードレール：判定・調整の対象は「世帯の年間生活費」のみ。突発・定期の特別支出・税社保スパイク・医療介護費は固定費として上乗せします。</li>
+        <li>FIRE翌年に前年給与ベースの住民税・健康保険料（税金・社保スパイク）を一時費用として加算できます。</li>
+        <li>高齢期は指定年齢以降の年間医療・介護バッファと、特定年齢での介護一時金を自動加算できます。</li>
+        <li>本シミュレーションは将来の成果を保証するものではありません。</li>
+      </ul>
+      <h3 class="sim-section-title">無料／会員の境界（予定）</h3>
+      <ul>
+        <li><span class="sim-tier-badge is-free">無料</span> 基本5項目・積立・運用前提・取り崩し内訳・成功確率とグラフ</li>
+        <li><span class="sim-tier-badge is-member">会員</span> 教育費フル・支出イベント・詳細設定（ガードレール・年金・税金・医療介護など）</li>
+        <li>会員機能はラベルのみ先行表示中。note メンバーシップ開始まではすべて無料です。</li>
+      </ul>
+    </div>
+  </div>
+
+    </div><!-- /simTabPanelAbout -->
+
+  </div><!-- /sim-tabs-shell -->
 
   <!-- ============ 結果出力 ============ -->
   <div class="sim-calc-status" id="calcStatus"></div>
@@ -311,27 +366,6 @@ layout: null
       <h2>100歳までの資産推移（太線＝中央値 / 帯＝ブレ幅）</h2>
       <canvas id="mainChart"></canvas>
       <p class="sim-footnote">濃い帯：25〜75パーセンタイル（半分のケースが収まる範囲）／薄い帯：10〜90パーセンタイル。金額は名目（インフレ調整前）です。</p>
-    </div>
-  </div>
-
-  <div class="bento-grid">
-    <div class="tile span-12 fade-in">
-      <div class="tile-label"><span class="dot"></span>前提条件</div>
-      <h2>計算の前提</h2>
-      <ul>
-        <li>成長層・安定層のリターンは幾何ブラウン運動（対数正規）で年次生成。生活防衛層は固定金利です。</li>
-        <li>資産は設計図の3層（A/B/C）比率で分割。成長層はトータルリターン、安定層は配当現金＋値上がり、生活防衛層は金利のみ。</li>
-        <li>安定層の配当は積立期間中は再投資、FIRE後はCoast収入・年金と合わせて生活費から差し引き（売却取崩しを減らす）。</li>
-        <li>「世帯の年間生活費」は夫婦の暮らし全体の総額（現在価値）。FIRE後はCoast収入・配当・年金を差し引いた残りを資産から売却して賄います。</li>
-        <li>教育費は子どもごとの月額×残り年数＋入学金を、父の年齢に展開して毎年の特別支出に加算します。</li>
-        <li>支出はインフレ率で毎年複利増加。突発支出は指定年齢に、定期支出は初回年齢以降・周期ごとに加算します。</li>
-        <li>年金開始後は、Coast収入・配当と合わせて必要取崩し額から相殺します（いずれもインフレ連動）。</li>
-        <li>税金は取得元本を追跡し、取崩し額のうち利益部分に20.315%を課税した上で手取りが必要額に一致するようグロスアップします。</li>
-        <li>ガードレール：判定・調整の対象は「世帯の年間生活費」のみ。突発・定期の特別支出・税社保スパイク・医療介護費は固定費として上乗せします。</li>
-        <li>FIRE翌年に前年給与ベースの住民税・健康保険料（税金・社保スパイク）を一時費用として加算できます。</li>
-        <li>高齢期は指定年齢以降の年間医療・介護バッファと、特定年齢での介護一時金を自動加算できます。</li>
-        <li>本シミュレーションは将来の成果を保証するものではありません。</li>
-      </ul>
     </div>
   </div>
 
@@ -776,6 +810,7 @@ class SimulatorUI {
           { name: "住宅修繕", amount: 150, cycle: 10, firstAge: 53 }
         ];
     this._applyConfigDefaults();
+    this._initTabs();
     this._bindInputs();
     this._initEventTable();
     this._initPeriodicTable();
@@ -865,6 +900,32 @@ class SimulatorUI {
   }
 
   $(id) { return document.getElementById(id); }
+
+  _initTabs() {
+    var tablist = this.$("simTabs");
+    if (!tablist) return;
+    var self = this;
+    tablist.querySelectorAll(".sim-tab-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        self._switchTab(btn.getAttribute("data-tab"));
+      });
+    });
+  }
+
+  _switchTab(tabId) {
+    var tablist = this.$("simTabs");
+    if (!tablist || !tabId) return;
+    tablist.querySelectorAll(".sim-tab-btn").forEach(function (btn) {
+      var on = btn.getAttribute("data-tab") === tabId;
+      btn.classList.toggle("is-active", on);
+      btn.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    document.querySelectorAll(".sim-tab-panel").forEach(function (panel) {
+      var on = panel.getAttribute("data-tab") === tabId;
+      panel.classList.toggle("is-active", on);
+      panel.hidden = !on;
+    });
+  }
 
   /** 空欄時にフォールバックへ戻すID（基礎3項目＋各種年齢）。それ以外は空欄・不正値＝0 */
   _FALLBACK_IF_EMPTY_IDS = ["inpAge", "inpAssets", "inpFireAge", "inpPensionAge", "inpMedicalAge", "inpCareAge"];

@@ -530,6 +530,75 @@ table.events.periodic input[type="text"] { min-width: 0; }
 }
 .sim-child-del:hover { border-color: rgba(248, 113, 113, 0.5); color: #f87171; }
 .toggle-row.compact { margin-top: 8px; margin-bottom: 0; }
+
+/* シミュレーター — タブ（無料／会員ラベル） */
+.sim-tabs-shell { margin-bottom: 8px; }
+.sim-tabs {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin: 16px 0 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+.sim-tab-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 14px;
+  font-size: 0.82rem; font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.sim-tab-btn:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-hover);
+  color: var(--text);
+}
+.sim-tab-btn.is-active {
+  border-color: rgba(222, 255, 154, 0.45);
+  background: rgba(222, 255, 154, 0.08);
+  color: var(--lime);
+}
+.sim-tab-panel { display: none; }
+.sim-tab-panel.is-active { display: block; }
+.sim-tier-badge {
+  display: inline-block;
+  padding: 2px 7px;
+  font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 4px;
+  line-height: 1.3;
+  vertical-align: middle;
+}
+.sim-tier-badge.is-free {
+  color: var(--lime);
+  background: rgba(222, 255, 154, 0.12);
+  border: 1px solid rgba(222, 255, 154, 0.25);
+}
+.sim-tier-badge.is-member {
+  color: #c4b5fd;
+  background: rgba(196, 181, 253, 0.12);
+  border: 1px solid rgba(196, 181, 253, 0.3);
+}
+.sim-tier-hint {
+  font-size: 0.78rem; color: var(--text-dim); line-height: 1.6;
+  margin: 0 0 14px;
+}
+.sim-tier-hint a { color: var(--blue); }
+.sim-tier-note {
+  font-size: 0.8rem; color: var(--text-muted); line-height: 1.55;
+  margin: 4px 0 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(196, 181, 253, 0.06);
+  border: 1px dashed rgba(196, 181, 253, 0.25);
+}
+.sim-tabs-shell .tile-label .sim-tier-badge { margin-left: 6px; }
+@media (max-width: 560px) {
+  .sim-tabs { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+  .sim-tab-btn { flex-shrink: 0; }
+}
 .page-head .pill { margin-bottom: 12px; }
 
 /* ---------- Report / Markdown Prose (月次レポート等) ---------- */
